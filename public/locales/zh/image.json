@@ -1,0 +1,392 @@
+{
+  "changeColors": {
+    "description": "快速准确地将图像中的选定颜色替换为新颜色。",
+    "shortDescription": "快速交换图像中的颜色",
+    "title": "改变图像的颜色",
+    "fromColor": {
+      "title": "原始颜色",
+      "colorOption": "替换指定颜色",
+      "selectorDescription": "要替换的原始颜色",
+      "similarityDescription": "匹配原始颜色及指定百分比范围内的相近颜色。例如，白色的相似度设为 10% 时，也会匹配部分浅灰色。",
+      "transparentOption": "替换透明像素"
+    },
+    "inputTitle": "输入图片",
+    "resultTitle": "处理结果",
+    "toColor": {
+      "title": "目标颜色",
+      "colorOption": "替换为指定颜色",
+      "selectorDescription": "替换后的目标颜色",
+      "transparentOption": "替换为透明"
+    }
+  },
+  "changeOpacity": {
+    "description": "轻松调整图片透明度。只需上传图片，使用滑块在 0（完全透明）和 1（完全不透明）之间设置所需的不透明度，然后下载修改后的图片即可。",
+    "shortDescription": "调整图像的透明度",
+    "title": "更改图像不透明度",
+    "inputTitle": "输入图片",
+    "resultTitle": "处理后的图片",
+    "options": {
+      "width": "宽度",
+      "height": "高度",
+      "opacitySettings": "不透明度设置",
+      "opacityDescription": "设置 0（完全透明）到 1（完全不透明）之间的数值",
+      "solidOpacityTitle": "应用统一不透明度",
+      "solidOpacityDescription": "将所有像素设置为相同的不透明度",
+      "gradientOpacityTitle": "应用渐变不透明度",
+      "gradientOpacityDescription": "使不透明度按渐变变化",
+      "gradientType": "渐变类型",
+      "linearOpacity": "线性渐变",
+      "radialOpacity": "径向渐变",
+      "opacityArea": "渐变区域",
+      "leftPosition": "距左侧位置",
+      "topPosition": "距顶部位置",
+      "backgroundOptions": "背景设置",
+      "transparentAlpha": "透明背景（Alpha）",
+      "transparentAlphaDescription": "保留图片透明度（默认）",
+      "solidColor": "纯色背景",
+      "solidColorDescription": "将图片叠加到纯色背景上",
+      "chooseBackgroundColor": "选择背景颜色",
+      "insideOut": "从内到外",
+      "outsideIn": "从外到内",
+      "gradientDirection": "渐变方向"
+    }
+  },
+  "compress": {
+    "compressedSize": "压缩尺寸",
+    "compressionOptions": "压缩选项",
+    "description": "在保持质量的同时减小图像文件大小。",
+    "failedToCompress": "压缩图片失败，请重试。",
+    "fileSizes": "文件大小",
+    "inputTitle": "输入图像",
+    "maxFileSizeDescription": "最大文件大小（以兆字节为单位）",
+    "originalSize": "原始尺寸",
+    "qualityDescription": "图像质量百分比（越低表示文件大小越小）",
+    "resultTitle": "压缩图像",
+    "shortDescription": "压缩图像以减小文件大小，同时保持合理的质量。",
+    "title": "压缩图像",
+    "compressing": "正在压缩图片…",
+    "someFailedToCompress": "部分图片压缩失败，已跳过。"
+  },
+  "compressPng": {
+    "description": "这是一个压缩 PNG 图片的程序。只要您将 PNG 图片粘贴到输入区域，程序就会对其进行压缩，并在输出区域显示结果。在选项中，您可以调整压缩级别，以及查看新旧图片文件的大小。",
+    "shortDescription": "快速压缩 PNG",
+    "title": "压缩 png",
+    "compressionOptions": "压缩选项",
+    "fileSizes": "文件大小",
+    "alreadyOptimized": "该 PNG 已比可生成的压缩结果更小，因此保留原文件。",
+    "alreadyOptimizedFiles": "以下文件已更小，保留原文件：{{files}}",
+    "colors": "调色板颜色数量",
+    "compressedSize": "压缩后大小",
+    "compressing": "正在压缩 PNG…",
+    "dimensions": "图片尺寸",
+    "dimensionsUnchanged": "（保持不变）",
+    "dithering": "颜色抖动",
+    "ditheringDescription": "将颜色误差分散到相邻像素以减少渐变色带，但文件可能变大",
+    "failed": "PNG 压缩失败，请重试。",
+    "inputTitle": "输入 PNG 图片",
+    "maxOutputSizeDescription": "输出文件大小上限，单位为 KB。程序会减少调色板颜色，直到满足限制；设为 0 表示不限制",
+    "noStatsYet": "上传 PNG 图片后查看压缩节省的空间",
+    "originalSize": "原始大小",
+    "qualityDescription": "质量百分比（1–100），数值越低，保留的颜色越少，文件也越小",
+    "resultTitle": "压缩后的 PNG",
+    "someFailed": "以下文件压缩失败：{{files}}",
+    "targetNotReached": "即使使用最小调色板也无法达到大小限制，已尽可能压缩图片。",
+    "targetNotReachedFiles": "以下文件无法达到大小限制，已尽可能压缩：{{files}}"
+  },
+  "convertJgpToPng": {
+    "description": "快速将您的 JPG 图像转换为 PNG。只需在左侧的编辑器中导入您的 PNG 图像即可",
+    "shortDescription": "快速将您的 JPG 图像转换为 PNG",
+    "title": "JPG 转换为 PNG"
+  },
+  "createTransparent": {
+    "description": "通过移除所选颜色，使图像背景变为透明。",
+    "shortDescription": "快速使图像透明",
+    "title": "创建透明 PNG"
+  },
+  "crop": {
+    "description": "裁剪图像以删除不需要的区域。",
+    "inputTitle": "输入图像",
+    "resultTitle": "裁剪图像",
+    "shortDescription": "快速裁剪图像。",
+    "title": "裁剪图片"
+  },
+  "editor": {
+    "description": "高级图像编辑器，包含裁剪、旋转、注释、调整颜色和添加水印等工具。直接在浏览器中使用专业级工具编辑图像。",
+    "shortDescription": "使用高级工具和功能编辑图像",
+    "title": "图像编辑器"
+  },
+  "imageToText": {
+    "description": "使用光学字符识别 (OCR) 从图像 (JPG、PNG) 中提取文本。",
+    "shortDescription": "使用 OCR 从图像中提取文本。",
+    "title": "图像转文本 (OCR)"
+  },
+  "qrCode": {
+    "description": "为不同数据类型生成二维码：URL、文本、电子邮件、电话、短信、WiFi、vCard 等。",
+    "shortDescription": "为各种数据格式创建定制的二维码。",
+    "title": "二维码生成器",
+    "groups": {
+      "details": {
+        "title": "{{type}}详情",
+        "email": {
+          "address": {
+            "description": "邮箱地址",
+            "placeholder": "example@example.com"
+          },
+          "body": {
+            "description": "邮件正文（可选）",
+            "placeholder": "邮件正文内容"
+          },
+          "subject": {
+            "description": "邮件主题（可选）",
+            "placeholder": "邮件主题"
+          }
+        },
+        "phone": {
+          "description": "电话号码",
+          "placeholder": "+1234567890"
+        },
+        "sms": {
+          "number": {
+            "description": "电话号码",
+            "placeholder": "+1234567890"
+          },
+          "message": {
+            "description": "消息内容（可选）",
+            "placeholder": "在此输入消息"
+          }
+        },
+        "vcard": {
+          "phone": {
+            "placeholder": "+1234567890",
+            "description": "电话"
+          },
+          "website": {
+            "placeholder": "https://example.com",
+            "description": "网站（可选）"
+          },
+          "address": {
+            "description": "地址",
+            "placeholder": "中国某市某区某街道 123 号"
+          },
+          "company": {
+            "description": "公司（可选）",
+            "placeholder": "公司名称"
+          },
+          "email": {
+            "description": "电子邮箱",
+            "placeholder": "john@example.com"
+          },
+          "name": {
+            "description": "姓名",
+            "placeholder": "张三"
+          },
+          "title": {
+            "description": "职位（可选）",
+            "placeholder": "软件开发工程师"
+          }
+        },
+        "text": {
+          "description": "输入文本",
+          "placeholder": "在此输入文本"
+        },
+        "url": {
+          "description": "输入网址",
+          "placeholder": "https://example.com"
+        },
+        "wifi": {
+          "encryption": {
+            "label": "加密类型",
+            "options": {
+              "none": "无",
+              "wep": "WEP",
+              "wpa": "WPA"
+            }
+          },
+          "password": {
+            "description": "密码",
+            "placeholder": "密码"
+          },
+          "ssid": {
+            "description": "网络名称（SSID）",
+            "placeholder": "网络名称"
+          }
+        }
+      },
+      "settings": {
+        "title": "二维码设置",
+        "bgColor": "背景颜色",
+        "correctionLevel": {
+          "helperText": "纠错级别越高，抗损坏能力越强，但可编码的数据越少",
+          "label": "纠错级别",
+          "options": {
+            "h": "H（约 30%）",
+            "l": "L（约 7%）",
+            "m": "M（约 15%）",
+            "q": "Q（约 25%）"
+          }
+        },
+        "fgColor": "前景颜色",
+        "size": {
+          "description": "尺寸，单位为像素（100–1000）"
+        }
+      },
+      "type": {
+        "title": "二维码类型",
+        "options": {
+          "email": "电子邮箱",
+          "phone": "电话",
+          "sms": "短信",
+          "text": "文本",
+          "url": "URL",
+          "vcard": "vCard（联系人）",
+          "wifi": "WiFi"
+        },
+        "label": "选择二维码类型"
+      }
+    },
+    "options": {
+      "name": "名称",
+      "emailBody": "邮件正文（可选）",
+      "emailSubject": "邮件主题（可选）",
+      "phone": "电话号码",
+      "message": "消息内容（可选）",
+      "text": "输入文本",
+      "url": "输入网址",
+      "address": "地址",
+      "company": "公司（可选）",
+      "email": "电子邮箱",
+      "fullName": "姓名",
+      "job": "职位（可选）",
+      "website": "网站（可选）",
+      "encryptionType": "加密类型",
+      "password": "密码",
+      "ssid": "网络名称（SSID）",
+      "size": "尺寸，单位为像素（100–1000）",
+      "qrType": "选择二维码类型"
+    },
+    "result": {
+      "title": "生成的二维码"
+    },
+    "resultOutput": "生成的二维码",
+    "longDescription": "为网址、文本、邮箱、电话、短信、WiFi、vCard 联系人等数据生成二维码，并自定义尺寸与颜色。"
+  },
+  "removeBackground": {
+    "description": "自动移除图像背景，并保留主体为透明背景。",
+    "shortDescription": "自动删除图像的背景",
+    "title": "从图像中删除背景"
+  },
+  "resize": {
+    "description": "将图像调整为不同的尺寸。",
+    "dimensionType": "尺寸类型",
+    "heightDescription": "高度（像素）",
+    "inputTitle": "输入图像",
+    "maintainAspectRatio": "保持纵横比",
+    "maintainAspectRatioDescription": "保持图像的原始纵横比。",
+    "percentage": "百分比",
+    "percentageDescription": "原始大小的百分比（例如，50 表示一半大小，200 表示两倍大小）",
+    "resizeByPercentage": "按百分比调整大小",
+    "resizeByPercentageDescription": "通过指定原始大小的百分比来调整大小。",
+    "resizeByPixels": "按像素调整大小",
+    "resizeByPixelsDescription": "通过指定像素尺寸来调整大小。",
+    "resizeMethod": "调整大小方法",
+    "resultTitle": "调整大小的图像",
+    "setHeight": "设置高度",
+    "setHeightDescription": "以像素为单位指定高度并根据纵横比计算宽度。",
+    "setWidth": "设置宽度",
+    "setWidthDescription": "以像素为单位指定宽度并根据纵横比计算高度。",
+    "shortDescription": "轻松调整图像大小。",
+    "title": "调整图像大小",
+    "toolInfo": {
+      "description": "此工具允许您调整 JPG、PNG、SVG 或 GIF 图像的大小。您可以指定像素或百分比来调整大小，并可选择保持原始宽高比。",
+      "title": "调整图像大小"
+    },
+    "widthDescription": "宽度（像素）"
+  },
+  "rotate": {
+    "description": "按指定角度旋转图像。",
+    "shortDescription": "轻松旋转图像。",
+    "title": "旋转图像",
+    "inputTitle": "输入图片",
+    "options": {
+      "angle": "角度",
+      "customDesc": "按自定义角度旋转，单位为度。",
+      "customTitle": "自定义角度",
+      "method": "旋转方式",
+      "presetDesc": "按预设角度旋转，单位为度。",
+      "presetTitle": "预设角度"
+    },
+    "resultTitle": "旋转后的图片"
+  },
+  "split": {
+    "inputTitle": "输入图片",
+    "pageParameters": {
+      "title": "页面参数",
+      "padding": {
+        "description": "每页地图周围的页边距（使用所选单位）",
+        "label": "页边距"
+      },
+      "selectPageFormat": "选择纸张格式"
+    },
+    "scaleParameters": {
+      "title": "缩放参数",
+      "pxPerSquareQuantity": {
+        "description": "原图中指定数量的方格在水平或垂直方向对应的像素数",
+        "label": "对应像素数量"
+      },
+      "squareQuantity": {
+        "description": "用于计算缩放比例的水平或垂直方格数量",
+        "label": "方格数量"
+      },
+      "unitsPerOneSquare": {
+        "description": "一个方格的实际尺寸（使用所选单位）",
+        "label": "每个方格的实际尺寸"
+      }
+    },
+    "shortDescription": "将大图分割为多页 PDF，方便打印拼接。",
+    "title": "图片分页打印",
+    "units": {
+      "title": "单位",
+      "options": {
+        "in": "英寸（in）",
+        "mm": "毫米（mm）",
+        "pt": "点（pt）"
+      },
+      "select": "选择计量单位"
+    },
+    "loadingText": "正在加载...这可能需要一点时间。",
+    "resultTitle": "拆分 PDF",
+    "description": "根据纸张格式和页边距，将地图或大图分割为多页。通过设置打印方格对应的像素和方格数量，控制图片缩放比例。"
+  },
+  "watermark": {
+    "inputTitle": "输入图片",
+    "shortDescription": "为图片添加自定义文字水印",
+    "title": "图片添加水印",
+    "toolInfo": {
+      "title": "如何为图片添加水印？",
+      "longDescription": "为一张或多张图片添加可自定义的文字水印。可自动使用各图片的文件名，或统一使用自定义文字。水印可用于标明归属、展示品牌或整理图片。支持调整字体大小、不透明度、颜色和位置，并尽量保留原图质量。"
+    },
+    "options": {
+      "positionTitle": "位置",
+      "color": "水印颜色。",
+      "customStringWatermarkDesc": "为每张图片添加相同的自定义文字。",
+      "customStringWatermarkTitle": "使用自定义水印",
+      "filenameWatermarkDesc": "将每张图片的文件名作为水印。",
+      "filenameWatermarkTitle": "使用文件名",
+      "fontSize": "字体大小。",
+      "opacity": "水印透明度。",
+      "position": {
+        "bottomLeft": "左下角",
+        "bottomRight": "右下角",
+        "center": "居中",
+        "topLeft": "左上角",
+        "topRight": "右上角"
+      },
+      "styleTitle": "样式",
+      "watermark": "水印文字。",
+      "watermarkTitle": "文字来源"
+    },
+    "description": "使用文件名或自定义文字，为一张或多张图片添加文字水印。",
+    "failedToProcess": "部分图片添加水印失败，请重试。",
+    "outputTitle": "添加水印后的图片"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "XFTools 工具工作台",
+  "short_name": "XFTools",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#161b25",
+  "background_color": "#f7f8fa",
+  "display": "standalone"
+}

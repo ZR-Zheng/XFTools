@@ -1,0 +1,7 @@
+allowBuilds:
+  core-js: set this to true or false
+  pnpm: set this to true or false
+  protobufjs: set this to true or false
+  tesseract.js: set this to true or false
+minimumReleaseAgeExclude:
+  - to-words@7.5.0

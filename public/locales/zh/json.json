@@ -1,0 +1,145 @@
+{
+  "comparison": {
+    "description": "比较两个 JSON 对象以识别结构和值的差异。",
+    "shortDescription": "查找两个 JSON 对象之间的差异",
+    "title": "比较 JSON"
+  },
+  "escapeJson": {
+    "description": "转义 JSON 字符串中的特殊字符。将 JSON 数据转换为正确的转义格式，以便安全传输或存储。",
+    "shortDescription": "转义 JSON 中的特殊字符",
+    "title": "转义 JSON",
+    "inputTitle": "输入 JSON",
+    "longDescription": "JSON 转义可将双引号、反斜杠和换行等特殊字符转换为转义序列，以便在存储、传输、其他 JSON 文档或程序字符串中安全使用，同时保留原有数据结构。适用于接口、配置文件、数据库或源代码中需要字符串形式 JSON 的场景。",
+    "resultTitle": "转义后的 JSON 字符串",
+    "wrapOutputDescription": "在转义结果外添加双引号，生成 JSON 字符串。",
+    "wrapOutputTitle": "用引号包裹输出"
+  },
+  "jsonToXml": {
+    "description": "将 JSON 数据转换为 XML 格式。将结构化的 JSON 对象转换为格式良好的 XML 文档。",
+    "shortDescription": "将 JSON 转换为 XML 格式",
+    "title": "JSON 到 XML",
+    "inputTitle": "输入 JSON",
+    "options": {
+      "addMetaTagDesc": "在 XML 输出开头添加声明信息",
+      "addMetaTagTitle": "添加 XML 声明",
+      "indentationTitle": "缩进设置",
+      "metaInfoTitle": "XML 声明信息",
+      "noIdentDesc": "输出不带缩进的 XML。",
+      "noIdentTitle": "不使用缩进",
+      "useSpaceDesc": "使用空格缩进展示 XML 的层级结构。",
+      "useSpaceTitle": "使用空格缩进",
+      "useTabDesc": "使用制表符缩进展示 XML 的层级结构。",
+      "useTabTitle": "使用制表符缩进"
+    },
+    "outputTitle": "输出 XML"
+  },
+  "minify": {
+    "description": "从 JSON 中删除所有不必要的空格。",
+    "inputTitle": "输入 JSON",
+    "resultTitle": "最小化 JSON",
+    "shortDescription": "通过删除空格来缩小 JSON",
+    "title": "最小化 JSON",
+    "toolInfo": {
+      "description": "JSON 压缩是指在保持 JSON 数据有效性的同时，从中移除所有不必要的空格字符的过程。这包括移除 JSON 正确解析所需的空格、换行符和缩进。压缩可以减小 JSON 数据的大小，使其在保持完全相同的数据结构和值的同时，更高效地存储和传输。",
+      "title": "什么是 JSON 最小化？"
+    }
+  },
+  "prettify": {
+    "description": "使用适当的缩进和间距来格式化 JSON。",
+    "indentation": "缩进",
+    "inputTitle": "输入 JSON",
+    "resultTitle": "美化 JSON",
+    "shortDescription": "格式化并美化 JSON 代码",
+    "title": "美化 JSON",
+    "toolInfo": {
+      "description": "此工具允许您使用适当的缩进和间距格式化 JSON 数据，使其更具可读性且更易于使用。",
+      "title": "美化 JSON"
+    },
+    "useSpaces": "使用空格",
+    "useSpacesDescription": "使用空格缩进输出",
+    "useTabs": "使用标签",
+    "useTabsDescription": "使用制表符缩进输出。"
+  },
+  "stringify": {
+    "description": "将 JavaScript 对象转换为 JSON 字符串格式。将数据结构序列化为 JSON 字符串以便存储或传输。",
+    "shortDescription": "将对象转换为 JSON 字符串",
+    "title": "字符串化 JSON",
+    "options": {
+      "optionsTitle": "选项",
+      "useSpaceDesc": "使用空格缩进输出",
+      "useSpaceTitle": "使用空格",
+      "indentationTitle": "缩进设置",
+      "useTabTitle": "使用制表符缩进",
+      "escapeHtmlDesc": "将 HTML 特殊字符转换为对应的实体引用",
+      "escapeHtmlTitle": "转义 HTML 字符",
+      "useTabDesc": "使用制表符缩进输出"
+    },
+    "toolInfo": {
+      "title": "什么是 JSON 字符串化？",
+      "description": "将 JavaScript 对象和数组转换为 JSON 字符串，可自定义缩进，并选择转义 HTML 特殊字符。适用于将数据结构序列化后存储或传输，以及准备嵌入 HTML 的 JSON 数据。"
+    },
+    "inputTitle": "JavaScript 对象或数组",
+    "resultTitle": "JSON 字符串"
+  },
+  "validateJson": {
+    "description": "检查 JSON 是否有效且格式正确。",
+    "inputTitle": "输入 JSON",
+    "invalidJson": "❌ {{error}}",
+    "resultTitle": "验证结果",
+    "shortDescription": "验证 JSON 代码是否存在错误",
+    "title": "验证 JSON",
+    "toolInfo": {
+      "description": "JSON（JavaScript 对象表示法）是一种轻量级数据交换格式。JSON 验证可确保数据结构符合 JSON 标准。有效的 JSON 对象必须具备以下特征：- 属性名称用双引号括起来。- 正确匹配的花括号 {}。- 最后一个键值对后没有尾随逗号。- 对象和数组的嵌套正确。此工具会检查输入的 JSON 并提供反馈，以帮助识别和修复常见错误。",
+      "title": "什么是 JSON 验证？"
+    },
+    "validJson": "✅ 有效的 JSON"
+  },
+  "jsonToCsv": {
+    "shortDescription": "将 JSON 数据转换为 CSV 表格",
+    "title": "JSON 转 CSV",
+    "delimiterOption": "分隔符",
+    "inputTitle": "输入 JSON",
+    "outputTitle": "输出 CSV",
+    "description": "将 JSON 转为 CSV，支持嵌套对象、数组、自动识别表头，以及自定义分隔符和引号，可用于 Excel、Google 表格等应用。",
+    "headerOption": "表头",
+    "options": {
+      "alwaysQuote": {
+        "description": "为所有单元格添加双引号，不论其内容。",
+        "label": "始终添加引号"
+      },
+      "autoQuote": {
+        "description": "仅为包含分隔符、双引号或换行符的单元格添加引号，使输出简洁。",
+        "label": "自动（推荐）"
+      },
+      "delimiter": "每行数值之间的分隔字符，例如逗号、分号或制表符",
+      "header": {
+        "description": "将 JSON 键名作为第一行的列名，建议启用以便阅读和导入。",
+        "label": "包含表头行"
+      }
+    },
+    "quotingOption": "字符串引号设置"
+  },
+  "sortJson": {
+    "options": {
+      "title": "排序选项",
+      "ascending": "升序（A → Z）",
+      "descending": "降序（Z → A）",
+      "keyDescription": "选择用于排序的键",
+      "modeDescription": "选择按键值排列数组元素，或按字母顺序排列对象键名",
+      "orderDescription": "选择排序顺序",
+      "sortByKey": "按字母顺序排列对象键名",
+      "sortByValue": "按键值排列数组"
+    },
+    "shortDescription": "按值或对象键名对 JSON 数组排序",
+    "title": "JSON 排序",
+    "inputTitle": "输入 JSON",
+    "description": "按选定键值升序或降序排列 JSON 对象数组，或按字母顺序排列对象键名。",
+    "longDescription": "以明确、可预测的方式整理 JSON 数据。可以按任意键值升序或降序排列对象数组，适合整理用户、商品或记录列表；也可以按字母顺序排列对象键名，提升可读性和一致性。支持常见 JSON 结构及多种排序方式。",
+    "resultTitle": "排序后的 JSON"
+  },
+  "tsvToJson": {
+    "shortDescription": "将 TSV 表格转换为 JSON 数据",
+    "title": "TSV 转 JSON",
+    "description": "将 TSV（制表符分隔值）数据转换为 JSON 格式。将表格数据转换为结构化的 JSON 对象。"
+  }
+}

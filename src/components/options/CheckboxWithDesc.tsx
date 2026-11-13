@@ -1,0 +1,52 @@
+import { uiText } from 'i18n/uiText';
+import React from 'react';
+import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
+
+const CheckboxWithDesc = ({
+  title,
+  description,
+  checked,
+  onChange,
+  disabled
+}: {
+  title: string;
+  description?: string;
+  checked: boolean;
+  onChange: (value: boolean) => void;
+  disabled?: boolean;
+}) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(event.target.checked);
+  };
+
+  return (
+    <Box
+      sx={{
+        mb: 3
+      }}
+    >
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={checked}
+            onChange={handleChange}
+            disabled={disabled}
+          />
+        }
+        label={title}
+      />
+      {description && (
+        <Typography
+          sx={{
+            fontSize: 12,
+            mt: 1
+          }}
+        >
+          {uiText(description)}
+        </Typography>
+      )}
+    </Box>
+  );
+};
+
+export default CheckboxWithDesc;

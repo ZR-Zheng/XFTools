@@ -1,0 +1,60 @@
+import { uiText } from 'i18n/uiText';
+import React from 'react';
+import {
+  Box,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Typography
+} from '@mui/material';
+
+interface Option<T extends string | boolean> {
+  label: string;
+  value: T;
+}
+
+const SelectWithDesc = <T extends string | boolean>({
+  selected,
+  options,
+  onChange,
+  description
+}: {
+  selected: T;
+  options: Option<T>[];
+  onChange: (value: T) => void;
+  description: string;
+}) => {
+  const handleChange = (event: SelectChangeEvent<T>) => {
+    const newValue =
+      typeof selected === 'boolean'
+        ? event.target.value === 'true'
+        : event.target.value;
+    onChange(newValue as T);
+  };
+
+  return (
+    <Box
+      sx={{
+        mb: 3
+      }}
+    >
+      <Select displayEmpty value={selected} onChange={handleChange}>
+        {options.map((option) => (
+          <MenuItem key={option.label} value={option.value.toString()}>
+            {uiText(option.label)}
+          </MenuItem>
+        ))}
+      </Select>
+      <Typography
+        sx={{
+          fontSize: 12,
+          mt: 1
+        }}
+      >
+        {uiText(description)}
+      </Typography>
+    </Box>
+  );
+};
+
+export default SelectWithDesc;

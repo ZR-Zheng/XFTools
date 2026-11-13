@@ -1,0 +1,10 @@
+node_modules
+playwright-report
+coverage
+dist
+test-results
+.git
+.tmp
+.idea
+.vscode
+.dependency-outdated.json
