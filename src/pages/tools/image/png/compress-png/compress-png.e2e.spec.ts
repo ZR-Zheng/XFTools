@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { Buffer } from 'buffer';
 import fs from 'fs';
 import path from 'path';
-import { Jimp, intToRGBA } from 'jimp';
+import { Jimp } from 'jimp';
 import JSZip from 'jszip';
 
 const imagePath = path.join(__dirname, 'test.png');
@@ -10,7 +10,7 @@ const imagePath = path.join(__dirname, 'test.png');
 async function download(page: import('@playwright/test').Page, process = true) {
   if (process) await page.getByTestId('process-tool').click();
   const downloadPromise = page.waitForEvent('download');
-  await page.getByText('Download').click();
+  await page.getByRole('button', { name: '下载', exact: true }).click();
   const stream = await (await downloadPromise).createReadStream();
 
   const chunks: Buffer[] = [];
@@ -61,7 +61,7 @@ test.describe('Compress PNG tool with several files', () => {
 
     await page.getByTestId('process-tool').click();
     const downloadPromise = page.waitForEvent('download');
-    await page.getByText('Download All as ZIP').click();
+    await page.getByRole('button', { name: /ZIP/ }).click();
     const stream = await (await downloadPromise).createReadStream();
     const chunks: Buffer[] = [];
     for await (const chunk of stream) chunks.push(chunk as Buffer);

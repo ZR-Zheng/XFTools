@@ -1,24 +1,63 @@
 import { InitialValuesType } from './types';
-import { TopItemsList } from '../../list/find-most-popular/service';
+
+function graphemes(text: string): string[] {
+  return typeof Intl.Segmenter === 'function'
+    ? Array.from(
+        new Intl.Segmenter('zh', { granularity: 'grapheme' }).segment(text),
+        (part) => part.segment
+      )
+    : Array.from(text);
+}
+
+function frequency(items: string[], ignoreCase = false): string {
+  const counts = new Map<string, number>();
+  items.forEach((item) => {
+    const key = ignoreCase ? item.toLocaleLowerCase() : item;
+    counts.set(key, (counts.get(key) || 0) + 1);
+  });
+  const visible: Record<string, string> = {
+    ' ': '␣',
+    '\n': '↲',
+    '\r': '␍',
+    '\t': '⇥',
+    '\r\n': '␍↲'
+  };
+  return [...counts]
+    .sort((a, b) => b[1] - a[1])
+    .map(
+      ([key, count]) =>
+        `${Object.hasOwn(visible, key) ? visible[key] : key}: ${count} (${((count / items.length) * 100).toFixed(2)}%)`
+    )
+    .join('\n');
+}
 
 function countLines(text: string, options: InitialValuesType): number {
   const numberofLines = options.emptyLines
-    ? text.split('\n').length
-    : text.split('\n').filter((line) => line.trim() !== '').length;
+    ? text.split(/\r\n|\r|\n/).length
+    : text.split(/\r\n|\r|\n/).filter((line) => line.trim() !== '').length;
 
   return numberofLines;
 }
 
 function countCharacters(text: string): number {
-  return text.length;
+  return graphemes(text).length;
 }
 
 function countSentences(text: string, options: InitialValuesType): number {
+  if (!options.sentenceDelimiters && typeof Intl.Segmenter === 'function')
+    return Array.from(
+      new Intl.Segmenter('zh', { granularity: 'sentence' }).segment(text)
+    ).filter((part) => part.segment.trim()).length;
   const sentenceDelimiters = options.sentenceDelimiters
-    ? options.sentenceDelimiters.split(',').map((s) => s.trim())
-    : ['.', '!', '?', '...'];
-
-  const regex = new RegExp(`[${sentenceDelimiters.join('')}]`, 'g');
+    ? options.sentenceDelimiters
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : ['.', '!', '?', '。', '！', '？'];
+  const escaped = sentenceDelimiters
+    .sort((a, b) => b.length - a.length)
+    .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp(escaped.join('|') || '(?!)', 'u');
   const sentences = text
     .split(regex)
     .filter((sentence) => sentence.trim() !== '');
@@ -29,21 +68,18 @@ function wordsStats(
   text: string,
   options: InitialValuesType
 ): [number, string] {
-  const defaultDelimiters = `\\s.,;:!?"“”«»()…`;
-  const wordDelimiters = options.wordDelimiters || defaultDelimiters;
-  const regex = new RegExp(`[${wordDelimiters}]`, 'gu');
-  const words = text.split(regex).filter((word) => word.trim() !== '');
-
-  const wordsFrequency = TopItemsList(
-    'regex',
-    'count',
-    'percentage',
-    '',
-    words,
-    false,
-    true,
-    false
-  );
+  const words = options.wordDelimiters
+    ? text
+        .split(new RegExp(`[${options.wordDelimiters}]`, 'u'))
+        .filter((word) => word.trim())
+    : typeof Intl.Segmenter === 'function'
+      ? Array.from(
+          new Intl.Segmenter('zh', { granularity: 'word' }).segment(text)
+        )
+          .filter((part) => part.isWordLike)
+          .map((part) => part.segment)
+      : text.split(/[\s.,;:!?。！？、，；："“”«»()…]+/u).filter(Boolean);
+  const wordsFrequency = options.wordCount ? frequency(words, true) : '';
 
   return options.wordCount
     ? [words.length, wordsFrequency]
@@ -58,17 +94,7 @@ function countParagraphs(text: string): number {
 
 function charactersStatistic(text: string, options: InitialValuesType): string {
   if (!options.characterCount) return '';
-  const result = TopItemsList(
-    'symbol',
-    'count',
-    'percentage',
-    '',
-    text,
-    true,
-    true,
-    false
-  );
-  return result;
+  return frequency(graphemes(text));
 }
 
 export function textStatistics(

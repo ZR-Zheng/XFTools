@@ -1,5 +1,5 @@
 import { InitialValuesType } from './types';
-import { splitCsv } from '@utils/csv';
+import { splitCsv, writeCsv } from '@utils/csv';
 import { transpose, normalizeAndFill } from '@utils/array';
 
 export function main(input: string, options: InitialValuesType): string {
@@ -77,5 +77,8 @@ export function main(input: string, options: InitialValuesType): string {
   const normalizedColumns = normalizeAndFill(columns, options.customFillValue);
   const finalRows = transpose(normalizedColumns);
 
-  return finalRows.map((row) => row.join(options.separator)).join('\n');
+  return writeCsv(finalRows, {
+    delimiter: options.separator,
+    quoteChar: options.quoteChar
+  });
 }

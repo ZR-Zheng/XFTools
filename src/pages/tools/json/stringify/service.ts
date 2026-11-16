@@ -11,7 +11,7 @@ export const stringifyJson = (
     // Json5 safer than eval
     parsedInput = JSON5.parse(input);
   } catch (e) {
-    throw new Error('Invalid JavaScript object/array');
+    throw new Error('Invalid JavaScript object/array', { cause: e });
   }
 
   const indent = indentationType === 'tab' ? '\t' : ' '.repeat(spacesCount);

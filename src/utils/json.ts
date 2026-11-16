@@ -1,10 +1,5 @@
 export type ParsedJson =
-  | Record<string, unknown>
-  | unknown[]
-  | string
-  | number
-  | boolean
-  | null;
+  Record<string, unknown> | unknown[] | string | number | boolean | null;
 
 export type JsonFormat = 'json' | 'jsonl';
 
@@ -47,7 +42,7 @@ export function parseJsonInput(input: string): ParseJsonResult {
         originalError instanceof Error
           ? originalError.message
           : 'Unknown error';
-      throw new Error(`Invalid JSON: ${reason}`);
+      throw new Error(`Invalid JSON: ${reason}`, { cause: originalError });
     }
 
     const parsedLines: unknown[] = [];
@@ -61,7 +56,9 @@ export function parseJsonInput(input: string): ParseJsonResult {
             ? error.message.replace(/\s*\(line \d+ column \d+\)$/, '')
             : 'Unknown error';
 
-        throw new Error(`Invalid JSON at line ${lineNumber}: ${reason}`);
+        throw new Error(`Invalid JSON at line ${lineNumber}: ${reason}`, {
+          cause: error
+        });
       }
     }
 

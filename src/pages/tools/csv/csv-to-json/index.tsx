@@ -27,7 +27,7 @@ const initialValues: InitialValuesType = {
   comment: '#',
   useHeaders: true,
   skipEmptyLines: true,
-  dynamicTypes: true,
+  dynamicTypes: false,
   indentationType: 'space',
   spacesCount: 2
 };
@@ -130,13 +130,8 @@ export default function CsvToJson({ title }: ToolComponentProps) {
         });
         setResult(jsonResult);
       } catch (error) {
-        setResult(
-          `${t('csvToJson.error')}: ${
-            error instanceof Error
-              ? error.message
-              : t('csvToJson.invalidCsvFormat')
-          }`
-        );
+        setResult('');
+        throw error;
       }
     }
   };

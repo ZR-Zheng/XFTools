@@ -4,7 +4,7 @@ export default {
     resistivity_20c: {
       title: 'Resistivity at 20°C',
       type: 'number',
-      unit: 'Ω/m'
+      unit: 'ohm*m'
     }
   },
   data: {

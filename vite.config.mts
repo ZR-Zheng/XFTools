@@ -25,6 +25,7 @@ export default defineConfig({
       '@ffmpeg/util',
       '@react-pdf-worker',
       '@react-pdf-worker/pdf.worker.min.mjs?url',
+      'pdfjs-dist/build/pdf.worker.min.mjs?url',
       '@react-pdf-worker/pdf.worker.min.mjs'
     ]
   },

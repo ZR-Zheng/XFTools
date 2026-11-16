@@ -1,0 +1,2771 @@
+{
+  "project": "XFTools",
+  "reviewedAt": "2026-11-16",
+  "timezone": "Asia/Shanghai",
+  "scope": "134 个工具；调研与升级建议，未修改运行逻辑",
+  "priority": {
+    "P1": 83,
+    "P2": 29,
+    "P0": 14,
+    "P3": 8
+  },
+  "tools": [
+    {
+      "route": "image-generic/editor",
+      "current": "原生 Canvas；旋转、裁剪、色彩、文字及撤销。",
+      "candidate": "Pintura（完整商业 SDK）；Cropper.js＋保留 Canvas（轻量组件路线）",
+      "comparison": "Pintura 提供更完整的标注、触屏操作与可恢复编辑状态；不是免费开源包替换。",
+      "recommendation": "优先保留轻量工作区，增加可拖动选区、缩放、撤销历史；需要完整标注产品时再做 Pintura 成本验证。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "pintura",
+        "cropper"
+      ],
+      "id": 1,
+      "title": "图像编辑器",
+      "implementation": "src/pages/tools/image/generic/editor",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/resize",
+      "current": "已支持宽高联动、百分比、批量预览和 ZIP；栅格用 Canvas 缩放。",
+      "candidate": "pica；交互对标 Squoosh / iLoveIMG",
+      "comparison": "主要增益是重采样质量、分块与 Worker 处理，而非再换一套页面框架。",
+      "recommendation": "在现有页面内按需接入 pica；补 EXIF 方向、质量对照和大图内存测试；SVG、GIF 继续分流。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "pica",
+        "squoosh",
+        "iloveimg"
+      ],
+      "id": 2,
+      "title": "调整图像大小",
+      "implementation": "src/pages/tools/image/generic/resize",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/compress",
+      "current": "browser-image-compression＋批量 ZIP。",
+      "candidate": "jSquash 编码器；Squoosh 对比体验",
+      "comparison": "可显式选择编码格式、编码参数并对照质量；不能只用统一的 quality 参数代表全部编码器。",
+      "recommendation": "保留快速压缩模式，增加可选高级编码面板与压缩前后对照；根据收益加载单一 codec。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsquash",
+        "squoosh"
+      ],
+      "id": 3,
+      "title": "压缩图像",
+      "implementation": "src/pages/tools/image/generic/compress",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/remove-background",
+      "current": "IMG.LY background-removal＋ONNX。",
+      "candidate": "保留现引擎；评估 magick-wasm 辅助处理和蒙版编辑",
+      "comparison": "换另一个模型不必然提升本项目素材质量；真正缺口是发丝边缘与手动修补、批处理反馈。",
+      "recommendation": "先补擦除／恢复画笔、边缘羽化、原图对照和模型缓存；新模型必须用同一素材集实测，先核验现有 AGPL 授权路径。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "imgly",
+        "magick"
+      ],
+      "id": 4,
+      "title": "移除图片背景",
+      "implementation": "src/pages/tools/image/generic/remove-background",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/crop",
+      "current": "输入 x、y、宽、高，Canvas 裁切；支持矩形／圆形。",
+      "candidate": "Cropper.js；已有 react-image-crop 也可复用",
+      "comparison": "交互式选框、拖动、缩放与比例约束明显优于只输入坐标；裁切本身无需重型编辑器。",
+      "recommendation": "优先使用项目已安装的裁切组件，选框和像素字段双向同步；圆形作为导出蒙版。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "cropper",
+        "pintura"
+      ],
+      "id": 5,
+      "title": "裁剪图片",
+      "implementation": "src/pages/tools/image/generic/crop",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/change-opacity",
+      "current": "Canvas 逐图调整 alpha。",
+      "candidate": "原生实时预览升级；Pintura 仅作体验对标",
+      "comparison": "独立不透明度功能没有必要引入完整编辑 SDK；棋盘背景和滑块反馈比引擎替换更有价值。",
+      "recommendation": "使用 0–100% 滑块、数值输入、背景切换和原图／结果对照，保留轻量算法。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "pintura"
+      ],
+      "id": 6,
+      "title": "更改图像不透明度",
+      "implementation": "src/pages/tools/image/generic/change-opacity",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/change-colors",
+      "current": "Canvas 像素替色＋相似度。",
+      "candidate": "magick-wasm；轻量模式保留 Canvas",
+      "comparison": "ImageMagick 提供更广的图像操作基础；单色替换仍可由现有代码胜任。",
+      "recommendation": "先增加吸管、容差选区预览、保留 alpha 与撤销；复杂色彩空间功能再启用 WASM。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "magick"
+      ],
+      "id": 7,
+      "title": "改变图像的颜色",
+      "implementation": "src/pages/tools/image/generic/change-colors",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/create-transparent",
+      "current": "名称声称透明化；实际命中颜色后替换背景色并设置 alpha=255。",
+      "candidate": "修正原生 alpha 蒙版；magick-wasm 为高级候选",
+      "comparison": "当前是功能语义错误，不能靠换皮解决；透明化和替换背景应是两个明确操作。",
+      "recommendation": "先恢复命中像素 alpha=0，并用像素级样例验收；再加吸管、边缘羽化和蒙版预览。",
+      "priority": "P0",
+      "effort": "S",
+      "sources": [
+        "magick"
+      ],
+      "id": 8,
+      "title": "创建透明 PNG",
+      "implementation": "src/pages/tools/image/generic/create-transparent",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/image-to-text",
+      "current": "Tesseract.js 图片识别。",
+      "candidate": "Scribe.js / Scribe OCR；复杂文档可选 PaddleOCR 服务",
+      "comparison": "Scribe 支持图像和 PDF 文本提取、可搜索 PDF；PaddleOCR 文档分析适合版面、表格等需求，不能直接当浏览器小组件。",
+      "recommendation": "浏览器基础 OCR 保留 Tesseract，复用 worker；高级文档模式 PoC Scribe，补文本框校对、置信度与批量；服务端模式单独选择。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "tesseract",
+        "scribe",
+        "paddle"
+      ],
+      "id": 9,
+      "title": "图像转文本 (OCR)",
+      "implementation": "src/pages/tools/image/generic/image-to-text",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/qr-code",
+      "current": "qrcode；已有 URL、文本、邮件、电话、SMS、Wi-Fi、vCard 模板及纠错级别。",
+      "candidate": "保留 qrcode；qr-code-styling 作为可选美化模式",
+      "comparison": "现有模板并不弱；候选增益是 Logo、样式与 SVG 输出，不是重复增加已存在的 Wi-Fi 模板。",
+      "recommendation": "先补 SVG 导出与扫描回读测试；美化模式独立按需加载，防止样式损害可读性。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "qrcode",
+        "qrstyle"
+      ],
+      "id": 10,
+      "title": "二维码生成器",
+      "implementation": "src/pages/tools/image/generic/qr-code",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/rotate",
+      "current": "Canvas／SVG／FFmpeg 按格式处理旋转。",
+      "candidate": "轻量 Canvas 变换工作区；magick-wasm 为扩展",
+      "comparison": "需要实时角度、翻转和可见裁边策略；更换通用图像引擎不自动实现 JPEG 无损旋转。",
+      "recommendation": "合并到图像变换工作区，补任意角度与背景填充；保留旧路由为预设入口。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "magick",
+        "pintura"
+      ],
+      "id": 11,
+      "title": "旋转图像",
+      "implementation": "src/pages/tools/image/generic/rotate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/watermark",
+      "current": "Canvas 图片／文字水印，批量处理。",
+      "candidate": "Pintura 标注体验；保留现渲染器",
+      "comparison": "位置、缩放、重复平铺、边距和字体预览比长参数表更直接；完整 SDK 有额外成本。",
+      "recommendation": "提供可拖动水印、九宫格定位、平铺、字号／透明度预览和模板保存。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "pintura"
+      ],
+      "id": 12,
+      "title": "图片添加水印",
+      "implementation": "src/pages/tools/image/generic/watermark",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "image-generic/split-to-pages",
+      "current": "图片切片并用 pdf-lib 生成打印 PDF。",
+      "candidate": "BentoPDF Posterize / PDF24 交互对标",
+      "comparison": "更好的流程强调纸张、缩放、出血和拼接预览；候选完整产品不能当作 npm 包直接塞入。",
+      "recommendation": "做可缩放分页网格，显示纸张、重叠边、方向和页数；复用 PDF 页面模型与 pdf-lib。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bento",
+        "pdf24",
+        "pdflib"
+      ],
+      "id": 13,
+      "title": "图片分页打印",
+      "implementation": "src/pages/tools/image/generic/split",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "png/compress-png",
+      "current": "自研调色板量化、抖动、大小预算、原尺寸保留与批量 ZIP。",
+      "candidate": "jSquash / oxipng 路线；Squoosh 对照体验",
+      "comparison": "现有已经支持目标大小和调色板，不应当作单纯 Canvas toBlob；增益是无损优化与成熟编码器对照。",
+      "recommendation": "分开“无损优化”和“有损减色”；保留原图回退，按同一 PNG 集对体积、透明度和质量做 A/B。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsquash",
+        "squoosh"
+      ],
+      "id": 14,
+      "title": "压缩 PNG",
+      "implementation": "src/pages/tools/image/png/compress-png",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "png/convert-jgp-to-png",
+      "current": "Canvas 转换并支持指定颜色透明化。",
+      "candidate": "保留 Canvas；与颜色蒙版／格式转换工作区合并",
+      "comparison": "JPG 转 PNG 无法找回已损失的细节；指定颜色透明化可共享同一个蒙版引擎。",
+      "recommendation": "保留现功能，增加透明蒙版预览和实际 MIME／文件名一致性检查，取消重复实现。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "magick"
+      ],
+      "id": 15,
+      "title": "JPG 转 PNG",
+      "implementation": "src/pages/tools/image/png/convert-jgp-to-png",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/split",
+      "current": "已有符号／正则／固定长度／等份拆分。",
+      "candidate": "CyberChef 配方式拆分；原生分段器",
+      "comparison": "更强体验是分隔结果可视化、数量与正则错误定位；并非需要整包 CyberChef。",
+      "recommendation": "分隔符提供转义预览、匹配高亮、字素长度模式、空项策略和可选表格结果；大输入在 worker 执行。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "cyberchef",
+        "segmenter"
+      ],
+      "id": 16,
+      "title": "拆分文本",
+      "implementation": "src/pages/tools/string/split",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/join",
+      "current": "按连接符拼接文本片段。",
+      "candidate": "原生列表工作区；CyberChef 作流程对标",
+      "comparison": "已有核心能力足够；候选价值是输入项数、空行与转义符可解释。",
+      "recommendation": "共享 List 引擎，增加粘贴列表预览、每项前后缀、输出长度和一键反向拆分。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 17,
+      "title": "合并文本",
+      "implementation": "src/pages/tools/string/join",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/remove-duplicate-lines",
+      "current": "按选项去重文本行。",
+      "candidate": "原生 Set／Map 管线；IT Tools 体验对标",
+      "comparison": "无需新增依赖；保留首／末项、大小写规则、频次与删除数量更实用。",
+      "recommendation": "同列表去重共用引擎，明确是否保序，增加保留／移除行的对照。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "ittools"
+      ],
+      "id": 18,
+      "title": "删除重复的行",
+      "implementation": "src/pages/tools/string/remove-duplicate-lines",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/to-morse",
+      "current": "morsee 编码／解码。",
+      "candidate": "CyberChef Morse 处理流程；现库保留候选",
+      "comparison": "没有证据说明为 Morse 单项换库会更好；自定义点划、分隔符和无法编码字符反馈更重要。",
+      "recommendation": "先用字母、数字、标点和非法信号做兼容样例，再加播放节奏及逐字符对应预览。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 19,
+      "title": "Morse 编码与解码",
+      "implementation": "src/pages/tools/string/to-morse",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/replacer",
+      "current": "字符串／正则替换。",
+      "candidate": "CyberChef Find/Replace 体验；原生 RegExp",
+      "comparison": "匹配计数、捕获组和逐处预览比直接输出全文更方便；复杂正则须隔离执行。",
+      "recommendation": "加命中高亮、替换前后对照、保留组说明和 worker 超时／取消。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 20,
+      "title": "文本替换器",
+      "implementation": "src/pages/tools/string/text-replacer",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/repeat",
+      "current": "按次数重复文本。",
+      "candidate": "原生文本管线；无已证实更强的轻量等价组件",
+      "comparison": "算法没有更换库的必要；大次数容易造成巨大输出，需输出规模预览。",
+      "recommendation": "显示预计字符／字节数、分隔符和数量限制，超大结果使用文件输出。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 21,
+      "title": "重复文本",
+      "implementation": "src/pages/tools/string/repeat",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/truncate",
+      "current": "按长度截断文本。",
+      "candidate": "Intl.Segmenter 字素截断",
+      "comparison": "按用户可见字素截断能避免切开组合字符与 emoji；属于明确的语义升级。",
+      "recommendation": "同时提供字素／码点／UTF-16／字节模式，标注单位和省略号是否计入上限。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 22,
+      "title": "截断文本",
+      "implementation": "src/pages/tools/string/truncate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/reverse",
+      "current": "反转字符串。",
+      "candidate": "Intl.Segmenter 字素反转",
+      "comparison": "可保留 emoji 联字与组合字符；普通 split 或码点反转不一定保留可见字符。",
+      "recommendation": "默认按字素反转，可选按词／行反转；用家庭 emoji 和组合音标验收。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 23,
+      "title": "反转文本",
+      "implementation": "src/pages/tools/string/reverse",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/randomize-case",
+      "current": "使用 Math.random 随机转换大小写。",
+      "candidate": "原生大小写变换＋可复现随机种子模式",
+      "comparison": "这是文本效果，不需宣称安全随机；复现参数与预览比引入新库更有价值。",
+      "recommendation": "提供随机种子、比例和语言选项；默认不把它包装成密码工具。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 24,
+      "title": "随机转换大小写",
+      "implementation": "src/pages/tools/string/randomize-case",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/uppercase",
+      "current": "原生大写转换。",
+      "candidate": "原生 toLocaleUpperCase；IT Tools Case Converter 对标",
+      "comparison": "语言相关大小写与多种 case 预设可增强功能；不需要另一个完整工具站。",
+      "recommendation": "增加大小写／标题／句首／驼峰／蛇形模式，标注 locale 与不可逆变换。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "ittools",
+        "segmenter"
+      ],
+      "id": 25,
+      "title": "转换为大写",
+      "implementation": "src/pages/tools/string/uppercase",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/extract-substring",
+      "current": "根据位置／规则提取子串。",
+      "candidate": "字素范围选择＋原生查找；CyberChef 对标",
+      "comparison": "直接选中输入文本生成范围、展示边界比只填下标更好；没有确认到需要替换的独立轻量引擎。",
+      "recommendation": "加入选择联动、首尾规则、匹配列表和字符单位，避免混用 0／1 起始位置。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "segmenter",
+        "cyberchef"
+      ],
+      "id": 26,
+      "title": "提取子字符串",
+      "implementation": "src/pages/tools/string/extract-substring",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/create-palindrome",
+      "current": "自研构造回文。",
+      "candidate": "原生字素算法升级；暂无已验证更强等价组件",
+      "comparison": "主要提升是 Unicode 正确性和中心字符策略，外部大工具包收益低。",
+      "recommendation": "显示拼接规则、中心是否去重及结果长度；与回文检测共享归一化选项。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 27,
+      "title": "创建回文",
+      "implementation": "src/pages/tools/string/create-palindrome",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/palindrome",
+      "current": "自研回文判定。",
+      "candidate": "原生字素与 Unicode 归一化",
+      "comparison": "可解释的忽略大小写、空白、标点规则比简单真假更有用。",
+      "recommendation": "展示归一化后的内容和首个不匹配位置，默认不隐式丢弃字符。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 28,
+      "title": "回文检测",
+      "implementation": "src/pages/tools/string/palindrome",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/quote",
+      "current": "文本加引号。",
+      "candidate": "原生引用／转义配置；CyberChef 对标",
+      "comparison": "引号与转义应分开，JSON、CSV、Shell 不能使用同一规则。",
+      "recommendation": "提供明确的目标格式预设，显示双重转义提示，并复用 JSON／CSV 序列化器。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "cyberchef",
+        "papa"
+      ],
+      "id": 29,
+      "title": "文本添加引号",
+      "implementation": "src/pages/tools/string/quote",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/rotate",
+      "current": "文本循环移位。",
+      "candidate": "原生字素／行移位算法",
+      "comparison": "暂无可确认更强的等价轻量包；正确处理字素、负数位移及整长度取模即可。",
+      "recommendation": "滑块与位移数联动，显示分割位置，并与列表 rotate 共用操作模型。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "segmenter"
+      ],
+      "id": 30,
+      "title": "循环移位文本",
+      "implementation": "src/pages/tools/string/rotate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/rot13",
+      "current": "ROT13 编码／解码。",
+      "candidate": "保留原生 ROT13；CyberChef 作为对标",
+      "comparison": "核心变换成熟，替库没有明显收益；可扩展 ROT-N，但不能宣称加密保护。",
+      "recommendation": "加入偏移预设、字母范围说明与双向样例，保留一键复制。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 31,
+      "title": "ROT13 编码与解码",
+      "implementation": "src/pages/tools/string/rot13",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/base64",
+      "current": "Buffer 编码／解码 UTF-8 文本。",
+      "candidate": "CyberChef / IT Tools；原生 TextEncoder＋字节模型",
+      "comparison": "更强方案区分文本与文件、标准 Base64 与 URL-safe、解码错误与二进制输出。",
+      "recommendation": "统一 Bytes 输入输出，补 Base64URL、填充策略及编码选择；保留兼容测试后再考虑移除 Buffer。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "cyberchef",
+        "ittools"
+      ],
+      "id": 32,
+      "title": "Base64 编码与解码",
+      "implementation": "src/pages/tools/string/base64",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/statistics",
+      "current": "自研字符、行、句、词及频次；字符数使用 text.length。",
+      "candidate": "Intl.Segmenter＋统计卡片；DevToys 对标",
+      "comparison": "字素／码点／UTF-16 长度不同，中文分词和句子边界不能只依靠西文分隔符。",
+      "recommendation": "并列展示各长度定义，中文词数使用分段器，频次表支持排序及导出。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "segmenter",
+        "devtoys"
+      ],
+      "id": 33,
+      "title": "文本统计",
+      "implementation": "src/pages/tools/string/statistic",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/censor",
+      "current": "按词表与规则屏蔽指定文本。",
+      "candidate": "原生可配置匹配管线；未确认需要换整套外部过滤库",
+      "comparison": "用户自定义规则、命中原因和中文子串行为比扩大默认敏感词库更实用。",
+      "recommendation": "提供全词／子串／正则模式、命中预览、保留长度与词表导入；执行可取消。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 34,
+      "title": "屏蔽指定文本",
+      "implementation": "src/pages/tools/string/censor",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/password-generator",
+      "current": "已使用 Web Crypto；支持字符类别和排除歧义字符。",
+      "candidate": "保留 Web Crypto；IT Tools Token Generator 对标",
+      "comparison": "不是 Math.random 实现，毋须因“安全随机”而重写；可提升批量、口令和采样策略。",
+      "recommendation": "保留密码生成器，增加批量和易记口令为独立模式；随机索引用拒绝采样降低取模偏差。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "webcrypto",
+        "ittools"
+      ],
+      "id": 35,
+      "title": "密码生成器",
+      "implementation": "src/pages/tools/string/password-generator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/url-encode-string",
+      "current": "原生 URL 编码。",
+      "candidate": "WHATWG URL / URLSearchParams；IT Tools 对标",
+      "comparison": "整 URL、组件编码、表单参数编码的规则不同，混用会损坏 URL。",
+      "recommendation": "增加三种明确模式，展示编码字符对照、空格策略和保留字符。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "url",
+        "ittools"
+      ],
+      "id": 36,
+      "title": "字符串 URL 编码器",
+      "implementation": "src/pages/tools/string/url-encode",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/url-decode-string",
+      "current": "原生 URL 解码。",
+      "candidate": "WHATWG URL / URLSearchParams；IT Tools 对标",
+      "comparison": "不完整百分号、非法 UTF-8、加号是否表示空格需要显式反馈。",
+      "recommendation": "增加严格／容错模式和错误位置，避免整条输入因一行错误而无结果。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "url",
+        "ittools"
+      ],
+      "id": 37,
+      "title": "字符串 URL 解码器",
+      "implementation": "src/pages/tools/string/url-decode",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/url-editor",
+      "current": "已有 URL 分解与编辑界面。",
+      "candidate": "原生 URL / URLSearchParams；IT Tools URL Parser 对标",
+      "comparison": "主要增益是重复参数、空值、编码视图和参数行操作；不必替换原生 URL 引擎。",
+      "recommendation": "用可增删／排序参数表保留重复键，提供相对 URL 基地址和即时有效性提示。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "url",
+        "ittools"
+      ],
+      "id": 38,
+      "title": "URL 编辑器",
+      "implementation": "src/pages/tools/string/url-editor",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/unicode",
+      "current": "Unicode 编码／解码。",
+      "candidate": "Unicode 标量检查器；Intl.Segmenter＋原生编码",
+      "comparison": "码点、UTF-16 code unit、UTF-8 字节并不相同，须统一呈现。",
+      "recommendation": "按可见字符展示 U+码点、字节、转义与组合分组；支持代理对错误提示。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "segmenter",
+        "cyberchef"
+      ],
+      "id": 39,
+      "title": "Unicode 编码与解码",
+      "implementation": "src/pages/tools/string/unicode",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/hidden-character-detector",
+      "current": "检测隐藏字符并展示处理结果。",
+      "candidate": "Unicode 属性驱动的原生检查器；CyberChef 十六进制视图对标",
+      "comparison": "更强的交互是可见占位、码点位置和逐项处理，而不是一律删掉所有格式字符。",
+      "recommendation": "显示字符名称／索引／类别，分开 ZWJ、BOM、控制字符；保留 emoji 联字的可选择策略。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "segmenter",
+        "cyberchef"
+      ],
+      "id": 40,
+      "title": "隐藏字符检测器",
+      "implementation": "src/pages/tools/string/hidden-character-detector",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/email-extractor",
+      "current": "文本邮箱匹配。",
+      "candidate": "候选提取＋validator.js isEmail",
+      "comparison": "validator 是校验器，不是整段文本提取器；组合可增加国际域名和规则配置。",
+      "recommendation": "保留定位提取，候选后做验证，提供去重、来源行号、无效项原因与导出。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "validator"
+      ],
+      "id": 41,
+      "title": "邮箱地址提取",
+      "implementation": "src/pages/tools/string/email-extractor",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/text-compare",
+      "current": "diff 库生成文本差异。",
+      "candidate": "保留 jsdiff 引擎；DevToys / CyberChef 交互对标",
+      "comparison": "增益主要是行内差异、同步滚动、忽略空白、折叠相同片段，不一定更换 diff 库。",
+      "recommendation": "支持并排／统一视图、上／下一差异、行号、文件输入与大文本 worker。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "devtoys",
+        "cyberchef"
+      ],
+      "id": 42,
+      "title": "文本差异对比",
+      "implementation": "src/pages/tools/string/text-compare",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/slug-generator",
+      "current": "自研 URL slug 转换。",
+      "candidate": "原生 Unicode slug 策略；IT Tools 对标",
+      "comparison": "拼音／音译与保留 Unicode 是不同产品选择；没有验证到应当强制替换为某一库。",
+      "recommendation": "提供保留中文／ASCII 模式、分隔符与大小写选项，显示归一化造成的信息变化。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "url",
+        "ittools"
+      ],
+      "id": 43,
+      "title": "URL 路径生成器",
+      "implementation": "src/pages/tools/string/slug-generator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/bcrypt",
+      "current": "已分生成／验证两个表单，使用 bcryptjs。",
+      "candidate": "保留 bcryptjs；IT Tools bcrypt 对标",
+      "comparison": "现库可满足兼容哈希；需关注 UTF-8 72 字节截断、成本耗时和 worker 隔离。",
+      "recommendation": "加字节长度与截断提示，耗时任务可取消；其他哈希算法作为新工具，不能静默替换已有 bcrypt。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bcrypt",
+        "ittools"
+      ],
+      "id": 44,
+      "title": "bcrypt 哈希",
+      "implementation": "src/pages/tools/string/bcrypt",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "string/table-text-converter",
+      "current": "支持多种表格文本格式；CSV 使用共享自研解析器。",
+      "candidate": "Papa Parse＋原生表格；TanStack Table 作为大型交互候选",
+      "comparison": "更强的是跨行引用兼容、列映射和结构化预览；表格组件不能代替解析器。",
+      "recommendation": "先修复共享 CSV 内核，再支持列重命名／类型、Markdown 宽字符对齐、导出往返一致。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 45,
+      "title": "表格格式转换",
+      "implementation": "src/pages/tools/string/table-text-converter",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/validateJson",
+      "current": "JSON／JSON5 语法处理与状态反馈。",
+      "candidate": "Ajv；vanilla-jsoneditor 可选树视图",
+      "comparison": "Ajv 补充 JSON Schema，而非代替文本 JSON.parse；编辑器提供结构导航和错误位置。",
+      "recommendation": "保留快速语法模式，增加可粘贴 Schema、JSON Pointer 错误导航及显式 JSON5 开关。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "ajv",
+        "jsoneditor"
+      ],
+      "id": 46,
+      "title": "验证 JSON",
+      "implementation": "src/pages/tools/json/validateJson",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/prettify",
+      "current": "JSON.parse＋JSON.stringify 缩进。",
+      "candidate": "原生快速模式＋按需 vanilla-jsoneditor",
+      "comparison": "格式化本身无须换库；树／表格视图、搜索和折叠能明显提升大型数据体验。",
+      "recommendation": "保留轻量文本入口，用户切结构视图时才加载编辑器；补大整数精度策略。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsoneditor"
+      ],
+      "id": 47,
+      "title": "格式化 JSON",
+      "implementation": "src/pages/tools/json/prettify",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/minify",
+      "current": "解析 JSON 后重新序列化。",
+      "candidate": "保留原生快速模式；结构编辑器为可选项",
+      "comparison": "主要增益是压缩统计、非法位置和精度保护；换重型库对小 JSON 无收益。",
+      "recommendation": "显示节省字节，支持文件输出，明确严格 JSON／JSON5 转换边界。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "jsoneditor"
+      ],
+      "id": 48,
+      "title": "压缩 JSON",
+      "implementation": "src/pages/tools/json/minify",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/stringify",
+      "current": "JSON5 与字符串化选项。",
+      "candidate": "原生字符串序列化＋显式 JSON／JSON5 模式",
+      "comparison": "“把文本编码为 JSON 字符串”和“解析后格式化对象”必须分开，避免双重转义。",
+      "recommendation": "用示例解释输入类型；增加反向解析按钮及层数提示，不隐式修复。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "jsoneditor",
+        "jsonrepair"
+      ],
+      "id": 49,
+      "title": "字符串化 JSON",
+      "implementation": "src/pages/tools/json/stringify",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/json-to-xml",
+      "current": "自研映射与 XML 工具函数。",
+      "candidate": "fast-xml-parser / 独立 XML builder 候选",
+      "comparison": "JSON→XML 不存在唯一无损映射，数组、属性、根节点和空值需有约定。",
+      "recommendation": "用统一序列化适配器，提供根节点、数组与属性映射和转换前后结构预览。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "xml"
+      ],
+      "id": 50,
+      "title": "JSON 转 XML",
+      "implementation": "src/pages/tools/json/json-to-xml",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/json-to-csv",
+      "current": "自研嵌套展开、列联合、CSV 引用。",
+      "candidate": "Papa Parse unparse＋列映射",
+      "comparison": "现有已有 flatten 功能；候选主要替换引用／转义实现，并非删除现有展开策略。",
+      "recommendation": "保留点路径展开，增加列选择和类型策略，使用共享 CSV 写出器并提供公式转义选项。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "papa"
+      ],
+      "id": 51,
+      "title": "JSON 转 CSV",
+      "implementation": "src/pages/tools/json/json-to-csv",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/escape-json",
+      "current": "JSON 转义工具。",
+      "candidate": "原生 JSON.stringify / parse 配对",
+      "comparison": "处理一层转义与反复解码需清楚，不能用全局替换破坏正文。",
+      "recommendation": "加入转义／反转义、当前层数和错误定位；复用 stringify 模式避免重复工具内核。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "jsoneditor"
+      ],
+      "id": 52,
+      "title": "转义 JSON",
+      "implementation": "src/pages/tools/json/escape-json",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/json-comparison",
+      "current": "自研递归 diff；解析前用正则自动删尾逗号。",
+      "candidate": "jsondiffpatch＋原生严格解析；jsonrepair 仅显式使用",
+      "comparison": "正则会改写合法字符串内容，已复现不同 JSON 被判相同；候选还支持数组匹配及 JSON Patch。",
+      "recommendation": "先移除隐式正则修复，再增加字段路径导航、按对象 id 匹配数组及补丁导出。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "jsondiffpatch",
+        "jsonrepair"
+      ],
+      "id": 53,
+      "title": "比较 JSON",
+      "implementation": "src/pages/tools/json/json-comparison",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "json/sort",
+      "current": "自研 JSON 排序。",
+      "candidate": "vanilla-jsoneditor / JSONata 按需转换",
+      "comparison": "结构选择、按路径排序和数组对象排序比无差别递归排序更可控。",
+      "recommendation": "明确仅排序对象键／按字段排序数组；保留原数组顺序默认值，并提供差异预览。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsoneditor",
+        "jsonata"
+      ],
+      "id": 54,
+      "title": "JSON 排序",
+      "implementation": "src/pages/tools/json/sort",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/editor",
+      "current": "使用 EmbedPDF React 查看／编辑 SDK。",
+      "candidate": "升级现有 EmbedPDF 能力；BentoPDF / Stirling PDF 作工作流对标",
+      "comparison": "已经接入 SDK，优先统一文档状态与页面操作，避免再同时引入另一套完整 PDF 编辑器。",
+      "recommendation": "先核对已安装版本与最新 Page Edit API 的差异，统一打开文档、缩略图、选区、批注和导出状态。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "embedpdf",
+        "bento",
+        "stirling"
+      ],
+      "id": 55,
+      "title": "PDF 编辑器",
+      "implementation": "src/pages/tools/pdf/editor",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/split-pdf",
+      "current": "pdf-lib 提取页码；已能点选单文档缩略图。",
+      "candidate": "BentoPDF Multi Tool；Stirling PDF Split；保留 pdf-lib",
+      "comparison": "现工具本质是“提取选中页”，不等于按书签／每 N 页／文件大小拆成多份。",
+      "recommendation": "保留提取模式，补每 N 页、按分组／奇偶拆分和多文件 ZIP；统一页面编排内核。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bento",
+        "stirling",
+        "pdflib"
+      ],
+      "id": 56,
+      "title": "拆分 PDF",
+      "implementation": "src/pages/tools/pdf/split-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/rotate-pdf",
+      "current": "pdf-lib 旋转；已有缩略图选择与统一角度。",
+      "candidate": "BentoPDF / PDF Arranger；EmbedPDF Page Edit 候选",
+      "comparison": "更强交互允许每页单独角度、批选、撤销并与合并顺序同步，而非所有选中页只能共享一次参数。",
+      "recommendation": "在统一 PDF 工作区记录每页旋转增量，预览与导出使用同一页计划。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bento",
+        "pdfarranger",
+        "embedpdf"
+      ],
+      "id": 57,
+      "title": "旋转 PDF",
+      "implementation": "src/pages/tools/pdf/rotate-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/compress-pdf",
+      "current": "Ghostscript WASM 压缩。",
+      "candidate": "qpdf 结构优化＋Ghostscript 分级重采样；BentoPDF 压缩体验对标",
+      "comparison": "qpdf 与 Ghostscript 的优化目标不同；结构优化不能承诺大幅压缩扫描图片，重采样可能有损。",
+      "recommendation": "明确无损结构优化／图片重采样两种模式，显示实测大小、是否达到预算和文本可搜索性，结果变大时返回原图。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "qpdf",
+        "bento",
+        "ghostscript"
+      ],
+      "id": 58,
+      "title": "压缩 PDF",
+      "implementation": "src/pages/tools/pdf/compress-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/protect-pdf",
+      "current": "Ghostscript 设置密码，只有密码及确认两项输入。",
+      "candidate": "qpdf 加密；评估维护中的 WASM 构建",
+      "comparison": "候选可将用户密码、所有者密码与权限配置分开；原生 CLI 不能直接当浏览器依赖。",
+      "recommendation": "先验证加密输出可用性，再评估 qpdf WASM 或可选自托管服务；密码不进 URL／日志，权限说明与实际导出一致。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "qpdf",
+        "ghostscript"
+      ],
+      "id": 59,
+      "title": "保护 PDF",
+      "implementation": "src/pages/tools/pdf/protect-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/merge-pdf",
+      "current": "pdf-lib 按文件顺序复制全部页面；已有文件上下移动，无子页预览。",
+      "candidate": "BentoPDF Multi Tool、PDF24 Page mode、Stirling Page Editor；PDF.js＋pdf-lib 实现路线",
+      "comparison": "差距是文件组拖排、子 PDF 页预览、跨文件选页／重排、逐页旋转删除、撤销和书签策略；不是简单换 merge 函数。",
+      "recommendation": "最高优先实施统一 PDF 页面编排：文件模式＋页面模式；保留按钮排序；导出按 PagePlan 复制原始页面，避免渲染成图片。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "pdf24",
+        "bento",
+        "stirling",
+        "pdfarranger",
+        "pdflib"
+      ],
+      "id": 60,
+      "title": "合并 PDF",
+      "implementation": "src/pages/tools/pdf/merge-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/pdf-to-epub",
+      "current": "PDF.js 抽取文本；自建 EPUB2 ZIP，按页生成章节。",
+      "candidate": "Calibre ebook-convert；复杂版面可选 PaddleOCR 预处理",
+      "comparison": "现路径缺阅读顺序、图片、表格、语义章节；Calibre 也不能保证复杂 PDF 无损重排。",
+      "recommendation": "明确“纯文本 EPUB”能力边界；补元数据、转义及 EPUB 校验；高级转换走可选本地／自托管流程，不能承诺浏览器全格式高保真。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "calibre",
+        "paddle"
+      ],
+      "id": 61,
+      "title": "PDF 转 EPUB",
+      "implementation": "src/pages/tools/pdf/pdf-to-epub",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/pdf-to-png",
+      "current": "PDF.js 逐页渲染并 ZIP。",
+      "candidate": "保留 PDF.js；BentoPDF 转换交互对标",
+      "comparison": "核心引擎已合适，增益来自页码、DPI、透明背景、大小估计和分批处理。",
+      "recommendation": "复用 PDF 工作区页选择，逐页 worker 渲染与释放，支持 PNG/JPEG、单页下载及分批导出。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bento",
+        "pdflib"
+      ],
+      "id": 62,
+      "title": "PDF 转 PNG",
+      "implementation": "src/pages/tools/pdf/pdf-to-png",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/form-pdf",
+      "current": "React-PDF 预览＋pdf-lib 生成交互字段。",
+      "candidate": "EmbedPDF 表单能力 PoC；pdf-lib AcroForm 继续使用",
+      "comparison": "更强需求是编辑已有字段、类型属性、校验、对齐、Tab 顺序及预览填表，而非仅在页面加控件。",
+      "recommendation": "先统一字段模型与 PDF 预览，增加字段列表、拖动对齐、名称唯一性、必填与导出后回读验证。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "embedpdf",
+        "pdflib"
+      ],
+      "id": 63,
+      "title": "PDF 表单设计",
+      "implementation": "src/pages/tools/pdf/form-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/convert-to-pdf",
+      "current": "jsPDF 将多图转成 PDF，输入可排序。",
+      "candidate": "BentoPDF / PDF24 图像转 PDF；pdf-lib 统一生成候选",
+      "comparison": "可见纸张排版、边距、自动方向、多图一页与压缩策略更实用；现生成能力无需全部推翻。",
+      "recommendation": "与图片分页打印合用版面预览，增加逐页 fit/fill、A4/Letter、自适应尺寸和方向；通过功能清单评估是否移除 jsPDF。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "bento",
+        "pdf24",
+        "pdflib"
+      ],
+      "id": 64,
+      "title": "将图像转换为 PDF",
+      "implementation": "src/pages/tools/pdf/convert-to-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "pdf/extract-image-from-pdf",
+      "current": "PDF.js 操作流提取图像，并输出文件／ZIP。",
+      "candidate": "BentoPDF 提取流程；qpdf 结构检查辅助",
+      "comparison": "“导出页面截图”和“提取原始嵌入图像”不同；需要说明重编码、遮罩与重复资源处理方式。",
+      "recommendation": "展示资源图集、分辨率／位置／类型，避免静默丢弃蒙版或重复图片；高级原流提取需单独引擎 PoC。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "bento",
+        "qpdf"
+      ],
+      "id": 65,
+      "title": "提取 PDF 图片",
+      "implementation": "src/pages/tools/pdf/extract-images-from-pdf",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/sort",
+      "current": "自研字母／数字／长度排序与顺序选项。",
+      "candidate": "Intl.Collator＋共享 List 引擎；IT Tools 对标",
+      "comparison": "自然排序、locale、稳定排序、空项处理和类型说明比换 lodash 更有价值。",
+      "recommendation": "增加自然数字顺序、中文 locale 和排序前后对照；分隔规则与其它列表工具一致。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "ittools",
+        "segmenter"
+      ],
+      "id": 66,
+      "title": "列表排序",
+      "implementation": "src/pages/tools/list/sort",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/unwrap",
+      "current": "移除每项包围字符。",
+      "candidate": "保留原生规则；共享 List 引擎",
+      "comparison": "边界精确匹配与只移除一层更安全；暂无确定更强的等价轻量库。",
+      "recommendation": "显示首尾匹配规则、未命中项与多层处理次数，复用文本 quote/wrap 配置。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 67,
+      "title": "移除列表项包围字符",
+      "implementation": "src/pages/tools/list/unwrap",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/reverse",
+      "current": "反转列表项顺序。",
+      "candidate": "保留原生数组操作；CyberChef 对标",
+      "comparison": "已有算法足够，关键是输入拆分正确、保留空项和不改变项内文本。",
+      "recommendation": "增加带序号列表预览，明确“倒序项”与“反转项内文字”的区别。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 68,
+      "title": "反转列表",
+      "implementation": "src/pages/tools/list/reverse",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/find-unique",
+      "current": "自研去重与绝对唯一项筛选。",
+      "candidate": "原生 Map 频次模型",
+      "comparison": "首项保序、唯一出现、重复项三种结果应清楚区分；不需另装工具框架。",
+      "recommendation": "与文本行去重共用内核，展示频次、保留首／末项和实际删除数量。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "ittools"
+      ],
+      "id": 69,
+      "title": "列表去重",
+      "implementation": "src/pages/tools/list/find-unique",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/find-most-popular",
+      "current": "自研统计和排序输出。",
+      "candidate": "Map 频次＋原生／TanStack Table",
+      "comparison": "结构化的次数／占比／排名表比拼接文本结果更好；大结果再考虑虚拟化。",
+      "recommendation": "支持 Top N、并列名次、分母定义、空值规则和 CSV 导出，保留原文本输出。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "table"
+      ],
+      "id": 70,
+      "title": "查找高频列表项",
+      "implementation": "src/pages/tools/list/find-most-popular",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/chunk",
+      "current": "按数量将列表分组。",
+      "candidate": "原生分组管线；CyberChef 配方体验对标",
+      "comparison": "分组数量和每组数量是两个不同目标，应有可视化结果。",
+      "recommendation": "提供“每组 N 项／分成 N 组”切换，显示尾组策略、编号及嵌套数组导出。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 71,
+      "title": "列表分组",
+      "implementation": "src/pages/tools/list/group",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/wrap",
+      "current": "每项添加包围字符。",
+      "candidate": "原生映射＋格式专用转义器",
+      "comparison": "围上引号不等于合法的 JSON／CSV；完整格式输出应调用专门序列化器。",
+      "recommendation": "提供自定义前后缀与 JSON/CSV 预设，显示转义规则和逐项预览。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "papa",
+        "cyberchef"
+      ],
+      "id": 72,
+      "title": "添加列表项包围字符",
+      "implementation": "src/pages/tools/list/wrap",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/rotate",
+      "current": "按偏移循环移动项。",
+      "candidate": "原生数组移位；暂无更强等价轻量组件",
+      "comparison": "正负位移、长度取模和当前位置比替换库更有用。",
+      "recommendation": "加首项／末项移动按钮、位置标记及负数偏移解释。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 73,
+      "title": "循环移位列表",
+      "implementation": "src/pages/tools/list/rotate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/shuffle",
+      "current": "Fisher–Yates 算法，随机源为 Math.random。",
+      "candidate": "保留算法；Web Crypto 随机模式可选",
+      "comparison": "普通打乱不代表密码学抽签；算法正确性、可复现种子与安全随机是独立选项。",
+      "recommendation": "新增固定种子用于复现，若提供抽签模式则使用无偏采样并注明随机源，不声称可审计公平抽签。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "webcrypto"
+      ],
+      "id": 74,
+      "title": "打乱列表",
+      "implementation": "src/pages/tools/list/shuffle",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/truncate",
+      "current": "截取列表长度。",
+      "candidate": "原生 slice／范围选择",
+      "comparison": "无须新增包；起始位置、末项是否包含和保留前／后 N 项需说明。",
+      "recommendation": "用编号列表选择范围，支持前 N／后 N／索引区间，输出真实保留／删除数量。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 75,
+      "title": "截取列表",
+      "implementation": "src/pages/tools/list/truncate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "list/duplicate",
+      "current": "重复列表项或整个列表。",
+      "candidate": "保留原生映射与展平",
+      "comparison": "更强交互是区分逐项重复和整组重复、显示规模；没有确认到值得引入的独立替代。",
+      "recommendation": "提供两种模式，预估总项数和字节，过大时导出文件而非渲染全文。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "cyberchef"
+      ],
+      "id": 76,
+      "title": "重复列表项",
+      "implementation": "src/pages/tools/list/duplicate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/csv-to-json",
+      "current": "独立自研逐行解析与动态类型转换。",
+      "candidate": "Papa Parse＋可选列映射表",
+      "comparison": "引用字段内换行、引号转义、分隔符探测、错误列表、流式文件解析更成熟；不是给旧解析器加预览即可。",
+      "recommendation": "先替换解析内核；默认保留字符串，按列选择类型，保护前导零与超大整数。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 77,
+      "title": "将 CSV 转换为 JSON",
+      "implementation": "src/pages/tools/csv/csv-to-json",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/csv-to-xml",
+      "current": "自研 CSV 读取与 XML 输出。",
+      "candidate": "Papa Parse＋fast-xml-parser / builder",
+      "comparison": "CSV 正确性与 XML 字符转义是两层问题；字段名不能直接作为不受约束的 XML 标签。",
+      "recommendation": "共用 Table 数据模型，明确非法标签名、属性／子元素映射及空值处理。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "xml"
+      ],
+      "id": 78,
+      "title": "将 CSV 转换为 XML",
+      "implementation": "src/pages/tools/csv/csv-to-xml",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/csv-rows-to-columns",
+      "current": "先按换行和逗号拆分，再转置。",
+      "candidate": "Papa Parse＋共享 transpose 引擎",
+      "comparison": "当前对带逗号／换行的引用字段会拆错；功能与另一转置入口高度重叠。",
+      "recommendation": "合并实现并保留两个原 URL，增加头行／头列保留、非矩形数据补齐与预览。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 79,
+      "title": "将 CSV 行转换为列",
+      "implementation": "src/pages/tools/csv/csv-rows-to-columns",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/csv-to-tsv",
+      "current": "自研格式转换。",
+      "candidate": "Papa Parse parse/unparse",
+      "comparison": "成熟解析后按 Tab 写出，可以保留引用字段和换行；简单替换分隔符无法做到。",
+      "recommendation": "显式选择引号、换行和空值策略；增加 CSV→TSV→CSV 往返样例。",
+      "priority": "P0",
+      "effort": "S",
+      "sources": [
+        "papa"
+      ],
+      "id": 80,
+      "title": "将 CSV 转换为 TSV",
+      "implementation": "src/pages/tools/csv/csv-to-tsv",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/swap-csv-columns",
+      "current": "共享自研 splitCsv＋索引换列。",
+      "candidate": "Papa Parse＋可选择列标题的表格",
+      "comparison": "先保证解析正确，再按列名／拖动交换，优于要求用户手数列号。",
+      "recommendation": "显示列号与列名并同步操作，支持多列重排；导出只改变列顺序。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 81,
+      "title": "交换 CSV 列",
+      "implementation": "src/pages/tools/csv/swap-csv-columns",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/csv-to-yaml",
+      "current": "共享 CSV 解析；YAML 直接用 key/value 字符串拼接。",
+      "candidate": "Papa Parse＋yaml",
+      "comparison": "需正确引用冒号、井号、换行、布尔字面量和特殊键，当前拼接方式有数据语义风险。",
+      "recommendation": "用成熟 YAML writer，默认保持单元格字符串类型；支持对象数组／二维数组预览。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "yaml"
+      ],
+      "id": 82,
+      "title": "将 CSV 转换为 YAML",
+      "implementation": "src/pages/tools/csv/csv-to-yaml",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/change-csv-separator",
+      "current": "共享 splitCsv 后重新连接。",
+      "candidate": "Papa Parse parse/unparse",
+      "comparison": "正确的分隔符变更须重新引用有分隔符／换行的字段；不是单纯文本替换。",
+      "recommendation": "提供输入自动探测与输出选择，显示检测结果／解析错误和实际列数。",
+      "priority": "P0",
+      "effort": "S",
+      "sources": [
+        "papa"
+      ],
+      "id": 83,
+      "title": "更改 CSV 分隔符",
+      "implementation": "src/pages/tools/csv/change-csv-separator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/find-incomplete-csv-records",
+      "current": "根据共享解析结果检测列数不齐。",
+      "candidate": "Papa Parse errors＋表格问题定位",
+      "comparison": "解析器错误与真实缺失单元格要分开，否则引用字段会产生假阳性。",
+      "recommendation": "输出行号、期望／实际列数、原文及修复选项；不静默填补。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 84,
+      "title": "查找不完整的 CSV 记录",
+      "implementation": "src/pages/tools/csv/find-incomplete-csv-records",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/transpose-csv",
+      "current": "共享 CSV 解析＋矩阵转置。",
+      "candidate": "Papa Parse＋共享 transpose 引擎",
+      "comparison": "同“CSV 行转换为列”共享算法，可减少双份配置与测试分歧。",
+      "recommendation": "保留两个导航入口作为预设，统一处理头行、空值、引号和非矩形数据。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 85,
+      "title": "转置 CSV",
+      "implementation": "src/pages/tools/csv/transpose-csv",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/insert-csv-columns",
+      "current": "共享解析＋插列。",
+      "candidate": "Papa Parse＋列映射表格",
+      "comparison": "列标题点击定位、预览新列和批量默认值更直观；解析正确性先行。",
+      "recommendation": "支持前／后插入、默认值、序列与复制列，展示变化后再导出。",
+      "priority": "P0",
+      "effort": "M",
+      "sources": [
+        "papa",
+        "table"
+      ],
+      "id": 86,
+      "title": "插入 CSV 列",
+      "implementation": "src/pages/tools/csv/insert-csv-columns",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "csv/tsv-to-json",
+      "current": "独立 TSV 处理与类型转换。",
+      "candidate": "Papa Parse（Tab delimiter）",
+      "comparison": "Tab 文件也可能有引用字段／换行；应与 CSV→JSON 共用错误和类型策略。",
+      "recommendation": "作为 CSV→JSON 的预设入口，保留独立 URL，支持 BOM、编码和大型文件分块。",
+      "priority": "P0",
+      "effort": "S",
+      "sources": [
+        "papa"
+      ],
+      "id": 87,
+      "title": "TSV 转 JSON",
+      "implementation": "src/pages/tools/csv/tsv-to-json",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "gif/change-speed",
+      "current": "FFmpeg 处理整段 GIF。",
+      "candidate": "gifuct-js＋gifenc 轻量帧管线；Ezgif 帧编辑对标",
+      "comparison": "逐帧时长编辑和时间轴比只设置倍速更强；gifenc 并无通用照片抖动优势，不能默认替换全部编码。",
+      "recommendation": "提供逐帧时长、循环、预览与导出大小估计；先用真实 GIF 验证 disposal／透明处理，再决定是否替换 FFmpeg。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "gifuct",
+        "gifenc",
+        "ezgif"
+      ],
+      "id": 88,
+      "title": "更改 GIF 速度",
+      "implementation": "src/pages/tools/video/gif/change-speed",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "gif/images-to-gif",
+      "current": "FFmpeg 将排序后的图片生成 GIF。",
+      "candidate": "gifenc；Ezgif GIF Maker 对标",
+      "comparison": "轻量编码器适合简单图像动画；照片序列仍需比较调色板、抖动和质量。",
+      "recommendation": "增加帧缩略图拖排、逐帧时长、统一画布／背景和循环预览；编码器按素材选择。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "gifenc",
+        "ezgif"
+      ],
+      "id": 89,
+      "title": "图片转 GIF",
+      "implementation": "src/pages/tools/video/gif/images-to-gif",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/trim",
+      "current": "FFmpeg -c copy 裁切，已有视频播放和起止秒数。",
+      "candidate": "Mediabunny＋FFmpeg 回退；LosslessCut 工作流对标",
+      "comparison": "关键帧附近的快速裁切和重编码的精确裁切应分开；更换 UI 不会使 stream copy 天然帧精确。",
+      "recommendation": "补缩略图时间轴、多个片段、关键帧吸附和快／准模式；浏览器 codec 支持时评估 WebCodecs。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny",
+        "ffmpeg",
+        "losslesscut"
+      ],
+      "id": 90,
+      "title": "修剪视频",
+      "implementation": "src/pages/tools/video/trim",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/rotate",
+      "current": "FFmpeg 转码旋转并输出 MP4。",
+      "candidate": "Mediabunny / LosslessCut；FFmpeg 保底",
+      "comparison": "只改旋转元数据与烧录像素旋转成本、兼容性不同，需允许用户选择。",
+      "recommendation": "实时 CSS／Canvas 预览；支持的容器优先只改元数据，播放器不兼容时再重编码。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "mediabunny",
+        "losslesscut"
+      ],
+      "id": 91,
+      "title": "旋转视频",
+      "implementation": "src/pages/tools/video/rotate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/compress",
+      "current": "FFmpeg 压缩参数与滑块。",
+      "candidate": "Mediabunny WebCodecs；FFmpeg 高兼容模式",
+      "comparison": "可用硬件 codec 和按需读取，仍受浏览器编码器支持约束，不能承诺所有格式更快。",
+      "recommendation": "提供目标体积／质量／兼容性预设、短片段试压、耗时估计、分辨率／音轨配置和取消。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny",
+        "ffmpeg"
+      ],
+      "id": 92,
+      "title": "压缩视频",
+      "implementation": "src/pages/tools/video/compress",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/loop",
+      "current": "FFmpeg 按次数循环视频。",
+      "candidate": "Mediabunny 轨道拼接 PoC；保留 FFmpeg",
+      "comparison": "循环次数与输出时长联动更实用；能否无重编码拼接取决于轨道时间戳与容器。",
+      "recommendation": "预览接缝、按次数／总时长设置、显示预计大小并共享时间轴。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "mediabunny",
+        "ffmpeg"
+      ],
+      "id": 93,
+      "title": "循环视频",
+      "implementation": "src/pages/tools/video/loop",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/flip",
+      "current": "FFmpeg 翻转视频。",
+      "candidate": "原生实时预览＋Mediabunny 变换；FFmpeg 回退",
+      "comparison": "即时预览可避免用户必须完整转码后才知道方向；导出仍需编码能力。",
+      "recommendation": "用水平／垂直明确按钮和方向指示，预览与导出使用同一变换描述。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "mediabunny"
+      ],
+      "id": 94,
+      "title": "翻转视频",
+      "implementation": "src/pages/tools/video/flip",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/crop-video",
+      "current": "FFmpeg 根据参数裁切。",
+      "candidate": "Mediabunny / Canvas 选区；FFmpeg 输出",
+      "comparison": "可拖动选区、比例、坐标同步和时间轴联动优于单纯填写坐标。",
+      "recommendation": "在视频画面上交互裁剪，补 16:9／9:16／1:1、宽高编码对齐与越界反馈。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny"
+      ],
+      "id": 95,
+      "title": "裁剪视频",
+      "implementation": "src/pages/tools/video/crop-video",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/change-speed",
+      "current": "FFmpeg 调整速度。",
+      "candidate": "Mediabunny 转换能力 PoC；FFmpeg 保底",
+      "comparison": "视频帧时间与音频时长、音调保持需同步；不是设置 playbackRate 就完成导出。",
+      "recommendation": "增加保持音调、静音／保留音轨、输出时长、片段预览与倍速曲线的后续扩展点。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny",
+        "ffmpeg"
+      ],
+      "id": 96,
+      "title": "更改视频速度",
+      "implementation": "src/pages/tools/video/change-speed",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/merge-video",
+      "current": "FFmpeg concat，固定 libx264/aac 重编码。",
+      "candidate": "Mediabunny / LosslessCut；FFmpeg 标准化模式",
+      "comparison": "相同 codec 的片段可评估快速重封装；不同分辨率／帧率需先匹配，不能只拼接文件列表。",
+      "recommendation": "做多片段时间轴、拖排、片段裁切、分辨率／音频规范化选择和合并前检查。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny",
+        "losslesscut",
+        "ffmpeg"
+      ],
+      "id": 97,
+      "title": "合并视频",
+      "implementation": "src/pages/tools/video/merge-video",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/add-audio",
+      "current": "FFmpeg 加入音轨，等待视频和音频齐全后显式执行。",
+      "candidate": "AudioMass 多轨交互＋Mediabunny 混流；FFmpeg 保底",
+      "comparison": "对齐、原音与新音量、淡入淡出、循环／截断策略决定可用性。",
+      "recommendation": "增加视频／音轨双行时间轴、拖动偏移、波形、静音原音及试听，导出前显示音轨策略。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "audiomass",
+        "mediabunny",
+        "ffmpeg"
+      ],
+      "id": 98,
+      "title": "视频添加音频",
+      "implementation": "src/pages/tools/video/add-audio",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "video/resize",
+      "current": "FFmpeg 缩放视频。",
+      "candidate": "Mediabunny WebCodecs 转换；FFmpeg 回退",
+      "comparison": "更强的是社交尺寸预设、fit/fill/pad、字幕安全区与编码约束，而非仅宽高输入。",
+      "recommendation": "共享视频变换描述，锁定比例，预览裁边／留黑和实际输出尺寸。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "mediabunny"
+      ],
+      "id": 99,
+      "title": "调整视频尺寸",
+      "implementation": "src/pages/tools/video/resize",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/sum",
+      "current": "原生 Number 求和。",
+      "candidate": "decimal.js；大整数用 BigInt",
+      "comparison": "十进制小数和超大整数需要明确精度策略；为求和引入完整 CAS 没必要。",
+      "recommendation": "增加精度模式、无效行定位、参与统计数量及可选择忽略空行。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "decimal"
+      ],
+      "id": 100,
+      "title": "数字求和",
+      "implementation": "src/pages/tools/number/sum",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generate",
+      "current": "自研数字序列。",
+      "candidate": "原生生成器＋decimal.js",
+      "comparison": "大范围流式输出与精确步长比换通用工具站更有价值。",
+      "recommendation": "预览前后若干项、总项数和终点是否包含；巨量结果导出文件，取消长任务。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "decimal"
+      ],
+      "id": 101,
+      "title": "生成数字序列",
+      "implementation": "src/pages/tools/number/generate",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/arithmetic-sequence",
+      "current": "自研等差序列。",
+      "candidate": "decimal.js；与数字序列共用引擎",
+      "comparison": "小数步长累加误差、负步长和闭区间定义需统一。",
+      "recommendation": "保留首项／公差／项数语义，使用精确十进制并显示通项公式与长度。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "decimal"
+      ],
+      "id": 102,
+      "title": "等差序列",
+      "implementation": "src/pages/tools/number/arithmetic-sequence",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/random-port-generator",
+      "current": "Math.random 随机端口。",
+      "candidate": "Web Crypto＋端口区间策略；IT Tools 对标",
+      "comparison": "随机数不能验证本机端口空闲；常用／动态端口区间和去重可改善用途。",
+      "recommendation": "分开范围、排除列表、唯一性和批量；说明浏览器并未探测端口是否占用。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "webcrypto",
+        "ittools"
+      ],
+      "id": 103,
+      "title": "随机端口生成器",
+      "implementation": "src/pages/tools/number/random-port-generator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/random-number-generator",
+      "current": "Math.random 与范围、数量等选项。",
+      "candidate": "Web Crypto 无偏采样；可复现种子模式",
+      "comparison": "安全随机与模拟复现属于不同需求；大整数、唯一数量超过范围要校验。",
+      "recommendation": "增加整数／小数、含端点、允许重复、种子和随机源，禁止静默缩小输出范围。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "webcrypto",
+        "decimal"
+      ],
+      "id": 104,
+      "title": "随机数生成器",
+      "implementation": "src/pages/tools/number/random-number-generator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/byte-converter",
+      "current": "自研 Number 换算；已有 SI／IEC、位／字节和精度设置。",
+      "candidate": "BigInt／decimal.js 单位模型；IT Tools 对标",
+      "comparison": "现有单位范围不弱；主要增益是大整数精度和 SI／IEC 并排对照，避免混淆口径。",
+      "recommendation": "保留已有单位与精度设置，补大整数、换算公式和多单位同时输出。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "decimal",
+        "ittools"
+      ],
+      "id": 105,
+      "title": "字节单位换算",
+      "implementation": "src/pages/tools/number/byte-converter",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/number-to-words",
+      "current": "to-words；当前入口加载 en-US 与 zh-CN。",
+      "candidate": "评估升级现 to-words；无须全量导入所有 locale",
+      "comparison": "官方当前文档覆盖更多区域、金额／序数及大数策略；必须先核对锁定版本 API。",
+      "recommendation": "保留按 locale 分包，增加普通数／金额／序数模式、字符串大数输入与中英文样例回归。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "towords"
+      ],
+      "id": 106,
+      "title": "数字转文字",
+      "implementation": "src/pages/tools/number/number-to-words",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generic-calc/ohms-law",
+      "current": "通用 nerdamer-prime＋js-quantities 求解框架。",
+      "candidate": "专用 JS 公式＋现单位层；math.js 仅未来表达式工具评估",
+      "comparison": "只有少数已知公式时，闭式计算和明确约束能比载入通用 CAS 更轻、更易验证。",
+      "recommendation": "保留求解目标切换，加入电路示意、单位联动、零／非法值反馈和公式解释。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "mathjs"
+      ],
+      "id": 107,
+      "title": "欧姆定律",
+      "implementation": "src/pages/tools/number/generic-calc",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generic-calc/cable-voltage-drop",
+      "current": "同一 CAS／单位框架处理电缆往返压降。",
+      "candidate": "专用 JS／decimal.js＋参数化线缆模型",
+      "comparison": "线材、长度定义、温度与单位假设比通用求根界面更影响使用。",
+      "recommendation": "用示意图明确单程／往返，展示材料与假设、压降百分比和参数范围；公式须单独验算。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "decimal",
+        "mathjs"
+      ],
+      "id": 108,
+      "title": "电缆往返电压降",
+      "implementation": "src/pages/tools/number/generic-calc",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generic-calc/area-sphere",
+      "current": "CAS 求球表面积并换单位。",
+      "candidate": "原生公式＋SVG 球体示意",
+      "comparison": "无需为单一几何公式使用完整 CAS；半径／直径切换与面积单位可更清楚。",
+      "recommendation": "独立紧凑表单，半径／直径联动，展示公式、量纲与可复制结果。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "mathjs"
+      ],
+      "id": 109,
+      "title": "球体表面积",
+      "implementation": "src/pages/tools/number/generic-calc",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generic-calc/volume-sphere",
+      "current": "CAS 求球体积并换单位。",
+      "candidate": "原生公式＋SVG 示意",
+      "comparison": "主要增益是体积单位、一致精度和输入含义，未发现换大型 SDK 的必要。",
+      "recommendation": "与表面积共用球体模块；半径／直径切换，核对立方单位换算。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "mathjs"
+      ],
+      "id": 110,
+      "title": "球体体积",
+      "implementation": "src/pages/tools/number/generic-calc",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "number/generic-calc/slackline-tension",
+      "current": "CAS／单位框架计算扁带张力。",
+      "candidate": "专用公式工作区＋几何示意",
+      "comparison": "图示下垂量、跨度、载荷位置和假设更有助理解；更强通用数学引擎不会自动保证物理模型适用。",
+      "recommendation": "为当前模型做独立验算与范围说明，展示单位、受力示意和输入约束，不做未验证工程结论。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "mathjs"
+      ],
+      "id": 111,
+      "title": "扁带张力计算",
+      "implementation": "src/pages/tools/number/generic-calc",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-days-to-hours",
+      "current": "逐行天数与小时数换算。",
+      "candidate": "保留轻量换算；decimal.js 精确小数",
+      "comparison": "“一天=24小时”的时长换算与跨夏令时日历天不同，不应混在一个模式。",
+      "recommendation": "清晰标注时长模式，数值／单位双向联动；若按日历换算则移到时区工具。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "decimal",
+        "temporal"
+      ],
+      "id": 112,
+      "title": "将天数转换为小时数",
+      "implementation": "src/pages/tools/time/convert-days-to-hours",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-hours-to-days",
+      "current": "小时换算为天。",
+      "candidate": "保留轻量换算；统一 Duration 模型",
+      "comparison": "小数天与“天＋余小时”是不同输出；界面可同时展示。",
+      "recommendation": "合并时长换算内核，增加分解结果与舍入规则，保留原入口。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "decimal"
+      ],
+      "id": 113,
+      "title": "将小时转换为天",
+      "implementation": "src/pages/tools/time/convert-hours-to-days",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-seconds-to-time",
+      "current": "自研秒到时分秒格式。",
+      "candidate": "统一 Duration 格式器",
+      "comparison": "超过 24 小时、负数、小数秒和单位不应被日期对象自动回绕。",
+      "recommendation": "支持长时长和小数精度，显示时间轴单位及反向转换。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "temporal"
+      ],
+      "id": 114,
+      "title": "将秒转换为时间",
+      "implementation": "src/pages/tools/time/convert-seconds-to-time",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-time-to-seconds",
+      "current": "自研时间字符串转秒。",
+      "candidate": "统一 Duration 解析器",
+      "comparison": "HH:mm:ss、mm:ss、ISO duration 语义需显式区分，避免歧义输入。",
+      "recommendation": "用格式选择、分段字段、非法行定位；与秒转时间做往返样例。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "temporal"
+      ],
+      "id": 115,
+      "title": "将时间转换为秒",
+      "implementation": "src/pages/tools/time/convert-time-to-seconds",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/truncate-clock-time",
+      "current": "按选项截断时钟文本。",
+      "candidate": "原生格式／精度转换工作区",
+      "comparison": "截掉字符与向下取整到分／秒不是同一操作；无已确认更强的独立轻量包。",
+      "recommendation": "明确截断／舍入与输出格式，增加原值对照，复用时间解析层。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "dayjs"
+      ],
+      "id": 116,
+      "title": "截断时钟时间",
+      "implementation": "src/pages/tools/time/truncate-clock-time",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/time-between-dates",
+      "current": "Day.js＋时区和 duration；存在缩写到 IANA 的映射。",
+      "candidate": "保留 Day.js；Temporal 作为日历计算 PoC",
+      "comparison": "CST 等缩写有歧义；实际经过时长与日历年月日间隔必须分开。",
+      "recommendation": "直接选 IANA 时区，显示 UTC 偏移；新增时长／日历差模式，测试 DST 跨越和月末。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "dayjs",
+        "temporal"
+      ],
+      "id": 117,
+      "title": "日期间隔计算",
+      "implementation": "src/pages/tools/time/time-between-dates",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/crontab-guru",
+      "current": "cron-validator＋cronstrue 描述及预设。",
+      "candidate": "保留 cronstrue；增加 cron-parser",
+      "comparison": "cron-parser 可给后续运行时间和时区／DST；不是只把中文描述换一个库。",
+      "recommendation": "增加未来 10 次执行日历、IANA 时区、5／6 位格式声明及字段编辑器。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "cron"
+      ],
+      "id": 118,
+      "title": "Cron 表达式解析",
+      "implementation": "src/pages/tools/time/crontab-guru",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/check-leap-years",
+      "current": "自研闰年检测。",
+      "candidate": "原生公历规则；无需第三方替换",
+      "comparison": "算法已足够简单；多年份比较、范围校验和规则解释更有价值。",
+      "recommendation": "展示世纪年规则，支持区间／列表与有效范围；明确使用公历。",
+      "priority": "P3",
+      "effort": "S",
+      "sources": [
+        "temporal"
+      ],
+      "id": 119,
+      "title": "检查闰年",
+      "implementation": "src/pages/tools/time/check-leap-years",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-unix-to-date",
+      "current": "已有秒／毫秒、UTC／本地、日期选择器及批量折叠区。",
+      "candidate": "保留现界面；Temporal／Day.js 增强时区",
+      "comparison": "上一轮基础交互已改善；新增价值是任意 IANA 时区、精度与歧义处理，而非重做已存在的按钮。",
+      "recommendation": "补时区搜索、ISO/RFC 输出与纳秒作为明确高级模式；避免 Number 表示纳秒造成精度损失。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "temporal",
+        "dayjs"
+      ],
+      "id": 120,
+      "title": "Unix 时间戳与日期互转",
+      "implementation": "src/pages/tools/time/convert-unix-to-date",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/convert-time-to-decimal",
+      "current": "时间与十进制格式转换。",
+      "candidate": "Duration＋decimal.js",
+      "comparison": "十进制小时、十进制分钟和 HH.mm 不是同一种格式。",
+      "recommendation": "明确结果单位、输入格式和舍入，显示 01:30→1.5小时的解释及反向转换。",
+      "priority": "P1",
+      "effort": "S",
+      "sources": [
+        "decimal"
+      ],
+      "id": 121,
+      "title": "把时间转换至十进制格式",
+      "implementation": "src/pages/tools/time/convert-time-to-decimal",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/discord-timestamp",
+      "current": "根据日期生成 Discord 时间戳。",
+      "candidate": "原生 Date／Intl；保留算法",
+      "comparison": "更强体验是全部 Discord 样式即时预览、相对时间和时区，不需专门大库。",
+      "recommendation": "提供样式卡片一键复制、日期时区和实时相对值，按格式语法验收。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "dayjs"
+      ],
+      "id": 122,
+      "title": "Discord 时间戳生成器",
+      "implementation": "src/pages/tools/time/discord-timestamp",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "time/date-weekday-calculator",
+      "current": "Day.js 计算星期。",
+      "candidate": "原生 Intl / Day.js；时区增强",
+      "comparison": "本地化星期、周起始、ISO 周与指定时区比更换现库更实用。",
+      "recommendation": "日历选择与批量输入共存，增加时区、星期编号口径和 ISO 周为可选输出。",
+      "priority": "P2",
+      "effort": "S",
+      "sources": [
+        "dayjs",
+        "temporal"
+      ],
+      "id": 123,
+      "title": "日期星期计算器",
+      "implementation": "src/pages/tools/time/date-weekday-calculator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "audio/extract-audio",
+      "current": "FFmpeg 从视频提取并按格式导出。",
+      "candidate": "Mediabunny 解复用；LosslessCut 轨道交互",
+      "comparison": "可区分原音轨无重编码提取与重新编码格式转换，避免不必要的损失与等待。",
+      "recommendation": "显示全部音轨、语言／声道／codec；选择原始音轨或转换，支持局部区间。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "mediabunny",
+        "losslesscut"
+      ],
+      "id": 124,
+      "title": "从视频中提取音频",
+      "implementation": "src/pages/tools/audio/extract-audio",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "audio/change-speed",
+      "current": "FFmpeg 变速。",
+      "candidate": "AudioMass 试听；Web Audio 预览＋FFmpeg 导出",
+      "comparison": "实时试听、保持音调和变调是不同需求；WaveSurfer 本身不是音频变换器。",
+      "recommendation": "速度与输出时长联动，提供保持音调选项与 AB 试听，先验证倍率范围。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "audiomass",
+        "wavesurfer",
+        "ffmpeg"
+      ],
+      "id": 125,
+      "title": "更改音频速度",
+      "implementation": "src/pages/tools/audio/change-speed",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "audio/trim",
+      "current": "已有原生波形、起止秒数、滑块与播放选区；FFmpeg 导出。",
+      "candidate": "WaveSurfer Regions；AudioMass 完整编辑体验",
+      "comparison": "下一步价值是可缩放时间标尺、多选区、零交叉点和淡入淡出；不应忽略现有波形功能。",
+      "recommendation": "先补可缩放时间轴与多区间；只有原生实现复杂度超预算时接入 WaveSurfer，导出仍由处理引擎承担。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "wavesurfer",
+        "audiomass"
+      ],
+      "id": 126,
+      "title": "修剪音频",
+      "implementation": "src/pages/tools/audio/trim",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "audio/merge-audio",
+      "current": "FFmpeg 合并文件并选择输出格式。",
+      "candidate": "AudioMass 多轨；WaveSurfer＋FFmpeg",
+      "comparison": "顺序拼接与同时混音不同；需要波形排列、片段时长、响度和接缝处理。",
+      "recommendation": "提供拼接／混音两种明确模式，增加交叉淡化、静音间隔、响度预览与撤销。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "audiomass",
+        "wavesurfer",
+        "ffmpeg"
+      ],
+      "id": 127,
+      "title": "合并音频",
+      "implementation": "src/pages/tools/audio/merge-audio",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "audio/loop",
+      "current": "FFmpeg 按次数循环音频。",
+      "candidate": "Web Audio 试听＋共享音频时间轴",
+      "comparison": "接缝无点击声、总时长与淡化更影响体验；单项不需要另一个完整编辑器。",
+      "recommendation": "允许次数／目标时长，显示总时长与样本级循环区间，加入接缝试听。",
+      "priority": "P2",
+      "effort": "M",
+      "sources": [
+        "audiomass",
+        "ffmpeg"
+      ],
+      "id": 128,
+      "title": "循环音频",
+      "implementation": "src/pages/tools/audio/loop-audio",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "xml/xml-beautifier",
+      "current": "fast-xml-parser 验证并重建 XML。",
+      "candidate": "评估独立 fast-xml-builder；保留当前快速模式",
+      "comparison": "上游已将 validator／builder 分拆并推荐独立模块；混合内容、空白、CDATA 保真须单独验收。",
+      "recommendation": "先验证锁版 API 与语义保留，再做模块迁移；增加格式化差异视图，不能把全部空白当无意义。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "xml",
+        "xmlvalidator"
+      ],
+      "id": 129,
+      "title": "格式化 XML",
+      "implementation": "src/pages/tools/xml/xml-beautifier",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "xml/xml-validator",
+      "current": "fast-xml-parser XMLValidator 做语法校验。",
+      "candidate": "fast-xml-validator；可选 libxml2-wasm XSD",
+      "comparison": "语法正确与符合 XSD 是不同能力；后者是可选较重引擎。",
+      "recommendation": "优先跟进上游推荐的独立 validator；高级模式接受 XSD 并定位错误，限制外部资源解析。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "xmlvalidator",
+        "xmlwasm"
+      ],
+      "id": 130,
+      "title": "验证 XML",
+      "implementation": "src/pages/tools/xml/xml-validator",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "converters/audio-converter",
+      "current": "FFmpeg 音频格式转换。",
+      "candidate": "Mediabunny＋WebCodecs；FFmpeg 保留回退",
+      "comparison": "更强的是编码支持探测、音轨／采样率／声道／码率控制与批量队列；不能仅改扩展名。",
+      "recommendation": "导出前显示实际 codec、封装、预估时长／大小，优先不重编码，支持取消与失败重试。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "mediabunny",
+        "ffmpeg"
+      ],
+      "id": 131,
+      "title": "音频转换器",
+      "implementation": "src/pages/tools/converters/audio-converter",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "converters/convert-to-webp",
+      "current": "Canvas toBlob＋批量 ZIP。",
+      "candidate": "jSquash WebP；Squoosh 对标",
+      "comparison": "显式无损／有损和编码参数更可靠；Animated WebP 与静态图是不同路径。",
+      "recommendation": "新增质量／无损模式、透明度预览与对照；动画输入须保留动画或明确拒绝，不能静默首帧化。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsquash",
+        "squoosh"
+      ],
+      "id": 132,
+      "title": "将图像转换为 WebP",
+      "implementation": "src/pages/tools/converters/convert-to-webp",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "converters/convert-to-jpg",
+      "current": "Canvas 转 JPG，支持背景色、HEIC 和批量 ZIP。",
+      "candidate": "jSquash JPEG；保留 Canvas 快速模式",
+      "comparison": "增益是更丰富编码参数和质量对照；JPEG 不支持透明，背景色设置已存在。",
+      "recommendation": "保留已有背景色，增加编码模式、元数据／方向策略、目标体积和实际 MIME 验收。",
+      "priority": "P1",
+      "effort": "M",
+      "sources": [
+        "jsquash",
+        "squoosh"
+      ],
+      "id": 133,
+      "title": "图片转 JPG",
+      "implementation": "src/pages/tools/converters/convert-to-jpg",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    },
+    {
+      "route": "converters/video-to-gif",
+      "current": "FFmpeg 生成 GIF。",
+      "candidate": "Ezgif 交互对标；Mediabunny 抽帧＋FFmpeg／gifenc 编码 PoC",
+      "comparison": "选区、帧率、尺寸、调色板与大小预估更关键；gifenc 不应无验证用于所有照片／视频。",
+      "recommendation": "共享视频时间轴，先试导出短片段，显示帧数／体积；有条件提供 WebP 等替代动画输出。",
+      "priority": "P1",
+      "effort": "L",
+      "sources": [
+        "ezgif",
+        "mediabunny",
+        "ffmpeg",
+        "gifenc"
+      ],
+      "id": 134,
+      "title": "视频转 GIF",
+      "implementation": "src/pages/tools/converters/video-to-gif",
+      "verification": "源码静态核对＋外部一手文档；未逐候选安装及性能实测"
+    }
+  ],
+  "sources": [
+    {
+      "id": "pdf24",
+      "name": "PDF24 Merge PDF",
+      "type": "在线产品／交互对标",
+      "url": "https://tools.pdf24.org/en/merge-pdf",
+      "summary": "官网列出文件拖排、Page mode、选页、书签／封面／目录选项；此在线合并页面说明文件在服务器处理。",
+      "license": "产品条款；不作为可复制组件",
+      "extra": []
+    },
+    {
+      "id": "bento",
+      "name": "BentoPDF",
+      "type": "浏览器完整产品／交互与实现候选",
+      "url": "https://github.com/alam00000/bentopdf",
+      "summary": "Multi Tool 将合并、拆分、排序、删除、旋转等放入一个工作区；README 列出本地处理与运行时 WASM 组件。",
+      "license": "AGPL-3.0／商业双许可；所用第三方引擎另核验",
+      "extra": [
+        "https://github.com/alam00000/bentopdf/blob/main/COMMERCIAL-LICENSE.md",
+        "https://github.com/alam00000/bentopdf/releases/tag/v2.8.11"
+      ]
+    },
+    {
+      "id": "stirling",
+      "name": "Stirling PDF",
+      "type": "完整应用／可选自托管服务",
+      "url": "https://docs.stirlingpdf.com/Tools/Guides/Page-Operations/",
+      "summary": "文档说明拖排合并、按名称／日期排序、目录与多种拆分方式；适合工作流对标和可选服务。",
+      "license": "Open-core；根 LICENSE 存在目录级例外，不能按全仓库 MIT 处理",
+      "extra": [
+        "https://github.com/Stirling-Tools/Stirling-PDF",
+        "https://raw.githubusercontent.com/Stirling-Tools/Stirling-PDF/main/LICENSE"
+      ]
+    },
+    {
+      "id": "pdfarranger",
+      "name": "PDF Arranger",
+      "type": "桌面产品／交互对标",
+      "url": "https://github.com/pdfarranger/pdfarranger",
+      "summary": "交互式合并、拆分、旋转、裁剪、页面重排；是桌面应用，不是 React 组件。",
+      "license": "GPL-3.0",
+      "extra": []
+    },
+    {
+      "id": "embedpdf",
+      "name": "EmbedPDF Engine",
+      "type": "已存在的浏览器 SDK／版本对齐 PoC",
+      "url": "https://www.embedpdf.com/docs/engine",
+      "summary": "当前文档提供 Worker 中的 PDFium 派生运行时及页面旋转、重排、删除、插入、合并、拆分能力；须核对项目锁版 API。",
+      "license": "按 SDK 与运行时各自 LICENSE 锁版核验",
+      "extra": []
+    },
+    {
+      "id": "pdflib",
+      "name": "pdf-lib",
+      "type": "已存在的浏览器文档引擎",
+      "url": "https://pdf-lib.js.org/",
+      "summary": "纯 JavaScript 文档创建、页面复制／增删、拆分合并与 AcroForm；现有合并可直接围绕页计划扩展。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "qpdf",
+      "name": "qpdf",
+      "type": "原生 CLI／WASM 构建或服务端 PoC",
+      "url": "https://qpdf.readthedocs.io/en/stable/cli.html",
+      "summary": "支持结构变换、选页、加密与检查；原生 CLI 本身不能直接作为浏览器模块，WASM 构建须单独评估。",
+      "license": "Apache-2.0，WASM 包装与组件另核",
+      "extra": [
+        "https://qpdf.readthedocs.io/en/stable/license.html"
+      ]
+    },
+    {
+      "id": "calibre",
+      "name": "Calibre conversion",
+      "type": "桌面／CLI，可选自托管转换",
+      "url": "https://manual.calibre-ebook.com/conversion.html#pdfconversion",
+      "summary": "以 XHTML 为中间表示的电子书转换管线，有元数据与章节等配置；PDF 版面恢复有明确限制。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "ghostscript",
+      "name": "Ghostscript licensing",
+      "type": "已存在 WASM 引擎的选型约束",
+      "url": "https://www.ghostscript.com/licensing/index.html",
+      "summary": "现压缩与加密链路涉及 Ghostscript，需核对实际构建、分发和授权方式。",
+      "license": "AGPL／商业授权",
+      "extra": []
+    },
+    {
+      "id": "squoosh",
+      "name": "Squoosh",
+      "type": "浏览器完整产品／交互对标",
+      "url": "https://github.com/GoogleChromeLabs/squoosh",
+      "summary": "适合参考编码参数、图像质量对照和体积反馈；不建议将完整应用当作单一工具的依赖。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "iloveimg",
+      "name": "iLoveIMG Resize",
+      "type": "在线产品／交互对标",
+      "url": "https://www.iloveimg.com/resize-image",
+      "summary": "像素与百分比、比例约束、批量尺寸的直接操作流程。",
+      "license": "产品条款；仅对标交互",
+      "extra": []
+    },
+    {
+      "id": "pica",
+      "name": "pica",
+      "type": "浏览器重采样组件",
+      "url": "https://raw.githubusercontent.com/nodeca/pica/master/README.md",
+      "summary": "提供浏览器高质量缩放、Worker／WASM 技术选择、分块内存控制；不能由文档替代本项目画质实测。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "jsquash",
+      "name": "jSquash",
+      "type": "浏览器／Worker 编解码模块",
+      "url": "https://github.com/jamsinclair/jSquash",
+      "summary": "从 Squoosh 派生的模块化 WASM 图像 codecs，面向浏览器及 Worker；每种 codec 独立加载和核验许可。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "cropper",
+      "name": "Cropper.js",
+      "type": "交互式裁切组件",
+      "url": "https://fengyuanchen.github.io/cropperjs/",
+      "summary": "可用于可视化裁剪工作区；项目已有 react-image-crop 时应先验证能否复用，避免重复依赖。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "pintura",
+      "name": "Pintura",
+      "type": "商业图像编辑 SDK／交互对标",
+      "url": "https://pqina.nl/pintura/",
+      "summary": "集成裁剪、旋转、缩放、标注、色彩、撤销与可保存状态；是否引入取决于功能与授权预算。",
+      "license": "商业 SDK，价格／条款以采购时页面为准",
+      "extra": []
+    },
+    {
+      "id": "magick",
+      "name": "magick-wasm",
+      "type": "按需 WASM 图像引擎",
+      "url": "https://github.com/dlemstra/magick-wasm",
+      "summary": "将 ImageMagick 用于浏览器，无须图像处理 API；实际可用格式依赖构建，不能按桌面全部格式直接承诺。",
+      "license": "仓库 Apache-2.0；底层组件许可另核",
+      "extra": []
+    },
+    {
+      "id": "tesseract",
+      "name": "Tesseract.js",
+      "type": "已存在的浏览器 OCR 引擎",
+      "url": "https://github.com/naptha/tesseract.js",
+      "summary": "官方明确不直接支持 PDF，并指向 Scribe.js 作为扩展需求的候选；基础图片 OCR 可继续复用。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "scribe",
+      "name": "Scribe.js / Scribe OCR",
+      "type": "浏览器 OCR 引擎及完整校对应用",
+      "url": "https://github.com/scribeocr/scribe.js",
+      "summary": "图像／PDF OCR 与文本提取、可搜索 PDF；浏览器部署对资源同源有要求。",
+      "license": "AGPL-3.0",
+      "extra": [
+        "https://github.com/scribeocr/scribeocr"
+      ]
+    },
+    {
+      "id": "paddle",
+      "name": "PaddleOCR PP-StructureV3",
+      "type": "可选自托管文档分析",
+      "url": "https://github.com/PaddlePaddle/PaddleOCR/blob/main/docs/version3.x/pipeline_usage/PP-StructureV3.en.md",
+      "summary": "版面、表格、公式等文档分析路线；需模型、运行环境与真实素材验证，不是当前前端的小组件替换。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "imgly",
+      "name": "IMG.LY background-removal",
+      "type": "已存在的浏览器背景移除引擎",
+      "url": "https://github.com/imgly/background-removal-js",
+      "summary": "浏览器／Node 背景分割，选型重点是模型素材适配、资源加载和可修改蒙版。",
+      "license": "AGPL-3.0／其他授权需与提供方确认",
+      "extra": []
+    },
+    {
+      "id": "gifenc",
+      "name": "gifenc",
+      "type": "轻量 GIF 编码组件／有条件 PoC",
+      "url": "https://raw.githubusercontent.com/mattdesl/gifenc/master/README.md",
+      "summary": "支持动画、透明和调色板；官方注明缺少抖动，更适合简单图形，不能无验证替换照片／视频 GIF 编码。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "gifuct",
+      "name": "gifuct-js",
+      "type": "GIF 解码／帧解析组件",
+      "url": "https://github.com/matt-way/gifuct-js",
+      "summary": "用于帧级解码与时长编辑；重新编码仍需另一编码器，并正确处理帧合成规则。",
+      "license": "MIT",
+      "extra": []
+    },
+    {
+      "id": "qrcode",
+      "name": "node-qrcode",
+      "type": "已存在的二维码引擎",
+      "url": "https://github.com/soldair/node-qrcode",
+      "summary": "浏览器与服务端 QR 生成及 PNG／SVG 等输出；现有 Wi-Fi／vCard 模板应保留。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "qrstyle",
+      "name": "qr-code-styling",
+      "type": "可选二维码样式组件",
+      "url": "https://github.com/kozakdenys/qr-code-styling",
+      "summary": "Logo、点阵／定位图形样式与 SVG／位图导出；需要扫描回读质量门禁。",
+      "license": "MIT",
+      "extra": []
+    },
+    {
+      "id": "ezgif",
+      "name": "Ezgif",
+      "type": "在线产品／动画流程对标",
+      "url": "https://ezgif.com/",
+      "summary": "GIF、动画图像及视频到动画的操作入口与帧处理体验；不同工具的本地／服务器处理模式应单独核对。",
+      "license": "产品条款；不默认外传用户文件",
+      "extra": []
+    },
+    {
+      "id": "mediabunny",
+      "name": "Mediabunny",
+      "type": "浏览器媒体引擎／分阶段 PoC",
+      "url": "https://mediabunny.dev/guide/introduction",
+      "summary": "TypeScript 媒体解析、重封装、转换和 WebCodecs 路线，按需读取／流式输出；可用编码受环境支持约束。",
+      "license": "MPL-2.0（另核扩展／codec）",
+      "extra": [
+        "https://github.com/Vanilagy/mediabunny/blob/main/package.json"
+      ]
+    },
+    {
+      "id": "ffmpeg",
+      "name": "ffmpeg.wasm",
+      "type": "已存在的浏览器兼容后备引擎",
+      "url": "https://ffmpegwasm.netlify.app/docs/faq/",
+      "summary": "官方说明原生 FFmpeg 与 WASM 性能有差异；wrapper 与 core 授权不同，core 跟随 FFmpeg 及所编译外部库。",
+      "license": "wrapper MIT；core 与外部库分别核验",
+      "extra": []
+    },
+    {
+      "id": "wavesurfer",
+      "name": "WaveSurfer.js",
+      "type": "波形／播放／选区组件",
+      "url": "https://wavesurfer.xyz/docs/",
+      "summary": "Regions、Timeline、Envelope 等提供交互；不是负责转码、裁切导出和混音的完整处理引擎。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "audiomass",
+      "name": "AudioMass",
+      "type": "完整浏览器音频编辑产品／交互对标",
+      "url": "https://github.com/pkalogiros/AudioMass",
+      "summary": "完整波形编辑和多轨、片段位置、交叉淡化等交互；不建议整体并入项目替换全部音频页面。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "losslesscut",
+      "name": "LosslessCut",
+      "type": "桌面 FFmpeg 产品／媒体流程对标",
+      "url": "https://github.com/mifi/lossless-cut",
+      "summary": "快速裁切、相同 codec 合并、轨道增删／提取、重封装、标记；不是浏览器嵌入组件。",
+      "license": "GPL-2.0",
+      "extra": []
+    },
+    {
+      "id": "papa",
+      "name": "Papa Parse",
+      "type": "CSV／TSV 解析与写出组件",
+      "url": "https://www.papaparse.com/docs",
+      "summary": "支持解析／反序列化、分隔与引用配置、错误元数据、文件分块和 Worker；可配置输出公式转义。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "yaml",
+      "name": "yaml",
+      "type": "浏览器序列化组件",
+      "url": "https://eemeli.org/yaml/",
+      "summary": "YAML 1.1／1.2 的成熟 parse／stringify；用于替换拼接 YAML 文本。",
+      "license": "ISC",
+      "extra": []
+    },
+    {
+      "id": "jsoneditor",
+      "name": "vanilla-jsoneditor",
+      "type": "可选结构化 JSON 编辑组件",
+      "url": "https://github.com/josdejong/svelte-jsoneditor",
+      "summary": "树／表格／文本、格式化、检索／转换、Schema 与撤销；普通 ES 模块可复用依赖，standalone 可能重复打包。",
+      "license": "ISC",
+      "extra": []
+    },
+    {
+      "id": "ajv",
+      "name": "Ajv",
+      "type": "JSON Schema 校验组件",
+      "url": "https://ajv.js.org/",
+      "summary": "在语法解析之后增加 Schema 与结构错误定位；不替代 JSON 文本解析。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "jsondiffpatch",
+      "name": "jsondiffpatch",
+      "type": "结构化差异组件",
+      "url": "https://github.com/benjamine/jsondiffpatch",
+      "summary": "递归 diff、数组 LCS、delta／JSON Patch 等；对象数组语义匹配需自行指定 objectHash。",
+      "license": "MIT",
+      "extra": []
+    },
+    {
+      "id": "jsonrepair",
+      "name": "jsonrepair",
+      "type": "显式 JSON 修复候选",
+      "url": "https://github.com/josdejong/jsonrepair",
+      "summary": "用于用户明确选择的修复流程；修复前后应可对比，不能作为普通解析器默默改写内容。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "xml",
+      "name": "fast-xml-parser / builder",
+      "type": "已存在 XML 处理与模块升级路线",
+      "url": "https://github.com/NaturalIntelligence/fast-xml-parser",
+      "summary": "上游当前 README 推荐独立 validator／builder；与现锁版的 API 差异需先确认。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "xmlvalidator",
+      "name": "fast-xml-validator",
+      "type": "XML 语法校验升级候选",
+      "url": "https://github.com/NaturalIntelligence/fast-xml-validator",
+      "summary": "上游拆分的校验模块；验证兼容性后迁移，不等于 XSD Schema 校验。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "xmlwasm",
+      "name": "libxml2-wasm",
+      "type": "按需 XSD／XML 引擎 PoC",
+      "url": "https://github.com/jameslan/libxml2-wasm",
+      "summary": "高级 XML／XSD 路线，WASM 资源、外部 include/import 与特性状态需实际验证。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "table",
+      "name": "TanStack Table",
+      "type": "Headless 表格组件，可选而非默认",
+      "url": "https://github.com/tanstack/table",
+      "summary": "排序、过滤、分组、聚合和行选择，样式由项目控制；CSV 解析和虚拟滚动需要另外实现／组合。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "jsonata",
+      "name": "JSONata",
+      "type": "按需数据查询转换组件",
+      "url": "https://github.com/jsonata-js/jsonata",
+      "summary": "适合统一 JSON 按路径查询、映射与转换的高级模式；不是简单格式化所必需。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "cyberchef",
+      "name": "CyberChef",
+      "type": "浏览器完整工具站／步骤管线对标",
+      "url": "https://github.com/gchq/CyberChef",
+      "summary": "参考操作配方、输入输出、编码与文本处理；按实际需要使用算法／模型，避免将整个项目打入首屏。",
+      "license": "Apache-2.0",
+      "extra": [
+        "https://raw.githubusercontent.com/gchq/CyberChef/master/src/core/config/Categories.json"
+      ]
+    },
+    {
+      "id": "ittools",
+      "name": "IT Tools",
+      "type": "完整工具站／专用表单对标",
+      "url": "https://github.com/CorentinTh/it-tools",
+      "summary": "参考编码、case、URL、日期与生成器的任务表单；不是给 React 页面直接安装的单个组件。",
+      "license": "GPL-3.0",
+      "extra": [
+        "https://raw.githubusercontent.com/CorentinTh/it-tools/main/LICENSE"
+      ]
+    },
+    {
+      "id": "devtoys",
+      "name": "DevToys",
+      "type": "桌面工具产品／文本工具体验对标",
+      "url": "https://github.com/DevToys-app/DevToys.Tools",
+      "summary": "默认工具和专用任务操作可参考；桌面 .NET 工具不等于可嵌入 Web 组件。",
+      "license": "MIT",
+      "extra": [
+        "https://raw.githubusercontent.com/DevToys-app/DevToys/main/LICENSE.md"
+      ]
+    },
+    {
+      "id": "segmenter",
+      "name": "Intl.Segmenter",
+      "type": "原生国际化标准／自研升级基础",
+      "url": "https://tc39.es/proposal-intl-segmenter/",
+      "summary": "字素、词、句分段是 Unicode 文本工具的基础；locale 大小写／Collator 属于同族 Intl／ECMAScript 能力，不由此组件一包承担。",
+      "license": "原生平台能力",
+      "extra": []
+    },
+    {
+      "id": "url",
+      "name": "WHATWG URL",
+      "type": "原生 URL 标准",
+      "url": "https://url.spec.whatwg.org/",
+      "summary": "URL 与 URLSearchParams 支撑分解、参数序列化和组件编码策略。",
+      "license": "原生平台能力",
+      "extra": []
+    },
+    {
+      "id": "webcrypto",
+      "name": "Web Cryptography API",
+      "type": "原生随机能力",
+      "url": "https://www.w3.org/TR/WebCryptoAPI/",
+      "summary": "getRandomValues 是现密码生成器已有基础；随机索引的分布与拒绝采样仍是应用层工作。",
+      "license": "原生平台能力",
+      "extra": []
+    },
+    {
+      "id": "validator",
+      "name": "validator.js",
+      "type": "按函数引入的校验组件",
+      "url": "https://github.com/validatorjs/validator.js",
+      "summary": "提供 isEmail 等配置化校验，可只导入单个函数；提取候选位置仍由本项目实现。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "bcrypt",
+      "name": "bcryptjs",
+      "type": "已存在的兼容哈希引擎",
+      "url": "https://github.com/dcodeIO/bcrypt.js",
+      "summary": "官方说明输入长度限制按 UTF-8 字节计算，并提供截断检测；保留 hash 格式兼容性。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "decimal",
+      "name": "decimal.js",
+      "type": "按需十进制算术组件",
+      "url": "https://mikemcl.github.io/decimal.js/",
+      "summary": "任意精度十进制运算、精度和舍入配置；用于小数序列、求和与单位输出。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "mathjs",
+      "name": "math.js",
+      "type": "未来表达式／单位工具候选",
+      "url": "https://github.com/josdejong/mathjs",
+      "summary": "表达式、数值类型、单位与部分符号计算；当前仅五个固定公式时优先评估直接公式，而非整体迁移。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "towords",
+      "name": "to-words",
+      "type": "现有库的升级候选",
+      "url": "https://github.com/mastermunj/to-words",
+      "summary": "官方当前文档提供多 locale、金额／序数、字符串／BigInt 路线；与现安装版本 API 对齐后再启用。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "temporal",
+      "name": "Temporal / polyfill",
+      "type": "按需时区／日历语义 PoC",
+      "url": "https://github.com/js-temporal/temporal-polyfill",
+      "summary": "明确区分日期时间、时区、日历与时长；不能按用户设备都已有原生 Temporal 来实现。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "cron",
+      "name": "cron-parser",
+      "type": "Cron 运行时间计算组件",
+      "url": "https://github.com/harrisiirak/cron-parser",
+      "summary": "后续运行时间、字段编辑、时区和 DST；引入 Luxon 依赖，需评估与现 Day.js 的重复。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    },
+    {
+      "id": "dayjs",
+      "name": "Day.js",
+      "type": "已存在的日期引擎",
+      "url": "https://github.com/iamkun/dayjs",
+      "summary": "继续复用小型日期核心及按需插件，不为简单时长计算另引入完整时间库。",
+      "license": "实施前按锁定版本核验",
+      "extra": []
+    }
+  ]
+}

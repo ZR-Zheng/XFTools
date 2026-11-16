@@ -9,7 +9,7 @@ import { JsonFormat } from '@utils/json';
 import { useWorkbenchText } from 'i18n/workbench';
 import InputHeader from '@components/InputHeader';
 
-const exampleCards: CardExampleType<{}>[] = [
+const exampleCards: CardExampleType<Record<string, never>>[] = [
   {
     title: 'Valid JSON Object',
     description:
@@ -67,7 +67,10 @@ export default function ValidateJson({ title }: ToolComponentProps) {
       } else {
         setResult(t('validateJson.invalidJson', { error }));
       }
-    } else { setResult(''); setValid(null); }
+    } else {
+      setResult('');
+      setValid(null);
+    }
   };
 
   return (
@@ -82,7 +85,21 @@ export default function ValidateJson({ title }: ToolComponentProps) {
         />
       }
       resultComponent={
-        <div><InputHeader title={t('validateJson.resultTitle')} /><div className={`validation-result ${valid === null ? 'empty' : valid ? 'success' : 'error'}`} role="status"><p>{valid === null ? (english ? 'Paste JSON to check its syntax.' : '粘贴 JSON 后，将自动检查语法。') : result.replace(/^[✅❌]\s*/, '')}</p></div></div>
+        <div>
+          <InputHeader title={t('validateJson.resultTitle')} />
+          <div
+            className={`validation-result ${valid === null ? 'empty' : valid ? 'success' : 'error'}`}
+            role="status"
+          >
+            <p>
+              {valid === null
+                ? english
+                  ? 'Paste JSON to check its syntax.'
+                  : '粘贴 JSON 后，将自动检查语法。'
+                : result.replace(/^[✅❌]\s*/, '')}
+            </p>
+          </div>
+        </div>
       }
       initialValues={{}}
       getGroups={null}

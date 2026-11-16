@@ -1,4 +1,3 @@
-import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -30,7 +29,7 @@ const exampleCards: CardExampleType<InitialValuesType>[] = [
 
 export default function XmlValidator({
   title,
-  longDescription
+  longDescription: _longDescription
 }: ToolComponentProps) {
   const { t } = useTranslation('xml');
   const [input, setInput] = useState<string>('');

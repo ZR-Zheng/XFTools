@@ -10,6 +10,7 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import { useWorkbenchText } from 'i18n/workbench';
 import { CustomSnackBarContext } from 'contexts/CustomSnackBarContext';
+import ToolHeaderActions from '@components/ToolHeaderActions';
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
@@ -63,7 +64,7 @@ export default function DragDropPdfEditor() {
     setExporting(true);
     try {
       await generatePdf();
-    } catch (error) {
+    } catch {
       showSnackBar(
         english
           ? 'Could not export. Check the document and field content.'
@@ -86,6 +87,9 @@ export default function DragDropPdfEditor() {
 
   const handleClear = () => {
     setFile(null);
+    setFields([]);
+    setNumPages(0);
+    setSelectedId(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -457,15 +461,7 @@ export default function DragDropPdfEditor() {
       )}
 
       <Box sx={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            mb: 2,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            flexWrap: 'wrap'
-          }}
-        >
+        <ToolHeaderActions>
           <Button variant="contained" component="label">
             {t('formBuilder.file.upload')}
             <input
@@ -478,27 +474,34 @@ export default function DragDropPdfEditor() {
           </Button>
 
           {file && (
-            <span style={{ overflowWrap: 'anywhere' }}>{file.name}</span>
+            <span className="tool-source-name" title={file.name}>
+              {file.name}
+            </span>
           )}
 
           <Button
             variant="contained"
-            sx={{ ml: 2 }}
-            disabled={!fields.length || exporting}
+            disabled={!file || !fields.length || exporting}
             onClick={exportPdf}
           >
             {t('formBuilder.file.export')}
           </Button>
 
-          <Button
-            variant="contained"
-            sx={{ ml: 2 }}
-            disabled={!file}
-            onClick={handleClear}
-          >
+          <Button variant="contained" disabled={!file} onClick={handleClear}>
             {t('formBuilder.file.clear')}
           </Button>
-        </Box>
+        </ToolHeaderActions>
+
+        {!file && (
+          <button
+            type="button"
+            className="pdf-form-empty"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <strong>选择 PDF，开始设计表单</strong>
+            <span>上传后可添加文本框、复选框和其他控件。</span>
+          </button>
+        )}
 
         <Box
           sx={{ minWidth: 0, maxHeight: '75vh', overflow: 'auto' }}

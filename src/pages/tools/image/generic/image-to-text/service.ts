@@ -32,7 +32,8 @@ export const extractTextFromImage = async (
   } catch (error) {
     console.error('Error extracting text from image:', error);
     throw new Error(
-      'Failed to extract text from image. Please try again with a clearer image.'
+      'Failed to extract text from image. Please try again with a clearer image.',
+      { cause: error }
     );
   }
 };

@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import ToolImageInput from '../input/ToolImageInput';
 import { useWorkbenchText } from 'i18n/workbench';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
+import ToolHeaderActions from '../ToolHeaderActions';
 
 const defaults = {
   rotation: 0,
@@ -160,8 +161,10 @@ export default function NativeImageEditor() {
     );
   return (
     <div className="native-image-editor">
-      <div className="editor-toolbar">
-        <span className="editor-filename">{file.name}</span>
+      <ToolHeaderActions>
+        <span className="tool-source-name" title={file.name}>
+          {file.name}
+        </span>
         <button
           className="secondary-button"
           onClick={() => upload.current?.click()}
@@ -181,7 +184,7 @@ export default function NativeImageEditor() {
         >
           {tr('重置', 'Reset')}
         </button>
-      </div>
+      </ToolHeaderActions>
       <input
         ref={upload}
         type="file"

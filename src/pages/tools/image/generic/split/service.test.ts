@@ -7,7 +7,7 @@ import {
   PDFStream,
   PageSizes
 } from 'pdf-lib';
-import { Jimp, intToRGBA } from 'jimp';
+import { Jimp } from 'jimp';
 import { splitImagesToPDF } from './service';
 import { InitialValuesType } from './types';
 

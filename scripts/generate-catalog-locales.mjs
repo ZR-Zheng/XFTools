@@ -20,7 +20,7 @@ function scan(directory) {
 }
 scan('src/pages/tools');
 const catalog = {};
-for (const language of ['zh', 'en']) {
+for (const language of ['zh']) {
   const resources = {};
   for (const file of fs.readdirSync(`public/locales/${language}`)) {
     if (!['ui.json', 'image-editor.json', 'translation.json'].includes(file))

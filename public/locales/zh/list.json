@@ -3,7 +3,7 @@
     "concatenate": "连接",
     "concatenateDescription": "连接副本（如果未选中，则项目将交织在一起）",
     "copyDescription": "份数（可以是分数）",
-    "description": "浏览器中的列表项复制实用程序。输入您的列表并指定复制条件即可创建项目副本。非常适合数据扩展、测试或创建重复模式。",
+    "description": "列表项复制实用程序。输入您的列表并指定复制条件即可创建项目副本。非常适合数据扩展、测试或创建重复模式。",
     "duplicationOptions": "复制选项",
     "error": "错误",
     "example1Description": "此示例显示如何复制单词列表。",
@@ -57,7 +57,7 @@
     }
   },
   "findMostPopular": {
-    "description": "浏览器中的实用程序，用于查找列表中最热门的项目。输入您的列表，即可立即获取出现频率最高的项目。非常适合数据分析、趋势识别或查找共同点。",
+    "description": "实用程序，用于查找列表中最热门的项目。输入您的列表，即可立即获取出现频率最高的项目。非常适合数据分析、趋势识别或查找共同点。",
     "displayFormatDescription": "如何显示最受欢迎的列表项？",
     "displayOptions": {
       "count": "显示项目数",
@@ -98,7 +98,7 @@
     "caseSensitiveItems": "区分大小写的项目",
     "caseSensitiveItemsDescription": "将具有不同大小写的项目作为列表中的唯一元素输出。",
     "delimiterDescription": "设置分隔符号或正则表达式。",
-    "description": "浏览器中的实用程序，用于在列表中查找唯一项。输入您的列表，即可立即获取所有唯一值（已删除重复项）。非常适合数据清理、重复数据删除或查找不同元素。",
+    "description": "实用程序，用于在列表中查找唯一项。输入您的列表，即可立即获取所有唯一值（已删除重复项）。非常适合数据清理、重复数据删除或查找不同元素。",
     "findAbsolutelyUniqueItems": "寻找绝对独特的物品",
     "findAbsolutelyUniqueItemsDescription": "仅显示列表中存在于单个副本中的项目。",
     "inputListDelimiter": "输入列表分隔符",
@@ -114,7 +114,7 @@
     "uniqueItemOptions": "独特物品选项"
   },
   "reverse": {
-    "description": "在浏览器中反向打印所有列表项。输入项可以用任意符号分隔，并且您还可以更改反向列表项的分隔符。",
+    "description": "反向打印所有列表项。输入项可以用任意符号分隔，并且您还可以更改反向列表项的分隔符。",
     "inputTitle": "输入列表",
     "itemSeparator": "项目分隔符",
     "itemSeparatorDescription": "设置分隔符号或正则表达式。",
@@ -140,13 +140,13 @@
     }
   },
   "rotate": {
-    "description": "浏览器中的列表项旋转工具。输入您的列表并指定旋转量，即可将列表项移动指定的位置。非常适合数据操作、循环移动或列表重新排序。",
+    "description": "列表项旋转工具。输入您的列表并指定旋转量，即可将列表项移动指定的位置。非常适合数据操作、循环移动或列表重新排序。",
     "shortDescription": "按指定位置旋转列表项",
     "title": "循环移位列表"
   },
   "shuffle": {
     "delimiterDescription": "设置分隔符号或正则表达式。",
-    "description": "浏览器中的列表项随机排序工具。输入您的列表，即可立即获得一个按随机顺序排列的列表项随机版本。非常适合创建多样性、测试随机性或混合有序数据。",
+    "description": "列表项随机排序工具。输入您的列表，即可立即获得一个按随机顺序排列的列表项随机版本。非常适合创建多样性、测试随机性或混合有序数据。",
     "inputListSeparator": "输入列表分隔符",
     "inputTitle": "输入列表",
     "joinSeparatorDescription": "在随机列表中使用此分隔符。",
@@ -160,7 +160,7 @@
   "sort": {
     "caseSensitive": "区分大小写排序",
     "caseSensitiveDescription": "分别对大写和小写字母进行排序。按升序排列时，大写字母优先于小写字母。（仅适用于字母排序模式。）",
-    "description": "浏览器中的列表项排序工具。输入您的列表并指定排序条件，即可按升序或降序排列项目。非常适合数据整理、文本处理或创建有序列表。",
+    "description": "列表项排序工具。输入您的列表并指定排序条件，即可按升序或降序排列项目。非常适合数据整理、文本处理或创建有序列表。",
     "inputItemSeparator": "输入项分隔符",
     "inputTitle": "输入列表",
     "joinSeparatorDescription": "使用此符号作为排序列表中项目之间的连接符。",
@@ -195,12 +195,12 @@
     "title": "列表排序"
   },
   "truncate": {
-    "description": "浏览器中的列表截断工具。输入您的列表并指定要保留的最大项目数。非常适合数据处理、列表管理或限制内容长度。",
+    "description": "列表截断工具。输入您的列表并指定要保留的最大项目数。非常适合数据处理、列表管理或限制内容长度。",
     "shortDescription": "将列表截断为指定数量的项目",
     "title": "截取列表"
   },
   "unwrap": {
-    "description": "浏览器中的列表项展开工具。输入已展开的列表，并指定展开条件以展平有序的列表项。非常适合数据处理、文本操作或从结构化列表中提取内容。",
+    "description": "列表项展开工具。输入已展开的列表，并指定展开条件以展平有序的列表项。非常适合数据处理、文本操作或从结构化列表中提取内容。",
     "shortDescription": "从结构化格式中解开列表项",
     "title": "移除列表项包围字符"
   },

@@ -1,33 +1,5 @@
 import i18n from './index';
-import chinese from '../../public/locales/zh/ui.json';
-
-const copy: Record<string, string> = {
-  ...chinese,
-  'Default prefix': '默认前缀'
-};
-function addResourceCopy(
-  english: Record<string, unknown>,
-  translated: Record<string, unknown>
-) {
-  for (const [key, value] of Object.entries(english)) {
-    const chineseValue = translated[key];
-    if (typeof value === 'string' && typeof chineseValue === 'string') {
-      copy[value] ??= chineseValue;
-    } else if (
-      value &&
-      chineseValue &&
-      typeof value === 'object' &&
-      typeof chineseValue === 'object'
-    ) {
-      addResourceCopy(
-        value as Record<string, unknown>,
-        chineseValue as Record<string, unknown>
-      );
-    }
-  }
-}
-addResourceCopy(i18n.store.data.en || {}, i18n.store.data.zh || {});
-i18n.store.on('added', () => addResourceCopy(i18n.store.data.en || {}, i18n.store.data.zh || {}));
+import { interfaceCopy as copy } from './interface-copy';
 const feedbackPatterns = Object.entries(copy)
   .filter(([key]) => key.includes('{{0}}'))
   .map(([key, translated]) => ({
@@ -45,12 +17,12 @@ const feedbackPatterns = Object.entries(copy)
 /** Localize interface labels and examples; never apply to user input or tool output. */
 export function uiText<T>(value: T): T {
   if (typeof value !== 'string') return value;
-  const translation =
-    i18n.language === 'en'
-      ? undefined
-      : copy[value] || copy[value.replace(/\s+/g, ' ').trim()];
+  const csvError = value.match(/^CSV record (\d+): (.*)$/s);
+  if (csvError)
+    return `CSV 第 ${csvError[1]} 条记录：${uiText(csvError[2])}` as T;
+  const translation = copy[value] || copy[value.replace(/\s+/g, ' ').trim()];
   if (translation) return translation as T;
-  if (i18n.language !== 'en') {
+  {
     for (const { pattern, translated } of feedbackPatterns) {
       const match = value.match(pattern);
       if (match)
@@ -86,7 +58,7 @@ export function uiText<T>(value: T): T {
           'xml',
           'converters'
         ]) {
-      const resolved: unknown = i18n.getResource(i18n.language, namespace, key);
+      const resolved: unknown = i18n.getResource('zh', namespace, key);
       if (typeof resolved === 'string') return resolved as T;
     }
   }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ToolFileResult from '@components/result/ToolFileResult';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -10,7 +10,10 @@ export default function PdfToEpub({ title }: ToolComponentProps) {
   const [result, setResult] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-  const compute = async (options: {}, input: File | null) => {
+  const compute = async (
+    options: Record<string, never>,
+    input: File | null
+  ) => {
     if (!input) return;
     try {
       setIsProcessing(true);

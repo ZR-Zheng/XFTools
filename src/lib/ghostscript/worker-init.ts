@@ -24,7 +24,7 @@ export async function protectWithGhostScript(dataStruct: {
 }
 
 const getListener = (worker: Worker): Promise<string> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const listener = (e: MessageEvent) => {
       resolve(e.data);
       worker.removeEventListener('message', listener);

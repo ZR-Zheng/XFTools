@@ -6,6 +6,32 @@
   max-width: 100%;
   min-width: 0;
 }
+.pdf-form-empty {
+  min-height: 220px;
+  width: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.pdf-form-empty strong {
+  font-size: 15px;
+  color: var(--ink);
+}
+.pdf-form-empty span {
+  font-size: 13px;
+  line-height: 1.7;
+}
+.pdf-form-empty:hover {
+  background: var(--blue-soft);
+}
 .specialized-workbench label {
   display: flex;
   flex-direction: column;

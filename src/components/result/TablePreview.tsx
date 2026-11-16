@@ -10,7 +10,13 @@ export default function TablePreview({
 }) {
   const { english } = useWorkbenchText();
   const [delimiter, setDelimiter] = useState(extension === 'tsv' ? '\t' : ',');
-  const rows = splitCsv(value, false, '', true, delimiter);
+  let rows: string[][] = [];
+  let error = '';
+  try {
+    rows = splitCsv(value, false, '', true, delimiter);
+  } catch (exception) {
+    error = exception instanceof Error ? exception.message : String(exception);
+  }
   const columns = Math.min(
     20,
     Math.max(0, ...rows.slice(0, 50).map((row) => row.length))
@@ -30,6 +36,14 @@ export default function TablePreview({
           <option value="|">{english ? 'Pipe' : '竖线'} (|)</option>
         </select>
       </label>
+      {error && (
+        <p role="alert" className="tool-inline-error">
+          {english
+            ? 'Cannot preview with this separator. '
+            : '无法使用此分隔符预览。'}
+          {error}
+        </p>
+      )}
       <div className="ui-table-scroll">
         <table className="ui-table">
           <caption className="sr-only">

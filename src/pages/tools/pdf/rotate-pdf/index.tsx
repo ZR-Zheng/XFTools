@@ -57,7 +57,7 @@ const exampleCards: CardExampleType<InitialValuesType>[] = [
 
 export default function RotatePdf({
   title,
-  longDescription
+  longDescription: _longDescription
 }: ToolComponentProps) {
   const { t } = useTranslation('pdf');
   const [input, setInput] = useState<File | null>(null);
@@ -110,7 +110,7 @@ export default function RotatePdf({
     try {
       const count = parsePageRanges(pageRanges, totalPages).length;
       setPageRangePreview(t('rotatePdf.pagesWillBeRotated', { count }));
-    } catch (error) {
+    } catch {
       setPageRangePreview('');
     }
   };
@@ -123,7 +123,7 @@ export default function RotatePdf({
       const rotatedPdf = await rotatePdf(input, values);
       setResult(rotatedPdf);
     } catch (error) {
-      throw new Error('Error rotating PDF: ' + error);
+      throw new Error('Error rotating PDF: ' + error, { cause: error });
     } finally {
       setIsProcessing(false);
     }

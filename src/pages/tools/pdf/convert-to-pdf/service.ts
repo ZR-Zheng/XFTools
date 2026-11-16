@@ -63,7 +63,6 @@ export async function buildPdf(
 
   const { pageType, orientation, scale } = options;
 
-  let loadedImages: LoadedImage[] = [];
   const imageSizes: ImageSize[] = [];
 
   const results = await Promise.all(
@@ -75,7 +74,9 @@ export async function buildPdf(
     )
   );
 
-  loadedImages = results.filter((img): img is LoadedImage => img !== null);
+  const loadedImages = results.filter(
+    (img): img is LoadedImage => img !== null
+  );
 
   if (!loadedImages.length) {
     throw new Error('No images could be loaded');

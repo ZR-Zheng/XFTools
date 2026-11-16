@@ -1,4 +1,4 @@
-import { splitCsv } from '@utils/csv';
+import { splitCsv, writeCsv, uniqueCsvHeaders } from '@utils/csv';
 import { parseJsonInput } from '@utils/json';
 import { escapeMarkup } from '@utils/string';
 import { InitialValuesType, TableFormat } from './types';
@@ -18,12 +18,7 @@ function normalizeRows(rows: TableRows): TableRows {
 }
 
 function uniqueHeaders(headers: string[]): string[] {
-  const seen = new Map<string, number>();
-  return headers.map((header) => {
-    const count = (seen.get(header) ?? 0) + 1;
-    seen.set(header, count);
-    return count === 1 ? header : `${header}_${count}`;
-  });
+  return uniqueCsvHeaders(headers);
 }
 
 const displayLength = (text: string): number => Array.from(text).length;
@@ -184,20 +179,8 @@ export function detectTableFormat(input: string): TableFormat {
 /* Formatting                                                                 */
 /* -------------------------------------------------------------------------- */
 
-function escapeCsvField(field: string, delimiter: string): string {
-  const needsQuotes =
-    field.includes(delimiter) ||
-    /["\r\n]/.test(field) ||
-    field !== field.trim();
-  return needsQuotes ? `"${field.replace(/"/g, '""')}"` : field;
-}
-
 function toDelimited(rows: TableRows, delimiter: string): string {
-  return rows
-    .map((row) =>
-      row.map((cell) => escapeCsvField(cell, delimiter)).join(delimiter)
-    )
-    .join('\n');
+  return writeCsv(rows, { delimiter });
 }
 
 function escapeMarkdownCell(cell: string): string {

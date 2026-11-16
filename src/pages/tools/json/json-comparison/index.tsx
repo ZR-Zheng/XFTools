@@ -7,7 +7,7 @@ import { compareJson } from './service';
 import { ToolComponentProps } from '@tools/defineTool';
 import { Grid } from '@components/ui';
 
-type InitialValuesType = {};
+type InitialValuesType = Record<string, never>;
 
 const initialValues: InitialValuesType = {};
 
@@ -62,7 +62,7 @@ export default function JsonComparison({ title }: ToolComponentProps) {
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ToolCodeInput
-              title={uiText("First JSON")}
+              title={uiText('First JSON')}
               value={input1}
               onChange={handleInput1Change}
               language={'json'}
@@ -70,7 +70,7 @@ export default function JsonComparison({ title }: ToolComponentProps) {
           </Grid>
           <Grid size={{ xs: 12, md: 6, lg: 4 }}>
             <ToolCodeInput
-              title={uiText("Second JSON")}
+              title={uiText('Second JSON')}
               language={'json'}
               value={input2}
               onChange={handleInput2Change}
@@ -78,7 +78,7 @@ export default function JsonComparison({ title }: ToolComponentProps) {
           </Grid>
           <Grid size={{ xs: 12, md: 12, lg: 4 }}>
             <ToolTextResult
-              title={uiText("Differences")}
+              title={uiText('Differences')}
               value={result}
               extension={'txt'}
             />

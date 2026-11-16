@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { Buffer } from 'buffer';
 import path from 'path';
-import { Jimp, intToRGBA } from 'jimp';
+import { Jimp } from 'jimp';
 
 test.describe('Convert JPG to PNG tool', () => {
   test.beforeEach(async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe('Convert JPG to PNG tool', () => {
 
     // Click on download
     const downloadPromise = page.waitForEvent('download');
-    await page.getByText('Download').click();
+    await page.getByRole('button', { name: '下载', exact: true }).click();
 
     // Intercept and read downloaded PNG
     const download = await downloadPromise;
@@ -47,14 +47,14 @@ test.describe('Convert JPG to PNG tool', () => {
 
     // Enable transparency on color 0x808080
     await page
-      .getByRole('checkbox', { name: 'Enable PNG Transparency', exact: true })
+      .getByRole('checkbox', { name: '启用 PNG 透明度', exact: true })
       .check();
     await page.getByTestId('color-input').fill('#808080');
     await page.getByTestId('process-tool').click();
 
     // Click on download
     const downloadPromise = page.waitForEvent('download');
-    await page.getByText('Download').click();
+    await page.getByRole('button', { name: '下载', exact: true }).click();
 
     // Intercept and read downloaded PNG
     const download = await downloadPromise;

@@ -17,7 +17,7 @@ describe('csvToTsv', () => {
   it('should remove comments if commentCharacter is set', () => {
     const input = '#comment\na,b,c\n1,2,3';
     const result = csvToTsv(input, ',', '"', '#', true, false);
-    expect(result).toBe('\na\tb\tc\n1\t2\t3');
+    expect(result).toBe('a\tb\tc\n1\t2\t3');
   });
 
   it('should remove comments if commentCharacter is set, emptyline set to true', () => {
@@ -32,10 +32,9 @@ describe('csvToTsv', () => {
     expect(result).toBe('a\tb\tc\n1\t2\t3\n4\t5\t6');
   });
 
-  it('should not unquote if value is not properly quoted', () => {
+  it('rejects unterminated quotes instead of silently corrupting records', () => {
     const input = '"a,b,c\n\n1,2,3\n\n4,5,6';
-    const result = csvToTsv(input, ',', '"', '', true, true);
-    expect(result).toBe('"a\tb\tc\n1\t2\t3\n4\t5\t6');
+    expect(() => csvToTsv(input, ',', '"', '', true, true)).toThrow(/record 1/);
   });
 
   it('should unquote if value is properly quoted', () => {

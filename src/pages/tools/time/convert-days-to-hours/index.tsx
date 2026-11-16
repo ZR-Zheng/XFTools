@@ -61,7 +61,7 @@ const exampleCards: CardExampleType<InitialValuesType>[] = [
 
 export default function ConvertDaysToHours({
   title,
-  longDescription
+  longDescription: _longDescription
 }: ToolComponentProps) {
   const { t } = useTranslation('time');
   const [input, setInput] = useState<string>('');

@@ -555,10 +555,6 @@ export default function ResizeWorkbench() {
                 : tr('下载图片', 'Download image')}
             </button>
           )}
-          <p className="resize-local">
-            <Glyph name="shield" size={13} />
-            {tr('图片在浏览器本地处理', 'Processed in your browser')}
-          </p>
         </aside>
       </div>
       {sources.length > 0 && (

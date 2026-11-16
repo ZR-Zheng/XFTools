@@ -72,7 +72,7 @@ export default function MultiFileInput({
           added.push({ file, order: 0, preview });
         }
         if (active.current) update([...latest.current, ...added]);
-      } catch (error) {
+      } catch {
         if (active.current)
           showSnackBar(
             english

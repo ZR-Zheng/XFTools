@@ -4,18 +4,23 @@
 
 ## 本轮变化
 
-| 项目 | 改造前 | 改造后 |
-| --- | --- | --- |
-| 直接运行时依赖 | 57 | 43 |
-| 锁文件包记录（含平台可选项） | 761 | 631 |
-| 控件与主题 | Material UI + Emotion | 原生控件、共享语义 CSS 变量 |
-| 代码编辑 | Monaco | 本地 textarea、行号与状态栏 |
-| 图片编辑 | Filerobot / Scaleflex | 原生 Canvas |
-| 样式构建 | Tailwind + PostCSS 插件 | 普通 CSS |
-| 工具说明 | 首屏加载全部资源 | 首屏加载目录元数据，详细选项与示例按需加载 |
-| HEIC 解码 | 两套解码器 | 按需加载 heic-to |
+| 项目                         | 改造前                      | 改造后                                     |
+| ---------------------------- | --------------------------- | ------------------------------------------ |
+| 直接运行时依赖               | 57                          | 45                                         |
+| 锁文件包记录（含平台可选项） | 761                         | 635                                        |
+| 控件与主题                   | Material UI + Emotion       | 原生控件、共享语义 CSS 变量                |
+| 代码编辑                     | Monaco                      | 本地 textarea、行号与状态栏                |
+| 图片编辑                     | Filerobot / Scaleflex       | 原生 Canvas                                |
+| 样式构建                     | Tailwind + PostCSS 插件     | 普通 CSS                                   |
+| 工具说明                     | 首屏加载全部资源            | 首屏加载目录元数据，详细选项与示例按需加载 |
+| HEIC 解码                    | 两套解码器                  | 按需加载 heic-to                           |
+| 固定公式计算                 | nerdamer-prime 通用符号引擎 | 16 个方向的显式公式，保留单位换算          |
+| CSV／TSV 与 YAML             | 多套手工拆行和拼接          | 共用 Papa Parse 与 yaml                    |
+| 栅格图像缩放                 | Canvas 默认重采样           | 执行时加载 pica，逐张处理                  |
 
 移除 Material UI、Emotion、Monaco、Iconify、Filerobot、styled-components、react-konva、notistack、重复 HEIC 解码器、未使用的 i18next HTTP backend 等直接依赖。清除旧 pnpm 锁文件和工作区配置，统一使用 npm 与 package-lock.json。
+
+原界面减重阶段曾降至 43 项生产依赖；调研落地后新增三个格式／图像处理内核，并移除 nerdamer-prime，当前为 45 项。公式计算器的 JS 分块由约 975 KB 降至 40.2 KB；这不代表整个站点的体积变化。实现与验收记录见[调研方案落地记录](research/implementation-2026-11-16.md)。
 
 ## 保留的功能模块
 

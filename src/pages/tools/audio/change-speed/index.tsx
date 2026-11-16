@@ -37,7 +37,7 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
     try {
       const resultFile = await changeAudioSpeed(input, optionsValues);
       setResult(resultFile);
-    } catch (err) {
+    } catch {
       setResult(null);
     } finally {
       setLoading(false);
@@ -67,9 +67,11 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
     {
       title: t('changeSpeed.outputFormat'),
       component: (
-        <Box sx={{
-          mt: 2
-        }}>
+        <Box
+          sx={{
+            mt: 2
+          }}
+        >
           <RadioGroup
             row
             value={values.outputFormat}

@@ -7,7 +7,6 @@ export function stringReverser(
   trim: boolean
 ) {
   let array: string[] = [];
-  let result: string[] = [];
 
   // split the input in multiLine mode
   if (multiLine) {
@@ -25,6 +24,6 @@ export function stringReverser(
     array = array.map((line) => line.trim());
   }
 
-  result = array.map((element) => reverseString(element));
+  const result = array.map((element) => reverseString(element));
   return result.join('\n');
 }

@@ -3,7 +3,6 @@ import React, { useContext, useState } from 'react';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import InputHeader from '../InputHeader';
 import ResultFooter from './ResultFooter';
-import { replaceSpecialCharacters } from '@utils/string';
 import mime from 'mime';
 import { globalInputHeight } from '../../config/uiConfig';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +19,6 @@ export default function ToolTextResult({
   title,
   value: resultValue,
   extension = 'txt',
-  keepSpecialCharacters,
   loading,
   language
 }: {
@@ -129,9 +127,7 @@ export default function ToolTextResult({
         />
       ) : (
         <TextField
-          value={
-            keepSpecialCharacters ? value : replaceSpecialCharacters(value)
-          }
+          value={value}
           fullWidth
           multiline
           rows={

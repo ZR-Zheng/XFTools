@@ -80,7 +80,8 @@ export default function Home() {
     .slice(0, 6);
   const setQuery = (value: string) => {
     const next = new URLSearchParams(params);
-    value ? next.set('q', value) : next.delete('q');
+    if (value) next.set('q', value);
+    else next.delete('q');
     setParams(next, { replace: true });
   };
   return (
@@ -88,10 +89,13 @@ export default function Home() {
       {isHome ? (
         <section className="welcome">
           <div className="welcome-copy">
-            <span className="eyebrow">YOUR EVERYDAY TOOLKIT</span>
-            <h1>XFTools<span className="brand-period" aria-hidden="true">.</span></h1>
+            <h1>
+              XFTools
+              <span className="brand-period" aria-hidden="true">
+                .
+              </span>
+            </h1>
             <p className="welcome-tagline">Small tools. Clear focus.</p>
-            <p className="welcome-description">{w('intro')}</p>
             <div className="welcome-meta">
               <span>
                 <strong>{tools.length}</strong> {w('tools')}
@@ -109,7 +113,6 @@ export default function Home() {
           </div>
           <div className="workspace-art" aria-hidden="true">
             <div className="art-grid" />
-            <div className="art-label">{uiText('YOUR EVERYDAY TOOLKIT')}</div>
             <div className="art-card art-one">
               <span className="art-mini">
                 <Glyph name="image" size={23} />
@@ -209,9 +212,7 @@ export default function Home() {
                 <Glyph name="sparkle" size={19} />
                 {w('featured')}
               </h2>
-              <p>{w('featuredSub')}</p>
             </div>
-            <span className="muted-label">{w('noAccount')}</span>
           </div>
           <div className="featured-grid">
             {featured.map((tool) => (
@@ -232,13 +233,7 @@ export default function Home() {
           {(isHome || query) && (
             <div>
               <h2>{query ? w('results') : title}</h2>
-              <p>
-                {isHome
-                  ? w('browseSub')
-                  : query
-                    ? `${w('resultsFor')} “${query}”`
-                    : w('total')}
-              </p>
+              {query && <p>{`${w('resultsFor')} “${query}”`}</p>}
             </div>
           )}
           <span className="result-count" role="status" aria-live="polite">

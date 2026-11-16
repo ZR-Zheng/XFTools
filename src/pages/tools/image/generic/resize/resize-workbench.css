@@ -264,14 +264,7 @@
   min-height: 44px;
   padding: 10px 12px;
 }
-.resize-local {
-  font-size: 11px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
+
 .resize-scale-range {
   width: 100%;
   accent-color: var(--action);
@@ -409,8 +402,5 @@
   }
   .resize-controls fieldset {
     gap: 14px;
-  }
-  .resize-local {
-    font-size: 12px;
   }
 }

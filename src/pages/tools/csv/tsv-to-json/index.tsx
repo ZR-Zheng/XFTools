@@ -20,7 +20,7 @@ const initialValues: InitialValuesType = {
   comment: '#',
   useHeaders: true,
   skipEmptyLines: true,
-  dynamicTypes: true,
+  dynamicTypes: false,
   indentationType: 'space',
   spacesCount: 2
 };
@@ -142,12 +142,12 @@ export default function TsvToJson({
       component: (
         <Box>
           <TextFieldWithDesc
-            description={uiText("Character used to qutoe tsv values")}
+            description={uiText('Character used to qutoe tsv values')}
             onOwnChange={(val) => updateField('quote', val)}
             value={values.quote}
           />
           <TextFieldWithDesc
-            description={uiText("Symbol use to mark comments in the TSV")}
+            description={uiText('Symbol use to mark comments in the TSV')}
             value={values.comment}
             onOwnChange={(val) => updateField('comment', val)}
           />
@@ -161,14 +161,16 @@ export default function TsvToJson({
           <CheckboxWithDesc
             checked={values.useHeaders}
             onChange={(value) => updateField('useHeaders', value)}
-            title={uiText("Use Headers")}
-            description={uiText("First row is treated as column headers")}
+            title={uiText('Use Headers')}
+            description={uiText('First row is treated as column headers')}
           />
           <CheckboxWithDesc
             checked={values.dynamicTypes}
             onChange={(value) => updateField('dynamicTypes', value)}
-            title={uiText("Dynamic Types")}
-            description={uiText("Convert numbers and booleans to their proper types")}
+            title={uiText('Dynamic Types')}
+            description={uiText(
+              'Convert numbers and booleans to their proper types'
+            )}
           />
         </Box>
       )
@@ -184,7 +186,7 @@ export default function TsvToJson({
           />
           {values.indentationType === 'space' && (
             <TextFieldWithDesc
-              description={uiText("Number of spaces for indentation")}
+              description={uiText('Number of spaces for indentation')}
               value={values.spacesCount}
               onOwnChange={(val) =>
                 updateNumberField(val, 'spacesCount', updateField)
@@ -218,14 +220,18 @@ export default function TsvToJson({
       getGroups={getGroups}
       inputComponent={
         <ToolCodeInput
-          title={uiText("Input TSV")}
+          title={uiText('Input TSV')}
           value={input}
           onChange={setInput}
           language="tsv"
         />
       }
       resultComponent={
-        <ToolTextResult title={uiText("Output JSON")} value={result} extension={'json'} />
+        <ToolTextResult
+          title={uiText('Output JSON')}
+          value={result}
+          extension={'json'}
+        />
       }
       toolInfo={{ title: `What is a ${title}?`, description: longDescription }}
     />

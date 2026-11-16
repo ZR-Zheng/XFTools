@@ -1,0 +1,28 @@
+{
+  "reviewedAt": "2026-11-16",
+  "method": "使用 TypeScript 转译和隔离执行当前纯函数；未复制替代实现",
+  "csv": {
+    "input": "name,note\nAlice,\"hello\nworld\"",
+    "expectedRowCount": 2,
+    "actualRowCount": 3,
+    "rows": [
+      [
+        "name",
+        "note"
+      ],
+      [
+        "Alice",
+        "hello"
+      ],
+      [
+        "world"
+      ]
+    ]
+  },
+  "jsonComparison": {
+    "left": "{\"text\":\",}\"}",
+    "right": "{\"text\":\"}\"}",
+    "nativeValuesAreDifferent": true,
+    "result": "No differences found"
+  }
+}

@@ -7,3 +7,4 @@ export const ToolPageContext = createContext<{
 }>({ path: '', title: '', experience: defaultExperience });
 export const ToolSourceContext = createContext<unknown>(undefined);
 export const ToolResultVisibleContext = createContext(true);
+export const ToolHeaderActionsContext = createContext<HTMLElement | null>(null);

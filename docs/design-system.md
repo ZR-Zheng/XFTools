@@ -1,10 +1,10 @@
 # XFTools 界面设计规范
 
-本次重设计继续使用 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)。本轮运行 `productivity dashboard minimal --design-system` 与 `forms lazy loading --stack react`，结合 Flat Design 对双主题、原生控件及快速反馈的建议，保留现有 Minimalism & Swiss Style 主规范的网格、语义颜色和功能优先原则。
+本次重设计继续使用 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)。本轮运行 `productivity dashboard minimal --design-system` 与 `forms lazy loading --stack react`，结合 Flat Design 对原生控件及快速反馈的建议，保留现有 Minimalism & Swiss Style 主规范的网格、语义颜色和功能优先原则。
 
 ## 视觉基础
 
-- 主题：中性浅灰工作区、深色分类侧栏、蓝色主要操作；提供完整深色主题。
+- 主题：中性浅灰工作区、深色分类侧栏、蓝色主要操作；页面固定为浅色，不提供主题切换。
 - 字体：系统字体，英文 Segoe UI、中文 PingFang SC / Microsoft YaHei；不依赖远程字体。代码使用编辑器等宽字体。
 - 颜色：通过 `src/components/index.css` 的语义变量统一定义，交互和布局规则在 `src/components/workbench/refinements.css`。原生控件位于 `src/components/ui/`，不依赖组件框架。
 - 间距：以 4 / 8px 为基准；内容面板圆角 10–12px，表单圆角 8px；禁用原有拟物阴影、随机装饰色与巨大工具图标。
@@ -12,7 +12,7 @@
 
 ## 页面与交互
 
-- 桌面：固定侧栏、顶部语言与主题操作、工具搜索、精选入口、分类与工具卡片。
+- 桌面：固定侧栏、工具搜索、精选入口、分类与工具卡片；移除顶部栏，侧栏底部处理状态与版本号同行对齐。
 - 移动端：抽屉导航，工具卡片和输入输出纵向排列。
 - 搜索：名称、说明、关键词匹配；地址栏保存查询；使用 React `useDeferredValue`；Ctrl/Cmd+K 聚焦。
 - 收藏与最近使用：仅存本机，多个组件与浏览器标签页保持同步；提供明确空状态。
@@ -22,12 +22,12 @@
 - 批量图片、PDF、音视频输入共享文件列表；支持键盘可操作的上下移排序、移除与清空，处理顺序与列表顺序一致。
 - CSV/TSV 结果可切换文本与表格预览，预览限制 50 行、20 列；复制与下载始终保留完整数据。
 - 图片编辑使用 Canvas，提供旋转、翻转、百分比裁剪、色彩调整、文字标注、撤销、重置与 PNG/JPEG/WebP 导出。PDF 表单支持点击或拖动添加控件、编辑内容和位置、导出交互表单。
-- 仅中文和英文；新用户默认为中文，主动选择英文后记住偏好。
+- 仅提供简体中文界面，不保留旧的英文与主题偏好。
 
 ## 可访问性与验收
 
-项目标识统一使用 XFTools，不随界面语言翻译。语言切换采用统一样式的菜单，支持键盘、当前选中标记和关闭后的焦点恢复。收藏、最近使用及分类页面保留主标题，目录区仅展示数量或搜索结果，避免重复标题。
+项目标识统一使用 XFTools。界面不提供语言和主题切换；手机导航抽屉支持键盘关闭与焦点恢复。收藏、最近使用及分类页面保留主标题，目录区仅展示数量或搜索结果，避免重复标题。
 
-工具界面与示例的历史英文文案通过 `src/i18n/uiText.ts` 和中英文 `ui.json` 维护；该显示层转换不应用于用户输入或处理结果。XFTools、Image studio、PDF workspace 与装饰宣传语保持英文；操作名称与反馈跟随界面语言。`npm run i18n:check` 会拒绝缺少中文的资源。首页只加载工具元数据，详细选项与示例按工具所属命名空间加载。
+工具界面与示例的历史源文案通过 `src/i18n/uiText.ts`、中文 `ui.json` 及源文案参考资源映射为中文；该显示层转换不应用于用户输入或处理结果。XFTools、Image studio、PDF workspace 与装饰宣传语保持英文；操作名称与反馈统一使用中文。`npm run i18n:check` 会拒绝缺少中文的资源。首页只加载工具元数据，详细选项与示例按工具所属命名空间加载。
 
-提供跳转链接、语义链接和按钮、可见键盘焦点、控件名称与收藏按下状态；移动端主要操作至少 44px。支持 `prefers-reduced-motion`；375 / 768 / 1024 / 1440px 布局无横向溢出。分别检查浅色与深色主题的阅读对比度。工具目录分批展示，避免一次渲染所有工具。
+提供跳转链接、语义链接和按钮、可见键盘焦点、控件名称与收藏按下状态；移动端主要操作至少 44px。支持 `prefers-reduced-motion`；375 / 768 / 1024 / 1440px 布局无横向溢出。检查浅色界面及侧栏的阅读对比度。工具目录分批展示，避免一次渲染所有工具。

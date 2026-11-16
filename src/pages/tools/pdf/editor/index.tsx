@@ -1,78 +1,117 @@
-import { useState, useEffect, useRef } from 'react';
-import { Box, Button } from '@components/ui';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   PDFViewer,
   I18nPlugin,
-  type I18nCapability
+  type I18nCapability,
+  type PDFViewerConfig
 } from '@embedpdf/react-pdf-viewer';
-import { useTranslation } from 'react-i18next';
+import ToolHeaderActions from '@components/ToolHeaderActions';
+import Glyph from '@components/workbench/Glyph';
+import useFileDrop from 'hooks/useFileDrop';
+import useViewportWorkspace from 'hooks/useViewportWorkspace';
+import './pdf-editor.css';
+import pdfiumUrl from '@embedpdf/pdfium/pdfium.wasm?url';
 
 export default function PdfEditor() {
-  const { t, i18n } = useTranslation('pdf');
-  const locale = i18n.language === 'en' ? 'en' : 'zh-CN';
   const viewerLanguage = useRef<Readonly<I18nCapability> | null>(null);
-  useEffect(() => {
-    viewerLanguage.current?.setLocale(locale);
-  }, [locale]);
-  const [src, setSrc] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) setSrc(URL.createObjectURL(file));
-  };
-
-  const handleClear = () => {
-    setSrc(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
+  const [source, setSource] = useState<{ url: string; name: string } | null>(
+    null
+  );
+  const fileInput = useRef<HTMLInputElement>(null);
+  const frame = useRef<HTMLElement>(null);
+  const height = useViewportWorkspace(frame);
+  // A viewport resize must not reconfigure the open document or its edits.
+  const viewerConfig = useMemo<PDFViewerConfig>(
+    () => ({
+      src: source?.url,
+      wasmUrl: new URL(pdfiumUrl, window.location.href).href,
+      fonts: { ui: null, signature: null },
+      theme: { preference: 'light' },
+      i18n: { defaultLocale: 'zh-CN', fallbackLocale: 'zh-CN' }
+    }),
+    [source?.url]
+  );
+  const { isDragging, dropHandlers, addFiles } = useFileDrop({
+    accept: ['application/pdf', '.pdf'],
+    onFiles: (files) =>
+      setSource({ url: URL.createObjectURL(files[0]), name: files[0].name })
+  });
   useEffect(
     () => () => {
-      if (src) URL.revokeObjectURL(src);
+      if (source) URL.revokeObjectURL(source.url);
     },
-    [src]
+    [source]
   );
+  const clear = () => {
+    setSource(null);
+    if (fileInput.current) fileInput.current.value = '';
+  };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <Box sx={{ p: 1 }}>
-        <Button variant="contained" component="label">
-          {t('editor.upload')}
-          <input
-            type="file"
-            accept="application/pdf"
-            hidden
-            onChange={handleUpload}
-          />
-        </Button>
-        <Button
-          variant="outlined"
-          style={{ marginLeft: '10px' }}
-          disabled={!src}
-          onClick={handleClear}
+    <section
+      ref={frame}
+      className={`pdf-document-workbench ${isDragging ? 'is-dragging' : ''}`}
+      style={source ? { height } : undefined}
+      {...dropHandlers}
+    >
+      <ToolHeaderActions>
+        {source && (
+          <span className="tool-source-name" title={source.name}>
+            {source.name}
+          </span>
+        )}
+        <input
+          ref={fileInput}
+          type="file"
+          accept="application/pdf,.pdf"
+          aria-label="选择 PDF 文件"
+          hidden
+          onChange={(event) => {
+            if (event.target.files) void addFiles(event.target.files);
+            event.target.value = '';
+          }}
+        />
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => fileInput.current?.click()}
         >
-          {t('editor.clear')}
-        </Button>
-      </Box>
-      {src && (
-        <Box sx={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+          <Glyph name="upload" size={16} />
+          {source ? '更换 PDF' : '上传 PDF'}
+        </button>
+        <button
+          className="secondary-button"
+          type="button"
+          disabled={!source}
+          onClick={clear}
+        >
+          清空输入
+        </button>
+      </ToolHeaderActions>
+      {source ? (
+        <div className="pdf-document-viewer">
           <PDFViewer
-            key={src}
-            config={{
-              src,
-              theme: { preference: 'system' },
-              i18n: { defaultLocale: locale, fallbackLocale: 'en' }
-            }}
+            key={source.url}
+            config={viewerConfig}
             onReady={(registry) => {
               viewerLanguage.current =
                 registry.getPlugin<I18nPlugin>('i18n')?.provides() || null;
-              viewerLanguage.current?.setLocale(locale);
+              viewerLanguage.current?.setLocale('zh-CN');
             }}
             style={{ height: '100%' }}
           />
-        </Box>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="pdf-document-empty"
+          onClick={() => fileInput.current?.click()}
+        >
+          <Glyph name="file" size={32} />
+          <strong>选择 PDF，开始编辑</strong>
+          <span>也可将文件拖放到此处，添加批注、签名或表单。</span>
+        </button>
       )}
-    </Box>
+    </section>
   );
 }

@@ -5,7 +5,7 @@ import { ToolComponentProps } from '@tools/defineTool';
 import { compressPdf } from './service';
 import { InitialValuesType, CompressionLevel } from './types';
 import ToolPdfInput from '@components/input/ToolPdfInput';
-import { GetGroupsType } from '@components/options/ToolOptions';
+
 import ToolFileResult from '@components/result/ToolFileResult';
 import SimpleRadio from '@components/options/SimpleRadio';
 import { CardExampleType } from '@components/examples/ToolExamples';
@@ -49,7 +49,7 @@ const exampleCards: CardExampleType<InitialValuesType>[] = [
 
 export default function CompressPdf({
   title,
-  longDescription
+  longDescription: _longDescription
 }: ToolComponentProps) {
   const { t } = useTranslation('pdf');
   const [input, setInput] = useState<File | null>(null);
@@ -151,6 +151,7 @@ export default function CompressPdf({
       input={input}
       setInput={setInput}
       initialValues={initialValues}
+      exampleCards={exampleCards}
       compute={compute}
       inputComponent={
         <ToolPdfInput

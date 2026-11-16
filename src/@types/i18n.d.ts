@@ -1,18 +1,18 @@
 import 'i18next';
 
-import translation from '../../public/locales/en/translation.json';
-import string from '../../public/locales/en/string.json';
-import number from '../../public/locales/en/number.json';
-import video from '../../public/locales/en/video.json';
-import list from '../../public/locales/en/list.json';
-import json from '../../public/locales/en/json.json';
-import time from '../../public/locales/en/time.json';
-import csv from '../../public/locales/en/csv.json';
-import pdf from '../../public/locales/en/pdf.json';
-import audio from '../../public/locales/en/audio.json';
-import xml from '../../public/locales/en/xml.json';
-import image from '../../public/locales/en/image.json';
-import converters from '../../public/locales/en/converters.json';
+import translation from '../../public/locales/zh/translation.json';
+import string from '../../public/locales/zh/string.json';
+import number from '../../public/locales/zh/number.json';
+import video from '../../public/locales/zh/video.json';
+import list from '../../public/locales/zh/list.json';
+import json from '../../public/locales/zh/json.json';
+import time from '../../public/locales/zh/time.json';
+import csv from '../../public/locales/zh/csv.json';
+import pdf from '../../public/locales/zh/pdf.json';
+import audio from '../../public/locales/zh/audio.json';
+import xml from '../../public/locales/zh/xml.json';
+import image from '../../public/locales/zh/image.json';
+import converters from '../../public/locales/zh/converters.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {

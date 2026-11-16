@@ -162,7 +162,7 @@
     "useLocalTime": "使用本地时间",
     "description": "将可读日期转换为 Unix 时间戳。",
     "outputOptions": "输出选项",
-    "useLocalTimeDescription": "按浏览器所在时区解析输入的日期时间，忽略其他时区指定。"
+    "useLocalTimeDescription": "按当前设备的时区解析输入的日期时间，忽略其他时区指定。"
   },
   "dateWeekdayCalculator": {
     "shortDescription": "查找指定日期恰逢某个星期的年份",

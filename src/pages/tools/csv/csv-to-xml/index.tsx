@@ -53,11 +53,8 @@ export default function CsvToXml({ title }: ToolComponentProps) {
         const xmlResult = convertCsvToXml(input, values);
         setResult(xmlResult);
       } catch (error) {
-        setResult(
-          `Error: ${
-            error instanceof Error ? error.message : 'Invalid CSV format'
-          }`
-        );
+        setResult('');
+        throw error;
       }
     }
   };
@@ -71,10 +68,18 @@ export default function CsvToXml({ title }: ToolComponentProps) {
       compute={compute}
       exampleCards={exampleCards}
       inputComponent={
-        <ToolTextInput title={uiText("Input CSV")} value={input} onChange={setInput} />
+        <ToolTextInput
+          title={uiText('Input CSV')}
+          value={input}
+          onChange={setInput}
+        />
       }
       resultComponent={
-        <ToolTextResult title={uiText("Output XML")} value={result} extension={'xml'} />
+        <ToolTextResult
+          title={uiText('Output XML')}
+          value={result}
+          extension={'xml'}
+        />
       }
       getGroups={({ values, updateField }) => [
         {
@@ -82,17 +87,17 @@ export default function CsvToXml({ title }: ToolComponentProps) {
           component: (
             <Box>
               <TextFieldWithDesc
-                description={uiText("Column Separator")}
+                description={uiText('Column Separator')}
                 value={values.delimiter}
                 onOwnChange={(val) => updateField('delimiter', val)}
               />
               <TextFieldWithDesc
-                description={uiText("Field Quote")}
+                description={uiText('Field Quote')}
                 onOwnChange={(val) => updateField('quote', val)}
                 value={values.quote}
               />
               <TextFieldWithDesc
-                description={uiText("Comment Symbol")}
+                description={uiText('Comment Symbol')}
                 value={values.comment}
                 onOwnChange={(val) => updateField('comment', val)}
               />
@@ -106,13 +111,13 @@ export default function CsvToXml({ title }: ToolComponentProps) {
               <CheckboxWithDesc
                 checked={values.useHeaders}
                 onChange={(value) => updateField('useHeaders', value)}
-                title={uiText("Use Headers")}
-                description={uiText("First row is treated as column headers")}
+                title={uiText('Use Headers')}
+                description={uiText('First row is treated as column headers')}
               />
               <CheckboxWithDesc
                 checked={values.skipEmptyLines}
                 onChange={(value) => updateField('skipEmptyLines', value)}
-                title={uiText("Skip Empty Lines")}
+                title={uiText('Skip Empty Lines')}
                 description={uiText("Don't process empty lines in the CSV")}
               />
             </Box>

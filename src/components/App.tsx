@@ -1,7 +1,7 @@
 import { BrowserRouter, useLocation, useRoutes } from 'react-router-dom';
 import routesConfig from '../config/routesConfig';
 import Navbar from './Navbar';
-import { createElement, Suspense, useState, useEffect } from 'react';
+import { createElement, Suspense, useEffect } from 'react';
 import Loading from './Loading';
 import { CustomSnackBarProvider } from '../contexts/CustomSnackBarContext';
 import { tools } from '../tools';
@@ -13,7 +13,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 import { useWorkbenchText } from '../i18n/workbench';
 import { UserTypeFilterProvider } from 'providers/UserTypeFilterProvider';
-export type Mode = 'dark' | 'light';
+import { ThemeContext } from '../contexts/ThemeContext';
 function AppRoutes() {
   return useRoutes([
     ...routesConfig,
@@ -23,7 +23,7 @@ function AppRoutes() {
     }))
   ]);
 }
-function Workspace({ mode, toggle }: { mode: Mode; toggle: () => void }) {
+function Workspace() {
   const { w } = useWorkbenchText();
   const { pathname } = useLocation();
   useEffect(() => {
@@ -31,7 +31,7 @@ function Workspace({ mode, toggle }: { mode: Mode; toggle: () => void }) {
   }, [pathname]);
   return (
     <div className="app-shell">
-      <Navbar mode={mode} onChangeMode={toggle} />
+      <Navbar />
       <div className="main-shell">
         <main id="main-content" tabIndex={-1}>
           <Suspense fallback={<Loading />}>
@@ -43,50 +43,31 @@ function Workspace({ mode, toggle }: { mode: Mode; toggle: () => void }) {
             XFTools<span className="footer-dot">·</span>
             {w('footer')}
           </span>
-          <span>
-            <GlyphShield />
-            {w('privacy')}
-            <span className="footer-dot">·</span>
-            {w('license')}
-          </span>
         </footer>
       </div>
     </div>
   );
 }
-function GlyphShield() {
-  return <span className="status-dot" />;
-}
 export default function App() {
-  const [mode, setMode] = useState<Mode>(() => {
-    try {
-      return localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
-    } catch {
-      return 'light';
-    }
-  });
   useEffect(() => {
-    document.documentElement.dataset.theme = mode;
+    document.documentElement.dataset.theme = 'light';
     try {
-      localStorage.setItem('theme', mode);
+      localStorage.removeItem('theme');
     } catch {
-      /* Use the session preference. */
+      /* The fixed appearance also works when storage is unavailable. */
     }
-  }, [mode]);
+  }, []);
   return (
     <I18nextProvider i18n={i18n}>
-      <CustomSnackBarProvider>
-        <UserTypeFilterProvider>
-          <BrowserRouter>
-            <Workspace
-              mode={mode}
-              toggle={() =>
-                setMode((current) => (current === 'dark' ? 'light' : 'dark'))
-              }
-            />
-          </BrowserRouter>
-        </UserTypeFilterProvider>
-      </CustomSnackBarProvider>
+      <ThemeContext.Provider value="light">
+        <CustomSnackBarProvider>
+          <UserTypeFilterProvider>
+            <BrowserRouter>
+              <Workspace />
+            </BrowserRouter>
+          </UserTypeFilterProvider>
+        </CustomSnackBarProvider>
+      </ThemeContext.Provider>
     </I18nextProvider>
   );
 }

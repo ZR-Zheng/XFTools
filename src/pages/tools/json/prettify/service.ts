@@ -6,7 +6,7 @@ export const beautifyJson = (text: string, options: InitialValuesType) => {
   try {
     parsedJson = JSON.parse(text);
   } catch (e) {
-    throw new Error('Invalid JSON string');
+    throw new Error('Invalid JSON string', { cause: e });
   }
 
   const indent = indentationType === 'tab' ? '\t' : spacesCount;

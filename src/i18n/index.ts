@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import catalog from './catalog.generated.json';
 import zhCommon from '../../public/locales/zh/translation.json';
 import enCommon from '../../public/locales/en/translation.json';
+import { registerInterfaceCopy } from './interface-copy';
 
 export const validNamespaces = [
   'string',
@@ -28,50 +29,47 @@ const files = import.meta.glob('../../public/locales/{zh,en}/*.json', {
   import: 'default'
 });
 const resources = {
-  zh: { ...catalog.zh, translation: zhCommon },
-  en: { ...catalog.en, translation: enCommon }
+  zh: { ...catalog.zh, translation: zhCommon }
 };
+registerInterfaceCopy(enCommon, zhCommon);
 const loaded = new Map<string, Promise<void>>();
 export function ensureToolLocale(namespace: string): Promise<void> {
   if (namespace === 'translation') return Promise.resolve();
   const existing = loaded.get(namespace);
   if (existing) return existing;
-  const pending = Promise.all(
-    ['zh', 'en'].map(async (lang) => {
-      const loader = files[`../../public/locales/${lang}/${namespace}.json`];
-      if (!loader) throw new Error(`Missing tool locale: ${lang}/${namespace}`);
-      const data = await loader();
-      i18n.addResourceBundle(lang, namespace, data, true, true);
-    })
-  ).then(() => {});
+  const pending = (async () => {
+    const translated = files[`../../public/locales/zh/${namespace}.json`];
+    const source = files[`../../public/locales/en/${namespace}.json`];
+    if (!translated || !source)
+      throw new Error(`Missing tool labels: ${namespace}`);
+    const [data, reference] = await Promise.all([translated(), source()]);
+    registerInterfaceCopy(
+      reference as Record<string, unknown>,
+      data as Record<string, unknown>
+    );
+    i18n.addResourceBundle('zh', namespace, data, true, true);
+  })();
   loaded.set(namespace, pending);
   pending.catch(() => loaded.delete(namespace));
   return pending;
 }
-let language = 'zh';
-try {
-  language = localStorage.getItem('lang') === 'en' ? 'en' : 'zh';
-} catch {
-  /* Storage may be disabled. */
-}
-
 i18n.use(initReactI18next).init({
   resources,
-  lng: language,
-  supportedLngs: ['zh', 'en'],
-  fallbackLng: 'en',
+  lng: 'zh',
+  supportedLngs: ['zh'],
+  fallbackLng: 'zh',
   defaultNS: 'translation',
   ns: [...validNamespaces],
   interpolation: { escapeValue: false }
 });
-function syncLanguage(language: string) {
-  document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN';
+function syncLanguage() {
+  document.documentElement.lang = 'zh-CN';
   try {
-    localStorage.setItem('lang', language);
+    localStorage.removeItem('lang');
   } catch {
     /* Keep the in-memory preference. */
   }
 }
-syncLanguage(language);
+syncLanguage();
 i18n.on('languageChanged', syncLanguage);
 export default i18n;

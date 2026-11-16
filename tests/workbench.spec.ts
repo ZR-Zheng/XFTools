@@ -23,37 +23,54 @@ test('Chinese default, search, categories and no upstream embeds', async ({
   await expect(page.locator('.tool-grid .tool-tile').first()).toBeVisible();
   expect(errors).toEqual([]);
 });
-test('English and theme preferences survive reload', async ({ page }) => {
-  await page.goto('/');
-  const language = page.getByRole('button', { name: '语言 / Language' });
-  await language.click();
-  await expect(page.getByRole('menu')).toBeVisible();
-  await expect(
-    page.getByRole('menuitemradio', { name: '简体中文' })
-  ).toHaveAttribute('aria-checked', 'true');
-  await page.getByRole('menuitemradio', { name: 'English' }).click();
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'XFTools'
-  );
-  await page.getByRole('button', { name: 'Switch to dark theme' }).click();
-  await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-  await language.focus();
-  await page.keyboard.press('ArrowDown');
-  await expect(page.getByRole('menu')).toBeVisible();
-  await page.screenshot({ path: '.tmp/screenshots/language-en-dark.png' });
-  await page.keyboard.press('Escape');
-  await expect(page.getByRole('menu')).not.toBeVisible();
-  await expect(language).toBeFocused();
-  await language.click();
-  await page.getByRole('menuitemradio', { name: '简体中文' }).click();
+test('Chinese-only light shell removes old preferences and aligns footer status with version', async ({
+  page
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('lang', 'en');
+    localStorage.setItem('theme', 'dark');
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/categories/pdf');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
-  await page.getByRole('button', { name: '切换浅色主题' }).click();
-  await language.click();
-  await expect(page.getByRole('menu')).toBeVisible();
-  await page.screenshot({ path: '.tmp/screenshots/language-zh-light.png' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await expect(page.locator('.topbar')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: /Language|语言|切换.*主题/ })
+  ).toHaveCount(0);
+  const bottom = page.locator('.sidebar .sidebar-bottom');
+  await expect(bottom.locator('.sidebar-processing')).toHaveText(
+    '浏览器本地处理'
+  );
+  await expect(page.getByText('浏览器本地处理', { exact: true })).toHaveCount(
+    1
+  );
+  await expect(page.getByRole('main')).not.toContainText(/浏览器|本地处理|MIT/);
+  await expect(page.locator('.app-footer')).not.toContainText(
+    /MIT|浏览器|本地处理/
+  );
+  const status = await bottom.locator('.sidebar-processing').boundingBox();
+  const version = await bottom.locator('.version').boundingBox();
+  expect(
+    Math.abs(status.y + status.height / 2 - (version.y + version.height / 2))
+  ).toBeLessThan(1);
+  expect(version.x).toBeGreaterThan(status.x + status.width);
+  expect(version.y + version.height).toBeLessThanOrEqual(900);
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'PDF 工具', exact: true })
+  ).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  expect(
+    await page.evaluate(() => [
+      localStorage.getItem('lang'),
+      localStorage.getItem('theme')
+    ])
+  ).toEqual([null, null]);
+  await page.screenshot({
+    path: '.tmp/screenshots/shell-pdf-desktop.png',
+    fullPage: false
+  });
 });
 
 test('XFTools branding, removed notices and one page heading', async ({
@@ -69,7 +86,12 @@ test('XFTools branding, removed notices and one page heading', async ({
   for (const notice of [
     '在你的设备上处理',
     '你的日常效率，从这里开始',
-    'YOUR PERSONAL WORKSPACE'
+    'YOUR PERSONAL WORKSPACE',
+    'YOUR EVERYDAY TOOLKIT',
+    '图像、文档、文本与数据，一个工作台就够了。找到趁手的工具，把时间留给更重要的事。',
+    '从这些实用工具开始',
+    '无需注册，即开即用',
+    '为每一种日常需求，找到合适的工具'
   ]) {
     await expect(page.getByText(notice, { exact: true })).toHaveCount(0);
   }
@@ -91,7 +113,7 @@ test('XFTools branding, removed notices and one page heading', async ({
   await page.screenshot({ path: '.tmp/screenshots/favorites-zh.png' });
 });
 
-test('Chinese tool descriptions and examples update when changing language', async ({
+test('Chinese tool descriptions, examples and source labels remain consistent', async ({
   page
 }) => {
   await page.goto('/string/base64');
@@ -105,22 +127,6 @@ test('Chinese tool descriptions and examples update when changing language', asy
   await expect(
     page.getByText('使用 Base64 对简单文本进行编码。', { exact: true })
   ).toBeVisible();
-  await page.getByRole('button', { name: '语言 / Language' }).click();
-  await page.getByRole('menuitemradio', { name: 'English' }).click();
-  await expect(
-    page.getByRole('heading', {
-      name: 'Encode data in UTF-8 with Base64',
-      exact: true
-    })
-  ).toBeVisible();
-  await page.getByRole('button', { name: '语言 / Language' }).click();
-  await page.getByRole('menuitemradio', { name: '简体中文' }).click();
-  await expect(
-    page.getByRole('heading', {
-      name: '使用 Base64 编码 UTF-8 文本',
-      exact: true
-    })
-  ).toBeVisible();
   await page.goto('/string/url-editor');
   await expect(page.getByRole('heading', { level: 1 })).not.toContainText(
     'URL Editor'
@@ -129,6 +135,7 @@ test('Chinese tool descriptions and examples update when changing language', asy
     page.getByText('解析网址', { exact: true }).first()
   ).toBeVisible();
 });
+
 test('Favorites update across navigation and can be removed', async ({
   page
 }) => {
@@ -408,4 +415,32 @@ test('Responsive layouts, reduced motion, drawer and 404', async ({ page }) => {
   await expect(
     page.getByRole('heading', { level: 1, name: '这个页面走丢了' })
   ).toBeVisible();
+});
+
+test('Mobile drawer aligns status and version and restores navigation focus', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/categories/pdf');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'PDF 工具', exact: true })
+  ).toBeVisible();
+  const menu = page.getByRole('button', { name: '打开导航', exact: true });
+  await menu.click();
+  const drawer = page.locator('.ui-drawer');
+  const status = drawer.locator('.sidebar-processing'),
+    version = drawer.locator('.version');
+  await expect(status).toBeVisible();
+  await expect(
+    drawer.getByRole('button', { name: /主题|Language/ })
+  ).toHaveCount(0);
+  const a = await status.boundingBox(),
+    b = await version.boundingBox();
+  expect(Math.abs(a.y + a.height / 2 - (b.y + b.height / 2))).toBeLessThan(1);
+  expect(b.y + b.height).toBeLessThanOrEqual(812);
+  await page.screenshot({ path: '.tmp/screenshots/shell-mobile-drawer.png' });
+  await page.keyboard.press('Escape');
+  await expect(drawer).not.toBeVisible();
+  await expect(menu).toBeFocused();
+  await page.screenshot({ path: '.tmp/screenshots/shell-mobile.png' });
 });

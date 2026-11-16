@@ -4,6 +4,14 @@ import { fetchFile } from '@ffmpeg/util';
 import JSZip from 'jszip';
 import { getResizeDimensions } from './resize-dimensions';
 
+// One shared resampler; loaded only when a raster image is actually processed.
+let resampler: Promise<import('pica').Pica> | undefined;
+function getResampler() {
+  return (resampler ??= import('pica').then(({ default: createPica }) =>
+    createPica({ concurrency: 2 })
+  ));
+}
+
 async function decodeImage(file: File) {
   const url = URL.createObjectURL(file);
   try {
@@ -77,7 +85,7 @@ const processImage = async (
 
         await ffmpeg.writeFile(inputName, await fetchFile(file));
 
-        let scaleFilter = '';
+        let scaleFilter: string;
 
         if (resizeMethod === 'pixels') {
           if (dimensionType === 'width') {
@@ -134,7 +142,7 @@ const processImage = async (
     canvas.width = newWidth;
     canvas.height = newHeight;
 
-    ctx.drawImage(img, 0, 0, newWidth, newHeight);
+    await (await getResampler()).resize(img, canvas);
 
     const outputType = file.type || 'image/png';
 
@@ -171,18 +179,14 @@ export const resizeImages = async (
   options: InitialValuesType
 ): Promise<{ results: File[]; zipFile: File | null } | null> => {
   try {
-    const processed = await Promise.all(
-      files.map(async (file) => {
-        try {
-          return await processImage(file, options);
-        } catch (error) {
-          console.error(`Error processing ${file.name}:`, error);
-          return null;
-        }
-      })
-    );
-
-    const results = processed.filter((file): file is File => file !== null);
+    // Pica already processes tiles in parallel. Keep files sequential so a batch
+    // does not hold several full-resolution canvases in memory at once.
+    const results: File[] = [];
+    for (const file of files) {
+      const result = await processImage(file, options);
+      if (!result) throw new Error(`Unable to resize ${file.name}`);
+      results.push(result);
+    }
 
     if (results.length === 0) {
       return null;
@@ -197,8 +201,15 @@ export const resizeImages = async (
 
     const zip = new JSZip();
 
+    const names = new Set<string>();
     results.forEach((file) => {
-      zip.file(file.name, file);
+      const base = file.name.replace(/\.[^.]+$/, ''),
+        extension = file.name.slice(base.length);
+      let name = file.name,
+        count = 2;
+      while (names.has(name)) name = `${base}-${count++}${extension}`;
+      names.add(name);
+      zip.file(name, file);
     });
 
     const zipBlob = await zip.generateAsync({

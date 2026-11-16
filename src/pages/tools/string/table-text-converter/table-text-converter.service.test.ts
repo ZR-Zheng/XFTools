@@ -17,6 +17,16 @@ const convert = (
 };
 
 describe('convertTable', () => {
+  it('preserves duplicate header collisions and quoted multiline CSV cells', () => {
+    const output = convert(
+      'id,id_2,id,note\n001,002,003,"first\nsecond"',
+      'csv',
+      'json'
+    );
+    expect(JSON.parse(output)).toEqual([
+      { id: '001', id_2: '002', id_3: '003', note: 'first\nsecond' }
+    ]);
+  });
   it('converts a markdown table to CSV', () => {
     const input = `| Name  | Age |
 | ----- | --- |

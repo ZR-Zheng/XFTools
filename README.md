@@ -1,6 +1,6 @@
 # XFTools
 
-中文优先、支持英文的浏览器实用工具集合。将图像、PDF、音视频、文本、列表、日期、数字及 JSON / CSV / XML 工具放进同一个工作台，可自行部署和维护。
+简体中文实用工具集合。将图像、PDF、音视频、文本、列表、日期、数字及 JSON / CSV / XML 工具放进同一个工作台，可自行部署和维护。
 
 ![工具工作台](docs/images/workspace.png)
 
@@ -11,12 +11,16 @@
 - 根据文本、代码、对比、表格、图片、PDF、音视频、日期、计算器与生成器提供对应交互布局。
 - 文件预览、批量文件排序、参数设置与显式处理；支持复制、下载及可直接应用的示例。
 - 图片缩放提供联动尺寸与结果预览；PDF 可点选页面；音频显示波形与裁剪区间；时间戳和 bcrypt 使用专门表单。详见 [工具页面交互](docs/tool-interactions.md)。
-- 简体中文默认界面，可切换英文；品牌 XFTools 和英文宣传语保持原文，操作说明本地化。
-- 浅色与深色主题，适配桌面、平板和手机，支持键盘导航与减少动态效果设置。
+- 简体中文界面；品牌 XFTools 和英文宣传语保持原文。
+- 固定浅色界面，适配桌面、平板和手机，支持键盘导航与减少动态效果设置。
 
-文件处理在浏览器中执行。部分高级功能首次使用会下载 WASM、编辑器资源或机器学习模型，需要网络连接；这些资源请求与本地文件处理是两回事。请在处理较大文件时为浏览器预留足够内存。
+部分高级功能首次使用会下载 WASM、编辑器资源或机器学习模型，需要网络连接。处理较大文件时应预留足够内存。
 
 界面使用 React + 原生 HTML/CSS/SVG，图片编辑使用 Canvas；已移除 Material UI、Emotion、Monaco、Tailwind 和 Filerobot。工具选项、示例及详细说明按分类延迟加载，首页仅加载检索所需的元数据。具体说明见 [依赖与构建](docs/dependencies.md) 和 [界面设计规范](docs/design-system.md)。
+
+PDF 合并支持文件与页面两种整理方式、预览、重排、批量旋转／复制／删除及撤销。CSV／TSV 工具共用成熟解析内核，缩放使用按需加载的 pica；固定公式计算器已移除通用符号引擎。功能边界、体积变化与验证见[调研方案落地记录](docs/research/implementation-2026-11-16.md)。
+
+工作台已移除顶部栏、语言切换和主题切换；侧栏底部同行展示处理状态与版本号，页内不重复展示处理状态及许可标识。详见[界面简化与问题修复](docs/interface-simplification.md)。
 
 ## 本地开发
 
@@ -37,9 +41,9 @@ npm run build
 npm run serve
 ```
 
-工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。包含全部工具的桌面和手机布局巡检，以及文件排序、PDF 合并与表单导出、图片编辑导出、代码编辑和语言切换。可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已有 Chrome。
+工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。包含全部工具的桌面和手机布局巡检，以及文件排序、PDF 合并与表单导出、图片编辑导出、代码编辑与侧栏导航。可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已有 Chrome。
 
-`npm test` 进入测试监听模式；`npm run test:e2e` 运行 Playwright 测试，首次使用需先执行 `npx playwright install` 安装对应浏览器。现有端到端功能测试使用英文环境，新工作台的测试另行覆盖中文默认与语言切换。
+`npm test` 进入测试监听模式；`npm run test:e2e` 运行 Playwright 测试，首次使用需先执行 `npx playwright install` 安装对应浏览器。所有端到端功能测试使用简体中文界面。
 
 ## 部署
 
@@ -51,12 +55,3 @@ npm run serve
 docker build -t xftools .
 docker run -d --name xftools --restart unless-stopped -p 8080:80 xftools
 ```
-
-
-## 许可证
-
-项目使用 [MIT License](LICENSE)。许可证中原有版权及授权声明必须随软件副本或实质部分一起保留。仓库归属及后续维护可独立设置。
-
----
-
-A Chinese-first, self-hosted browser toolbox with English support, category search, favorites, recent tools, and light / dark themes. Requires Node.js 24+. Use `npm ci --ignore-scripts`, `npm run dev`, and `npm run build`. File processing happens in the browser; some advanced features download runtime assets or models on first use. Released under the MIT license; retain the original copyright notice.

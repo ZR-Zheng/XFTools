@@ -19,37 +19,17 @@
   letter-spacing: -3px;
   margin: 0 0 12px;
 }
-.welcome .eyebrow {
-  font-size: 11px;
-  letter-spacing: 2px;
-  margin-bottom: 18px;
-}
 .welcome-tagline {
   font-size: 21px;
   line-height: 1.4;
   font-weight: 550;
   letter-spacing: -0.5px;
 }
-.welcome-description {
-  font-size: 14px;
-  line-height: 1.8;
-  max-width: 470px;
-  margin-top: 12px;
-}
 .welcome-meta {
   font-size: 12px;
   flex-wrap: wrap;
 }
-.brand small {
-  font-size: 9px;
-  letter-spacing: 1px;
-}
-.topbar-title {
-  font-size: 14px;
-}
-.privacy-badge {
-  font-size: 12px;
-}
+
 .nav-item {
   font-size: 14px;
   min-height: 44px;
@@ -77,8 +57,7 @@
 .section-heading h2 {
   font-size: 21px;
 }
-.section-heading p,
-.muted-label {
+.section-heading p {
   font-size: 13px;
 }
 .result-count {
@@ -144,9 +123,7 @@ button:disabled {
   line-height: 1.8;
   max-width: 760px;
 }
-.tool-local-badge {
-  font-size: 12px;
-}
+
 .tool-section-title {
   font-size: 16px !important;
 }
@@ -395,19 +372,7 @@ button:disabled {
 .native-image-editor {
   min-width: 0;
 }
-.editor-toolbar {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 0 0 16px;
-}
-.editor-filename {
-  flex: 1;
-  min-width: 120px;
-  overflow-wrap: anywhere;
-  font-size: 14px;
-}
+
 .image-editor-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 290px;
@@ -510,6 +475,12 @@ button[aria-pressed='true'].secondary-button {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   margin-bottom: 18px;
+}
+.statistics-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 12px 0;
 }
 .statistic-card {
   padding: 16px;
@@ -640,9 +611,6 @@ button[aria-pressed='true'].secondary-button {
   }
   .category-tabs {
     gap: 4px;
-  }
-  .welcome-description {
-    font-size: 14px;
   }
   .workspace-art {
     transform: none;

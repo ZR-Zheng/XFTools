@@ -1,6 +1,26 @@
 import { compareJson } from './service';
 
 describe('compareJson', () => {
+  it('compares valid string contents without deleting comma/brace sequences', () => {
+    expect(compareJson('{"text":",}"}', '{"text":"}"}', 'text')).not.toBe(
+      'No differences found'
+    );
+    expect(() => compareJson('{"text":1,}', '{"text":1}', 'text')).toThrow();
+  });
+  it('compares root primitives, nulls, array shape and nested objects in both formats', () => {
+    expect(compareJson('1', '2', 'text')).toContain('root: Mismatch');
+    expect(compareJson('null', '{}', 'text')).toContain('root: Mismatch');
+    expect(compareJson('[]', '{}', 'text')).toContain('root: Mismatch');
+    expect(
+      JSON.parse(compareJson('{"x":{"n":1}}', '{"x":{"n":1}}', 'json'))
+    ).toEqual({});
+    expect(
+      JSON.parse(compareJson('{"x":{"n":1}}', '{"x":{"n":2}}', 'json'))
+    ).toHaveProperty('x.n');
+    expect(compareJson('{"__proto__":1}', '{}', 'text')).toContain(
+      '__proto__: Missing'
+    );
+  });
   it('should identify missing properties', () => {
     const json1 = '{"name": "John", "age": 30}';
     const json2 = '{"name": "John"}';

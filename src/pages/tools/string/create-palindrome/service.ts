@@ -5,15 +5,12 @@ export function createPalindrome(
   lastChar: boolean // only checkbox is need here to handle it [instead of two combo boxes]
 ) {
   if (!input) return '';
-  let result: string;
-  let reversedString: string;
 
   // reverse the whole input if lastChar enabled
-  reversedString = lastChar
+  const reversedString = lastChar
     ? reverseString(input)
     : reverseString(input.slice(0, -1));
-  result = input.concat(reversedString);
-  return result;
+  return input.concat(reversedString);
 }
 
 export function createPalindromeList(

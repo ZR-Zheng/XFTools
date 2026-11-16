@@ -18,7 +18,7 @@ export default function PdfToPng({ title }: ToolComponentProps) {
   const [zipBlob, setZipBlob] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const compute = async (_: {}, file: File | null) => {
+  const compute = async (_: Record<string, never>, file: File | null) => {
     if (!file) return;
     setLoading(true);
     setImages([]);
@@ -46,12 +46,12 @@ export default function PdfToPng({ title }: ToolComponentProps) {
           value={input}
           onChange={setInput}
           accept={['application/pdf']}
-          title={uiText("Upload a PDF")}
+          title={uiText('Upload a PDF')}
         />
       }
       resultComponent={
         <ToolMultiFileResult
-          title={uiText("Converted PNG Pages")}
+          title={uiText('Converted PNG Pages')}
           value={images.map((img) => {
             return new File([img.blob], img.filename, { type: 'image/png' });
           })}

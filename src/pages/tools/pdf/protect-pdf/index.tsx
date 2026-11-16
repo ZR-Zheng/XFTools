@@ -17,7 +17,7 @@ const initialValues: InitialValuesType = {
 
 export default function ProtectPdf({
   title,
-  longDescription
+  longDescription: _longDescription
 }: ToolComponentProps) {
   const [input, setInput] = useState<File | null>(null);
   const [result, setResult] = useState<File | null>(null);
@@ -87,17 +87,17 @@ export default function ProtectPdf({
           component: (
             <Box>
               <TextFieldWithDesc
-                title={uiText("Password")}
-                description={uiText("Enter a password to protect your PDF")}
-                placeholder={uiText("Enter password")}
+                title={uiText('Password')}
+                description={uiText('Enter a password to protect your PDF')}
+                placeholder={uiText('Enter password')}
                 type="password"
                 value={values.password}
                 onOwnChange={(value) => updateField('password', value)}
               />
               <TextFieldWithDesc
-                title={uiText("Confirm Password")}
-                description={uiText("Re-enter your password to confirm")}
-                placeholder={uiText("Confirm password")}
+                title={uiText('Confirm Password')}
+                description={uiText('Re-enter your password to confirm')}
+                placeholder={uiText('Confirm password')}
                 type="password"
                 value={values.confirmPassword}
                 onOwnChange={(value) => updateField('confirmPassword', value)}

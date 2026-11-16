@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { uiText } from 'i18n/uiText';
+import { ThemeContext } from '../../contexts/ThemeContext';
 import './ui.css';
 
 // Native HTML controls shared by the tools, without external UI or styling dependencies.
@@ -150,9 +151,10 @@ function serialize(selector: string, styles: StyleMap): string {
 // Styles belong to their mounted component and are removed with it; changing a
 // slider does not accumulate global rules. useInsertionEffect avoids layout flashes.
 function useStyles(sx?: Sx, className = '') {
+  const currentTheme = useTheme();
   const id = 'ui-' + useId().replace(/[^a-zA-Z0-9-]/g, '');
   const css = sx
-    ? serialize('.' + id, typeof sx === 'function' ? sx(useTheme()) : sx)
+    ? serialize('.' + id, typeof sx === 'function' ? sx(currentTheme) : sx)
     : '';
   useInsertionEffect(() => {
     if (!css) return;
@@ -164,11 +166,14 @@ function useStyles(sx?: Sx, className = '') {
   return `${id} ${className}`;
 }
 export function useTheme(): Theme {
+  const currentMode = useContext(ThemeContext);
   return {
     ...theme,
     palette: {
       ...theme.palette,
-      mode: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+      mode:
+        currentMode ||
+        (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light')
     }
   };
 }
@@ -204,6 +209,7 @@ export function Stack({
   sx,
   ...props
 }: BaseProps) {
+  const currentTheme = useTheme();
   return (
     <Box
       {...props}
@@ -211,7 +217,7 @@ export function Stack({
         display: 'flex',
         flexDirection: direction,
         gap: spacing,
-        ...(typeof sx === 'function' ? sx(useTheme()) : sx)
+        ...(typeof sx === 'function' ? sx(currentTheme) : sx)
       }}
     />
   );
@@ -223,6 +229,7 @@ export function Grid({
   sx,
   ...props
 }: BaseProps) {
+  const currentTheme = useTheme();
   const columns = typeof size === 'number' ? { xs: size } : size || { xs: 12 };
   const gridColumn = Object.fromEntries(
     Object.entries(columns).map(([bp, n]) => [
@@ -242,7 +249,7 @@ export function Grid({
               gap: spacing
             }
           : { gridColumn }),
-        ...(typeof sx === 'function' ? sx(useTheme()) : sx)
+        ...(typeof sx === 'function' ? sx(currentTheme) : sx)
       }}
     />
   );
@@ -263,7 +270,7 @@ export function Typography({
   );
 }
 export function Paper(props: BaseProps) {
-  const { elevation, ...rest } = props;
+  const { elevation: _elevation, ...rest } = props;
   return <Box {...rest} className={`ui-paper ${props.className || ''}`} />;
 }
 export function Divider(props: BaseProps) {
@@ -287,8 +294,8 @@ export function Button({
   variant = 'text',
   startIcon,
   endIcon,
-  size,
-  color,
+  size: _size,
+  color: _color,
   component: Tag = 'button',
   className,
   children,
@@ -364,11 +371,11 @@ export function TextField({
   multiline,
   rows = 10,
   minRows,
-  maxRows,
+  maxRows: _maxRows,
   fullWidth,
   select,
-  variant,
-  size,
+  variant: _variant,
+  size: _size,
   slotProps,
   InputProps,
   inputProps,
@@ -427,9 +434,9 @@ export function Select<T = string>({
   label,
   labelId,
   fullWidth,
-  displayEmpty,
-  size,
-  variant,
+  displayEmpty: _displayEmpty,
+  size: _size,
+  variant: _variant,
   children,
   onChange,
   ...props
@@ -479,8 +486,8 @@ type CheckProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
 };
 export function Checkbox({
   sx,
-  size,
-  color,
+  size: _size,
+  color: _color,
   inputProps,
   ...props
 }: CheckProps) {
@@ -498,7 +505,13 @@ const RadioContext = createContext<{
   value?: unknown;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }>({});
-export function Radio({ sx, size, color, inputProps, ...props }: CheckProps) {
+export function Radio({
+  sx,
+  size: _size,
+  color: _color,
+  inputProps,
+  ...props
+}: CheckProps) {
   const group = useContext(RadioContext);
   return (
     <input
@@ -558,13 +571,17 @@ export function RadioGroup({
     </RadioContext.Provider>
   );
 }
-export function FormControl({ fullWidth, size, ...props }: BaseProps) {
+export function FormControl({
+  fullWidth: _fullWidth,
+  size: _size,
+  ...props
+}: BaseProps) {
   return <Box {...props} className="ui-field" />;
 }
 export function InputLabel(props: BaseProps) {
   return <Box {...props} component="label" />;
 }
-export function InputAdornment({ position, ...props }: BaseProps) {
+export function InputAdornment({ position: _position, ...props }: BaseProps) {
   return <Box {...props} component="span" className="ui-adornment" />;
 }
 export function Slider({
@@ -576,8 +593,8 @@ export function Slider({
   sx,
   valueLabelDisplay,
   valueLabelFormat,
-  marks,
-  size,
+  marks: _marks,
+  size: _size,
   ...props
 }: Omit<BaseProps, 'onChange'> & {
   value: number | number[];
@@ -607,8 +624,8 @@ export function Slider({
 }
 export function CircularProgress({
   size = 26,
-  value,
-  variant,
+  value: _value,
+  variant: _variant,
   sx,
   ...props
 }: BaseProps) {
@@ -636,8 +653,8 @@ export function Alert({ severity = 'info', children, ...props }: BaseProps) {
 export function Chip({
   label,
   variant,
-  color,
-  size,
+  color: _color,
+  size: _size,
   onClick,
   ...props
 }: BaseProps) {
@@ -675,8 +692,7 @@ export function Autocomplete({
   value,
   onChange,
   renderInput,
-  sx,
-  ...props
+  sx
 }: Omit<BaseProps, 'onChange'> & {
   options: string[];
   onChange: (event: React.SyntheticEvent, value: string | null) => void;
@@ -705,7 +721,7 @@ export function Drawer({
   open,
   onClose,
   children,
-  slotProps
+  slotProps: _slotProps
 }: {
   open: boolean;
   onClose: () => void;

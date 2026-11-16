@@ -18,10 +18,10 @@ function duplicate(
 ) {
   if (copy) {
     if (copy > 0) {
-      let result: string[] = [];
-      let toAdd: string[] = [];
-      let WholePart: string[] = [];
-      let fractionalPart: string[] = [];
+      let result: string[];
+      let toAdd: string[];
+      let WholePart: string[];
+      let fractionalPart: string[];
       const whole = Math.floor(copy);
       const fractional = copy - whole;
       if (!reverse) {
@@ -65,7 +65,6 @@ export function duplicateList(
   copy?: number
 ): string {
   let array: string[];
-  let result: string[];
   switch (splitOperatorType) {
     case 'symbol':
       array = input.split(splitSeparator);
@@ -76,6 +75,6 @@ export function duplicateList(
         .filter((item) => item !== '');
       break;
   }
-  result = duplicate(array, concatenate, reverse, copy);
+  const result = duplicate(array, concatenate, reverse, copy);
   return result.join(joinSeparator);
 }

@@ -1,0 +1,196 @@
+.formula-workbench {
+  color: var(--ink);
+  min-width: 0;
+}
+
+.formula-workbench button,
+.formula-workbench select,
+.formula-workbench input {
+  min-height: 44px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 8px 12px;
+  min-width: 0;
+  font-size: 14px;
+}
+.formula-workbench button {
+  cursor: pointer;
+  white-space: nowrap;
+}
+.formula-workbench button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.formula-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 20px;
+  align-items: start;
+}
+.formula-inputs,
+.formula-result {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 24px;
+  min-width: 0;
+}
+.formula-target {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.formula-target select {
+  width: 100%;
+}
+.formula-presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.formula-presets label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.formula-variables {
+  display: grid;
+  gap: 24px;
+}
+.formula-variable > label {
+  font-size: 13px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+.formula-variable > label span {
+  margin-left: 8px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.formula-value {
+  display: flex;
+  gap: 8px;
+}
+.formula-value input {
+  flex: 1;
+  width: 50%;
+  font-variant-numeric: tabular-nums;
+}
+.formula-value select {
+  width: 130px;
+}
+.formula-variable small {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-top: 6px;
+  line-height: 1.8;
+}
+.formula-variable .formula-alternate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 400;
+  margin: 12px 0 0;
+}
+.formula-alternate input {
+  width: 100px;
+}
+.formula-result > p:first-child {
+  font-size: 13px;
+  color: var(--muted);
+}
+.formula-result output {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: clamp(24px, 2.5vw, 32px);
+  white-space: nowrap;
+  overflow-x: auto;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  margin: 12px 0 20px;
+  color: var(--blue);
+}
+.formula-result > label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.formula-result > button {
+  width: 100%;
+  margin-top: 16px;
+}
+.formula-equation {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.formula-equation span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.formula-equation code {
+  font:
+    13px/1.8 Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.formula-error {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--danger);
+  margin-top: 12px;
+}
+.formula-result dl {
+  display: grid;
+  gap: 12px;
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+  margin: 20px 0 0;
+  padding-top: 20px;
+}
+.formula-result dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.formula-result dt {
+  color: var(--muted);
+}
+.formula-result dd {
+  margin: 0;
+}
+@media (max-width: 1000px) {
+  .formula-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .formula-result output {
+    font-size: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .formula-inputs,
+  .formula-result {
+    padding: 16px;
+  }
+
+  .formula-presets {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

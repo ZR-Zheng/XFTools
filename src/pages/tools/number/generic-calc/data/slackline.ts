@@ -30,7 +30,7 @@ const slackline: GenericCalcType = {
     {
       name: 'W',
       title: 'Weight',
-      unit: 'pound',
+      unit: 'pound-force',
       default: 1
     },
     {

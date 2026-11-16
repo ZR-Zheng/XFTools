@@ -11,14 +11,14 @@
     "highCompression": "高压缩",
     "highCompressionDescription": "最大程度地减少文件大小，但会损失一些质量",
     "inputTitle": "输入 PDF",
-    "longDescription": "使用 Ghostscript 在浏览器中安全地压缩 PDF 文件。您的文件永远不会离开您的设备，在确保绝对隐私的同时，还能缩减文件大小，方便您通过电子邮件共享、上传到网站或节省存储空间。由 WebAssembly 技术提供支持。",
+    "longDescription": "使用 Ghostscript 安全地压缩 PDF 文件。可缩减文件大小，便于共享文件或节省存储空间。由 WebAssembly 技术提供支持。",
     "lowCompression": "低压缩",
     "lowCompressionDescription": "在尽量减少质量损失的情况下稍微减小文件大小",
     "mediumCompression": "中等压缩",
     "mediumCompressionDescription": "文件大小和质量之间的平衡",
     "pages": "页数",
     "resultTitle": "压缩 PDF",
-    "shortDescription": "在浏览器中安全地压缩 PDF 文件",
+    "shortDescription": "安全地压缩 PDF 文件",
     "title": "压缩 PDF"
   },
   "convertToPdf": {
@@ -39,7 +39,7 @@
     "resultTitle": "输出 PDF"
   },
   "editor": {
-    "description": "高级 PDF 编辑器，具备注释、表单填写、高亮显示和导出功能。您可以使用专业级工具（包括文本插入、绘图、高亮显示、签名和表单填写）直接在浏览器中编辑 PDF。",
+    "description": "高级 PDF 编辑器，具备注释、表单填写、高亮显示和导出功能。您可以使用专业级工具（包括文本插入、绘图、高亮显示、签名和表单填写）编辑 PDF。",
     "shortDescription": "使用高级注释、签名和编辑工具编辑 PDF",
     "title": "PDF 编辑器",
     "upload": "上传 PDF",
@@ -78,12 +78,12 @@
   },
   "pdfToPng": {
     "description": "将 PDF 文档转换为 PNG 面板。",
-    "longDescription": "上传 PDF 后，直接在浏览器中将每个页面转换为高质量的 PNG 图像。此工具非常适合提取视觉内容或分享单个页面。无需上传数据，所有操作均在本地运行。",
+    "longDescription": "上传 PDF 后，将每个页面转换为高质量的 PNG 图像。此工具非常适合提取视觉内容或分享单个页面。",
     "shortDescription": "将 PDF 转换为 PNG 图像",
     "title": "PDF 转 PNG"
   },
   "protectPdf": {
-    "description": "在浏览器中安全地为 PDF 文件添加密码保护",
+    "description": "安全地为 PDF 文件添加密码保护",
     "shortDescription": "使用密码安全地保护 PDF 文件",
     "title": "保护 PDF"
   },
@@ -146,7 +146,7 @@
       "clear": "清空输入",
       "export": "导出并下载"
     },
-    "description": "直接在浏览器中创建和自定义交互式 PDF 表单。支持添加文本框、复选框、单选框、标签等控件，并通过拖放布局、调整样式和导出文件。"
+    "description": "创建和自定义交互式 PDF 表单。支持添加文本框、复选框、单选框、标签等控件，并通过拖放布局、调整样式和导出文件。"
   },
   "extractImagesFromPdf": {
     "shortDescription": "从 PDF 文档中提取内嵌图片。",

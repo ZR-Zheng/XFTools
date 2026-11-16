@@ -1,4 +1,3 @@
-import { uiText } from 'i18n/uiText';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,16 +7,8 @@ import { validNamespaces } from '../../i18n';
 import { useWorkbenchText, WorkbenchKey } from '../../i18n/workbench';
 import { useToolHistory } from '../../hooks/useToolHistory';
 import Glyph, { categoryGlyph } from '../workbench/Glyph';
-import type { Mode } from '../App';
-import LanguageMenu from '../workbench/LanguageMenu';
 
-export default function Navbar({
-  mode,
-  onChangeMode
-}: {
-  mode: Mode;
-  onChangeMode: () => void;
-}) {
+export default function Navbar() {
   const { t } = useTranslation(validNamespaces);
   const { w } = useWorkbenchText();
   const { favorites } = useToolHistory();
@@ -28,12 +19,6 @@ export default function Navbar({
     setOpen(false);
   }, [location.pathname, location.search]);
   const categories = getToolsByCategory([], t);
-  const title =
-    location.pathname === '/favorites'
-      ? w('favorites')
-      : location.pathname === '/recent'
-        ? w('recent')
-        : w('workspace');
   const sidebar = (
     <div className="sidebar-inner">
       <Link className="brand" to="/" aria-label="XFTools">
@@ -42,7 +27,6 @@ export default function Navbar({
         </span>
         <span>
           XF<span className="brand-light">Tools</span>
-          <small>{w('tagline')}</small>
         </span>
       </Link>
       <nav aria-label={w('navigation')} className="side-nav">
@@ -82,6 +66,10 @@ export default function Navbar({
         ))}
       </nav>
       <div className="sidebar-bottom">
+        <span className="sidebar-processing">
+          <Glyph name="shield" size={15} />
+          {w('privacy')}
+        </span>
         <span className="version">v{__APP_VERSION__}</span>
       </div>
     </div>
@@ -99,40 +87,19 @@ export default function Navbar({
           paper: { sx: { width: 264, background: '#161b25', color: '#fff' } }
         }}
       >
-        {sidebar}
+        {open ? sidebar : null}
       </Drawer>
-      <header className="topbar">
-        <div className="topbar-title">
-          <button
-            ref={menuButton}
-            className="icon-button mobile-menu"
-            onClick={() => setOpen(true)}
-            aria-label={w('menu')}
-            aria-expanded={open}
-          >
-            <Glyph name="menu" />
-          </button>
-          <span className="topbar-home">XFTools</span>
-          <Glyph name="chevron" size={14} />
-          <span>{uiText(title)}</span>
-        </div>
-        <div className="topbar-actions">
-          <span className="privacy-badge">
-            <Glyph name="shield" size={15} />
-            {w('privacy')}
-          </span>
-          <LanguageMenu />
-          <span className="toolbar-divider" />
-          <button
-            className="icon-button"
-            onClick={onChangeMode}
-            aria-label={w(mode === 'dark' ? 'light' : 'dark')}
-            title={w(mode === 'dark' ? 'light' : 'dark')}
-          >
-            <Glyph name={mode === 'dark' ? 'sun' : 'moon'} size={19} />
-          </button>
-        </div>
-      </header>
+      <button
+        type="button"
+        ref={menuButton}
+        className="mobile-nav-toggle"
+        onClick={() => setOpen(true)}
+        aria-label={w('menu')}
+        aria-expanded={open}
+      >
+        <Glyph name="menu" size={20} />
+        <span>导航</span>
+      </button>
     </>
   );
 }

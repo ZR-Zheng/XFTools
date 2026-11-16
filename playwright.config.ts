@@ -13,7 +13,7 @@ export default defineConfig({
       origins: [
         {
           origin: 'http://127.0.0.1:4173',
-          localStorage: [{ name: 'lang', value: 'en' }]
+          localStorage: []
         }
       ]
     },

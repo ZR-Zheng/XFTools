@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 const icon = (name: string) =>
   function ToolIcon({
     fontSize,
-    sx,
+    sx: _sx,
     style
   }: {
     fontSize?: string;

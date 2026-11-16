@@ -253,6 +253,7 @@ export default function ToolContent<T extends FormikValues, I>({
             return (
               <>
                 <ToolTaskbar
+                  canReset={Boolean(getGroups)}
                   onExample={
                     exampleCards?.length
                       ? () => {
@@ -272,9 +273,7 @@ export default function ToolContent<T extends FormikValues, I>({
                   }
                   result={
                     resultComponent ? (
-                      <ToolResultVisibleContext.Provider
-                        value={!fileTool || resultReady}
-                      >
+                      <ToolResultVisibleContext.Provider value={resultReady}>
                         {resultComponent}
                       </ToolResultVisibleContext.Provider>
                     ) : undefined

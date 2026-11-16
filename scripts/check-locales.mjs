@@ -4,7 +4,7 @@ const root = 'public/locales';
 assert.deepEqual(
   fs.readdirSync(root).sort(),
   ['en', 'zh'],
-  'Only English and Chinese locales are supported'
+  'Expected Chinese resources and source-text references'
 );
 const flatten = (value, prefix = '') =>
   Object.fromEntries(
@@ -44,7 +44,7 @@ for (const name of fs.readdirSync(root + '/en')) {
   }
 }
 console.log(
-  'Locales valid: zh + en; ' +
+  'Chinese interface valid; ' +
     count +
-    ' matching keys; no missing Chinese translations.'
+    ' reference keys checked; no missing Chinese labels.'
 );

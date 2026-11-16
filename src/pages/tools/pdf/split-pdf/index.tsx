@@ -92,7 +92,7 @@ export default function SplitPdf({ title }: ToolComponentProps) {
           plural: count === 1 ? '' : 's'
         })
       );
-    } catch (error) {
+    } catch {
       setPageRangePreview('');
     }
   };
@@ -105,7 +105,7 @@ export default function SplitPdf({ title }: ToolComponentProps) {
       const splitResult = await splitPdf(input, values.pageRanges);
       setResult(splitResult);
     } catch (error) {
-      throw new Error('Error splitting PDF:' + error);
+      throw new Error('Error splitting PDF:' + error, { cause: error });
     } finally {
       setIsProcessing(false);
     }

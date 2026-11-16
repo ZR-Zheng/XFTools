@@ -12,7 +12,6 @@ import { globalInputHeight } from '../../config/uiConfig';
 import ResultFooter from './ResultFooter';
 import { useTranslation } from 'react-i18next';
 import React, { useContext } from 'react';
-import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { ToolResultVisibleContext } from '../../tools/page-context';
 
 export default function ToolMultiFileResult({
@@ -33,7 +32,6 @@ export default function ToolMultiFileResult({
   const value = resultVisible ? resultValue : [];
   const zipFile = resultVisible ? resultZip : null;
   const theme = useTheme();
-  const { showSnackBar } = useContext(CustomSnackBarContext);
 
   const getFileType = (
     file: File
@@ -54,22 +52,6 @@ export default function ToolMultiFileResult({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
-
-  const handleCopy = () => {
-    if (zipFile) {
-      const blob = new Blob([zipFile], { type: zipFile.type });
-      const clipboardItem = new ClipboardItem({ [zipFile.type]: blob });
-      navigator.clipboard
-        .write([clipboardItem])
-        .then(() => showSnackBar(t('toolMultiFileResult.copied'), 'success'))
-        .catch((err) => {
-          showSnackBar(
-            t('toolMultiFileResult.copyFailed', { error: err }),
-            'error'
-          );
-        });
-    }
   };
 
   return (
