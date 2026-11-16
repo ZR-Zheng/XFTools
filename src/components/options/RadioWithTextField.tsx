@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React from 'react';
 import TextFieldWithDesc from './TextFieldWithDesc';
 import SimpleRadio from './SimpleRadio';

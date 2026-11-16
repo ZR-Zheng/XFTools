@@ -3,12 +3,12 @@ import routesConfig from '../config/routesConfig';
 import Navbar from './Navbar';
 import { createElement, Suspense, useState, useEffect } from 'react';
 import Loading from './Loading';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import { CustomSnackBarProvider } from '../contexts/CustomSnackBarContext';
-import { SnackbarProvider } from 'notistack';
 import { tools } from '../tools';
 import './index.css';
-import { darkTheme, lightTheme } from '../config/muiConfig';
+import './workbench/refinements.css';
+import './workbench/task-pages.css';
+import './workbench/specialized-pages.css';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 import { useWorkbenchText } from '../i18n/workbench';
@@ -75,28 +75,18 @@ export default function App() {
   }, [mode]);
   return (
     <I18nextProvider i18n={i18n}>
-      <ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
-        <CssBaseline />
-        <SnackbarProvider
-          maxSnack={3}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-          <CustomSnackBarProvider>
-            <UserTypeFilterProvider>
-              <BrowserRouter>
-                <Workspace
-                  mode={mode}
-                  toggle={() =>
-                    setMode((current) =>
-                      current === 'dark' ? 'light' : 'dark'
-                    )
-                  }
-                />
-              </BrowserRouter>
-            </UserTypeFilterProvider>
-          </CustomSnackBarProvider>
-        </SnackbarProvider>
-      </ThemeProvider>
+      <CustomSnackBarProvider>
+        <UserTypeFilterProvider>
+          <BrowserRouter>
+            <Workspace
+              mode={mode}
+              toggle={() =>
+                setMode((current) => (current === 'dark' ? 'light' : 'dark'))
+              }
+            />
+          </BrowserRouter>
+        </UserTypeFilterProvider>
+      </CustomSnackBarProvider>
     </I18nextProvider>
   );
 }

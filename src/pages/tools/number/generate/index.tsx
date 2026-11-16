@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import ToolTextResult from '@components/result/ToolTextResult';
 import { listOfIntegers } from './service';

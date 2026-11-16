@@ -1,5 +1,5 @@
 import { uiText } from 'i18n/uiText';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useContext, useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';

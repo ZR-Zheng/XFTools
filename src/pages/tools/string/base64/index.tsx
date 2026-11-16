@@ -6,7 +6,7 @@ import { base64 } from './service';
 import { CardExampleType } from '@components/examples/ToolExamples';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import SimpleRadio from '@components/options/SimpleRadio';
 import { InitialValuesType } from './types';
 import { useTranslation } from 'react-i18next';

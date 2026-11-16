@@ -12,9 +12,9 @@ import {
   TableRow,
   TextField,
   Typography
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+} from '@components/ui';
+import { DeleteIcon } from '@components/ui/icons';
+import { AddIcon } from '@components/ui/icons';
 import ToolContent from '@components/ToolContent';
 import ToolTextInput from '@components/input/ToolTextInput';
 import ToolTextResult from '@components/result/ToolTextResult';

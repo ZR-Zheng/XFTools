@@ -11,8 +11,6 @@ test.describe('JoinText Component', () => {
     // Input the text pieces
     await page.getByTestId('text-input').fill('1\n2');
 
-    const result = await page.getByTestId('text-result').inputValue();
-
-    expect(result).toBe('12');
+    await expect(page.getByTestId('text-result')).toHaveValue('12');
   });
 });

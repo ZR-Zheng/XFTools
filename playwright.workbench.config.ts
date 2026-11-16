@@ -5,7 +5,7 @@ export default defineConfig({
   retries: 0,
   reporter: 'list',
   timeout: 60000,
-  use: { baseURL: 'http://127.0.0.1:4173', trace: 'retain-on-failure' },
+  use: { baseURL: 'http://127.0.0.1:4173', trace: 'retain-on-failure', channel: process.env.PLAYWRIGHT_CHANNEL },
   webServer: {
     command:
       (process.env.PLAYWRIGHT_SKIP_BUILD ? '' : 'npm run build && ') +

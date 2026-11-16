@@ -9,10 +9,9 @@ import ColorSelector from '@components/options/ColorSelector';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import { updateNumberField } from '@utils/string';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import SimpleRadio from '@components/options/SimpleRadio';
 import { InitialValuesType } from './types';
-import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { getImageDimensions, getMaxAreaPosition } from '@utils/image';
 
@@ -57,17 +56,9 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
 
   const compute = (values: InitialValuesType, input: any) => {
     if (input) {
-      changeOpacity(input, values).then(setResult);
+      return changeOpacity(input, values).then(setResult);
     }
   };
-
-  const debouncedCompute = useMemo(() => debounce(compute, 1000), []);
-
-  useEffect(() => {
-    return () => {
-      debouncedCompute.cancel();
-    };
-  }, [debouncedCompute]);
 
   const getGroups: GetGroupsType<InitialValuesType> | null = ({
     values,
@@ -102,9 +93,11 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
           />
 
           {values.mode === 'gradient' && (
-            <Box sx={{
-              mt: 2
-            }}>
+            <Box
+              sx={{
+                mt: 2
+              }}
+            >
               <SelectWithDesc
                 selected={values.gradientType}
                 options={[
@@ -132,9 +125,11 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
           )}
 
           {values.gradientType === 'radial' && (
-            <Box sx={{
-              mt: 2
-            }}>
+            <Box
+              sx={{
+                mt: 2
+              }}
+            >
               <SelectWithDesc
                 selected={values.gradientDirection}
                 options={[
@@ -186,7 +181,10 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
                   slotProps={{
                     htmlInput: {
                       min: 0,
-                      max: getMaxAreaPosition(imageSize.height, values.areaHeight)
+                      max: getMaxAreaPosition(
+                        imageSize.height,
+                        values.areaHeight
+                      )
                     }
                   }}
                 />
@@ -242,9 +240,11 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
             title={t('changeOpacity.options.solidColor')}
           />
           {values.backgroundMode === 'color' && (
-            <Box sx={{
-              mt: 2
-            }}>
+            <Box
+              sx={{
+                mt: 2
+              }}
+            >
               <ColorSelector
                 value={values.backgroundColor}
                 onColorChange={(val) => updateField('backgroundColor', val)}
@@ -278,7 +278,7 @@ export default function ChangeOpacity({ title }: ToolComponentProps) {
       }
       initialValues={initialValues}
       getGroups={getGroups}
-      compute={debouncedCompute}
+      compute={compute}
     />
   );
 }

@@ -1,4 +1,4 @@
-import { Divider } from '@mui/material';
+import { Divider } from '@components/ui';
 import React from 'react';
 
 type SeparatorProps = {

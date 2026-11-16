@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, Typography } from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';

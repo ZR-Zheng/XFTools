@@ -1,6 +1,5 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import { useState } from 'react';
-import ToolTextResult from '@components/result/ToolTextResult';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import { textStatistics } from './service';
 import ToolTextInput from '@components/input/ToolTextInput';
@@ -11,6 +10,7 @@ import { ToolComponentProps } from '@tools/defineTool';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import CheckboxWithDesc from '@components/options/CheckboxWithDesc';
 import { useTranslation } from 'react-i18next';
+import StatisticsResult from '@components/result/StatisticsResult';
 
 const initialValues: InitialValuesType = {
   emptyLines: false,
@@ -291,7 +291,7 @@ export default function Truncate({
         />
       }
       resultComponent={
-        <ToolTextResult title={t('statistic.resultTitle')} value={result} />
+        <StatisticsResult title={t('statistic.resultTitle')} value={result} />
       }
       toolInfo={{
         title: t('statistic.toolInfo.title', { title }),

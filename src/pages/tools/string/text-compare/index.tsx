@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import { useState, useEffect } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -61,19 +61,19 @@ export default function TextCompare({ title }: ToolComponentProps) {
       inputComponent={
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateColumns: { xs: 'minmax(0, 1fr)', md: 'repeat(2, minmax(0, 1fr))' },
             gap: 2
           }}>
           <ToolTextInput
             value={inputA}
             onChange={setInputA}
-            title={t('textCompare.inputTitle')}
+            title={t('textCompare.firstInputTitle')}
           />
           <ToolTextInput
             value={inputB}
             onChange={setInputB}
-            title={t('textCompare.inputTitle')}
+            title={t('textCompare.secondInputTitle')}
           />
         </Box>
       }

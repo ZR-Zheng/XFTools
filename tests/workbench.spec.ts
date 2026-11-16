@@ -8,7 +8,7 @@ test('Chinese default, search, categories and no upstream embeds', async ({
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    '好用的工具'
+    'XFTools'
   );
   await expect(page.locator('iframe')).toHaveCount(0);
   await page
@@ -33,12 +33,13 @@ test('English and theme preferences survive reload', async ({ page }) => {
   ).toHaveAttribute('aria-checked', 'true');
   await page.getByRole('menuitemradio', { name: 'English' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'Everyday tools'
+    'XFTools'
   );
   await page.getByRole('button', { name: 'Switch to dark theme' }).click();
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await language.focus();
   await page.keyboard.press('ArrowDown');
   await expect(page.getByRole('menu')).toBeVisible();
@@ -51,7 +52,7 @@ test('English and theme preferences survive reload', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await page.getByRole('button', { name: '切换浅色主题' }).click();
   await language.click();
-  await expect(page.locator('.language-menu-paper')).toHaveCSS('opacity', '1');
+  await expect(page.getByRole('menu')).toBeVisible();
   await page.screenshot({ path: '.tmp/screenshots/language-zh-light.png' });
 });
 
@@ -94,6 +95,7 @@ test('Chinese tool descriptions and examples update when changing language', asy
   page
 }) => {
   await page.goto('/string/base64');
+  await page.locator('.tool-support-details > summary').click();
   await expect(
     page.getByRole('heading', {
       name: '使用 Base64 编码 UTF-8 文本',
@@ -164,7 +166,7 @@ test('Image editor still loads after uploading an image', async ({ page }) => {
   const png = await page.evaluate(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 32;
-    canvas.height = 32;
+    canvas.height = 16;
     const context = canvas.getContext('2d')!;
     context.fillStyle = '#285ee8';
     context.fillRect(0, 0, 32, 32);
@@ -177,12 +179,171 @@ test('Image editor still loads after uploading an image', async ({ page }) => {
   });
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 20000 });
   await expect(
-    page.getByText('精细调整', { exact: true }).first()
+    page.getByText('色彩调整', { exact: true }).first()
   ).toBeVisible();
   await expect(page.getByText('Finetune', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: '.tmp/screenshots/image-editor-zh.png' });
+  await page.getByRole('button', { name: '旋转 90°', exact: true }).click();
+  await expect
+    .poll(() =>
+      page
+        .locator('.image-canvas-stage canvas')
+        .evaluate((canvas: HTMLCanvasElement) => [canvas.width, canvas.height])
+    )
+    .toEqual([16, 32]);
+  await page.getByLabel('文字内容', { exact: true }).fill('XFTools');
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: '下载图片', exact: true }).click();
+  expect((await download).suggestedFilename()).toBe('sample-edited.png');
   expect(errors).toEqual([]);
 });
+
+test('Tool categories follow function and keep existing links', async ({
+  page
+}) => {
+  await page.goto('/categories/security');
+  await expect(page.locator('.tool-grid .tool-tile')).toHaveCount(2);
+  await expect(
+    page.locator('.tool-grid a[href="/string/password-generator"]')
+  ).toBeVisible();
+  await expect(
+    page.locator('.tool-grid a[href="/string/bcrypt"]')
+  ).toBeVisible();
+  await page.goto('/categories/encoding');
+  await expect(
+    page.locator('.tool-grid a[href="/string/base64"]')
+  ).toBeVisible();
+  await expect(
+    page.locator('.tool-grid a[href="/string/url-encode-string"]')
+  ).toBeVisible();
+  await page.goto('/categories/network');
+  await expect(
+    page.locator('.tool-grid a[href="/number/random-port-generator"]')
+  ).toBeVisible();
+});
+
+test('Native code editors format JSON without an external editor request', async ({
+  page
+}) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/json/prettify');
+  await page
+    .locator('.flow-input textarea')
+    .fill('{"brand":"XFTools","value":1}');
+  await expect(page.locator('.flow-result textarea')).toHaveValue(
+    /\n\s+"brand": "XFTools"/
+  );
+  await expect(page.locator('.code-editor-meta').first()).toContainText('JSON');
+  expect(requests.some((url) => /monaco|vs\/loader|jsdelivr/.test(url))).toBe(
+    false
+  );
+  await page.goto('/json/validateJson');
+  await page.locator('.flow-input textarea').fill('{"a":1}');
+  await expect(page.locator('.validation-result')).toHaveClass(/success/);
+  await page.locator('.flow-input textarea').fill('{invalid}');
+  await expect(page.locator('.validation-result')).toHaveClass(/error/);
+  await page.locator('.flow-input textarea').fill('');
+  await expect(page.locator('.validation-result')).toHaveClass(/empty/);
+});
+
+test('Native radio controls change the operation and generators can rerun', async ({
+  page
+}) => {
+  await page.goto('/string/base64');
+  await page.getByTestId('text-input').fill('aGVsbG8=');
+  await page.getByRole('radio').nth(1).check();
+  await expect(page.getByTestId('text-result')).toHaveValue('hello');
+  await page.goto('/string/password-generator');
+  const result = page.getByTestId('text-result');
+  await expect(result).not.toHaveValue('');
+  const original = await result.inputValue();
+  await page.getByTestId('process-tool').click();
+  await expect(result).not.toHaveValue(original);
+});
+
+test('PDF processing waits for an explicit action and produces a download', async ({
+  page
+}) => {
+  const pdf = await PDFDocument.create();
+  pdf.addPage([100, 200]);
+  const bytes = Buffer.from(await pdf.save());
+  const secondPdf = await PDFDocument.create();
+  secondPdf.addPage([200, 100]);
+  await page.goto('/pdf/merge-pdf');
+  const process = page.getByTestId('process-tool');
+  await expect(process).toBeDisabled();
+  await page.locator('input[type="file"]').setInputFiles([
+    { name: 'one.pdf', mimeType: 'application/pdf', buffer: bytes },
+    {
+      name: 'two.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from(await secondPdf.save())
+    }
+  ]);
+  await expect(process).toBeEnabled();
+  await page.getByRole('button', { name: '上移 two.pdf', exact: true }).click();
+  await expect(
+    page.locator('.flow-result').getByRole('button', { name: /下载/ })
+  ).toBeDisabled();
+  await process.click();
+  const download = page.waitForEvent('download');
+  await page
+    .locator('.flow-result')
+    .getByRole('button', { name: /下载/ })
+    .click();
+  const saved = await download;
+  const filePath = await saved.path();
+  const { readFile } = await import('node:fs/promises');
+  const merged = await PDFDocument.load(await readFile(filePath!));
+  expect(merged.getPageCount()).toBe(2);
+  expect(merged.getPage(0).getSize()).toEqual({ width: 200, height: 100 });
+});
+
+test('CSV results offer a table preview without changing the data', async ({
+  page
+}) => {
+  await page.goto('/csv/change-csv-separator');
+  await page.getByTestId('text-input').fill('name,score\nAlice,10\nBob,20');
+  const result = page.getByTestId('text-result');
+  await expect(result).toHaveValue(/Alice/);
+  const text = await result.inputValue();
+  await page.getByRole('button', { name: '表格预览', exact: true }).click();
+  await page
+    .getByLabel('预览分隔符')
+    .selectOption(text.includes(';') ? ';' : ',');
+  await expect(
+    page.getByRole('cell', { name: 'Alice', exact: true })
+  ).toBeVisible();
+  await page.getByRole('button', { name: '文本', exact: true }).click();
+  await expect(result).toHaveValue(text);
+});
+test('Media tools wait for all source files before processing', async ({
+  page
+}) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('/video/add-audio');
+  const process = page.getByTestId('process-tool');
+  await expect(process).toBeDisabled();
+  await page.locator('.flow-input input[type="file"]').setInputFiles({
+    name: 'video.webm',
+    mimeType: 'video/webm',
+    buffer: Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
+  });
+  await expect(process).toBeDisabled();
+  await page.locator('.flow-settings input[type="file"]').setInputFiles({
+    name: 'audio.wav',
+    mimeType: 'audio/wav',
+    buffer: Buffer.alloc(44)
+  });
+  await expect(process).toBeEnabled();
+  // Observe beyond the former one-second automatic conversion timer.
+  await page.waitForTimeout(1200);
+  expect(requests.some((url) => /ffmpeg-core|\.wasm/.test(url))).toBe(false);
+  await expect(process).toBeEnabled();
+});
+
 test('PDF worker matches the viewer and renders an uploaded PDF', async ({
   page
 }) => {
@@ -199,6 +360,24 @@ test('PDF worker matches the viewer and renders an uploaded PDF', async ({
   await expect(page.locator('.react-pdf__Page canvas').first()).toBeVisible({
     timeout: 20000
   });
+  await page.getByRole('button', { name: '文本', exact: true }).click();
+  await page.getByLabel('控件内容', { exact: true }).fill('XFTools');
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: '导出并下载', exact: true }).click();
+  const resultPath = await (await download).path();
+  const { readFile } = await import('node:fs/promises');
+  const saved = await PDFDocument.load(await readFile(resultPath!));
+  const form = saved.getForm();
+  expect(form.getFields()).toHaveLength(1);
+  expect(form.getTextField(form.getFields()[0].getName()).getText()).toBe(
+    'XFTools'
+  );
+  await page.setViewportSize({ width: 375, height: 812 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth
+    )
+  ).toBe(true);
   expect(errors).toEqual([]);
 });
 test('Responsive layouts, reduced motion, drawer and 404', async ({ page }) => {
@@ -220,7 +399,7 @@ test('Responsive layouts, reduced motion, drawer and 404', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await page.getByRole('button', { name: '打开导航' }).click();
-  await page.locator('.MuiDrawer-paper a[href="/favorites"]').click();
+  await page.locator('.ui-drawer a[href="/favorites"]').click();
   await expect(
     page.getByRole('heading', { level: 1, name: '我的收藏' })
   ).toBeVisible();

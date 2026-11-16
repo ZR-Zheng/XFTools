@@ -25,7 +25,7 @@
     "shortDescription": "生成指定范围内的随机数",
     "startSequenceDescription": "从该数字开始序列。",
     "stepDescription": "将每个元素增加此量",
-    "title": "产生",
+    "title": "生成数字序列",
     "toolInfo": {
       "description": "此工具允许您生成具有可自定义参数的数字序列。您可以指定起始值、步长和元素数量。",
       "title": "生成数字"
@@ -136,19 +136,19 @@
     "description": "计算松弛线的张力",
     "longDescription": "该计算器假设绳索中心有负载",
     "shortDescription": "计算松弛绳或晾衣绳的大致张力。不要依赖它来确保安全。",
-    "title": "松弛线张力"
+    "title": "扁带张力计算"
   },
   "sphereArea": {
     "description": "球体的面积",
     "longDescription": "此计算器使用公式 A = 4πr² 计算球体的表面积。您可以输入半径来计算表面积，也可以直接输入表面积来计算所需的半径。此工具适用于学习几何的学生、处理球形物体的工程师以及任何需要进行球面计算的人。",
     "shortDescription": "根据球体的半径计算其表面积",
-    "title": "球体的面积"
+    "title": "球体表面积"
   },
   "sphereVolume": {
     "description": "球体的体积",
     "longDescription": "此计算器使用公式 V = (4/3)πr³ 计算球体的体积。您可以输入半径或直径来计算体积，也可以直接输入体积来确定所需的半径。对于在物理、工程和制造等领域处理球形物体的学生、工程师和专业人士来说，此工具非常有用。",
     "shortDescription": "使用半径或直径计算球体的体积",
-    "title": "球体的体积"
+    "title": "球体体积"
   },
   "sum": {
     "description": "计算一串数字的总和。输入以逗号或换行符分隔的数字，即可计算出它们的总和。",
@@ -177,7 +177,7 @@
     "resultTitle": "全部的",
     "runningSum": "运行总和",
     "shortDescription": "计算数字之和",
-    "title": "和",
+    "title": "数字求和",
     "toolInfo": {
       "description": "这是一个基于浏览器的在线实用程序，用于计算一组数字的总和。您可以输入用逗号、空格或任何其他字符（包括换行符）分隔的数字。您也可以直接粘贴一段包含要求和的数值的文本数据，该实用程序会提取这些数据并计算总和。",
       "title": "什么是数字总和计算器？"

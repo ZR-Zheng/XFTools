@@ -1,6 +1,6 @@
 import { uiText } from 'i18n/uiText';
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import ToolContent from '@components/ToolContent';
 import ToolTextInput from '@components/input/ToolTextInput';
 import ToolTextResult from '@components/result/ToolTextResult';

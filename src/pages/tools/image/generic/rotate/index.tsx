@@ -5,7 +5,7 @@ import { getFileExtension } from '@utils/file';
 import { useState } from 'react';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import SimpleRadio from '@components/options/SimpleRadio';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import SelectWithDesc from '@components/options/SelectWithDesc';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import ToolContent from '@components/ToolContent';

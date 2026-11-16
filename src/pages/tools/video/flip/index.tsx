@@ -1,11 +1,10 @@
-import { Box } from '@mui/material';
-import { useCallback, useState } from 'react';
+import { Box } from '@components/ui';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import ToolFileResult from '@components/result/ToolFileResult';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
-import { debounce } from 'lodash';
 import ToolVideoInput from '@components/input/ToolVideoInput';
 import { flipVideo } from './service';
 import { FlipOrientation, InitialValuesType } from './types';
@@ -53,8 +52,6 @@ export default function FlipVideo({ title }: ToolComponentProps) {
     }
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   const getGroups: GetGroupsType<InitialValuesType> = ({
     values,
     updateField
@@ -99,7 +96,7 @@ export default function FlipVideo({ title }: ToolComponentProps) {
       }
       initialValues={initialValues}
       getGroups={getGroups}
-      compute={debouncedCompute}
+      compute={compute}
       setInput={setInput}
       validationSchema={validationSchema}
     />

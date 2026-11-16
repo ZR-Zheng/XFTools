@@ -71,7 +71,7 @@
     "description": "将 Unix 时间戳转换为可读日期，并将格式化日期转换回 Unix 时间戳（双向转换）。",
     "optionsTitle": "转换模式",
     "shortDescription": "双向转换 Unix 时间戳和日期。",
-    "title": "转换 Unix ↔ 日期",
+    "title": "Unix 时间戳与日期互转",
     "toolInfo": {
       "description": "此工具将 Unix 时间戳（以秒为单位）转换为人类可读的日期格式（例如，YYYY-MM-DD HH:MM:SS），并将格式化日期转换回 Unix 时间戳。您可以选择 UTC 输出、本地时区输出，或提供自定义 UTC 偏移（例如，YYYY-MM-DD HH:MM:SS +XX:XX）。如果未提供偏移且未选择本地时区，则默认使用 UTC (+00:00)。",
       "title": "转换 Unix ↔ 日期"
@@ -126,7 +126,7 @@
     "startDateTime": "开始日期和时间",
     "startTime": "开始时间",
     "startTimezone": "开始时区",
-    "title": "日期间隔时间",
+    "title": "日期间隔计算",
     "toolInfo": {
       "description": "计算两个日期和时间之间的精确时差，支持不同时区。此工具提供按不同单位（年、月、日、时、分、秒）计算的详细时差细分。",
       "title": "日期间隔时间计算器"

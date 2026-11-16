@@ -1,5 +1,5 @@
-import { Box, Typography, Slider } from '@mui/material';
-import React, { useState, useCallback } from 'react';
+import { Box, Typography, Slider } from '@components/ui';
+import React, { useState } from 'react';
 import ToolFileResult from '@components/result/ToolFileResult';
 import ToolContent from '@components/ToolContent';
 import { GetGroupsType } from '@components/options/ToolOptions';
@@ -8,7 +8,6 @@ import ToolImageInput from '@components/input/ToolImageInput';
 import { InitialValuesType } from './types';
 import { changeGifSpeed } from './service';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
 
 const initialValues: InitialValuesType = {
   speed: 2
@@ -36,8 +35,6 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
     }
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   const getGroups: GetGroupsType<InitialValuesType> = ({
     values,
     updateField
@@ -47,12 +44,17 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
       component: (
         <Box>
           <Box>
-            <Typography variant="body2" gutterBottom sx={{
-              color: "text.secondary"
-            }}>
+            <Typography
+              variant="body2"
+              gutterBottom
+              sx={{
+                color: 'text.secondary'
+              }}
+            >
               {t('gif.changeSpeed.options.speedLabel')} {values.speed}
             </Typography>
             <Slider
+              aria-label={t('gif.changeSpeed.options.speedLabel')}
               value={values.speed}
               onChange={(_, value) =>
                 updateField('speed', Array.isArray(value) ? value[0] : value)
@@ -91,7 +93,7 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
       }
       initialValues={initialValues}
       getGroups={getGroups}
-      compute={debouncedCompute}
+      compute={compute}
       setInput={setInput}
     />
   );

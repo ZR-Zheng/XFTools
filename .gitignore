@@ -4,6 +4,9 @@ dist-ssr
 
 # dependencies
 /node_modules
+# npm is the canonical package manager; local helpers may generate these.
+/pnpm-lock.yaml
+/pnpm-workspace.yaml
 /.pnp
 .pnp.js
 

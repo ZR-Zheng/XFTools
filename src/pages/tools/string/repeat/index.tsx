@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import { useState } from 'react';
 import ToolTextResult from '@components/result/ToolTextResult';
 import { GetGroupsType } from '@components/options/ToolOptions';

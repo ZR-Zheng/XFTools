@@ -1,6 +1,6 @@
 import { uiText } from 'i18n/uiText';
 import React, { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import ToolContent from '@components/ToolContent';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -174,7 +174,7 @@ export default function CsvToTsv({
       title={title}
       input={input}
       inputComponent={<ToolTextInput value={input} onChange={setInput} />}
-      resultComponent={<ToolTextResult value={result} />}
+      resultComponent={<ToolTextResult extension="tsv" value={result} />}
       initialValues={initialValues}
       getGroups={getGroups}
       setInput={setInput}

@@ -1,10 +1,6 @@
 import { uiText } from 'i18n/uiText';
-import React, { ChangeEvent, useRef, useState } from 'react';
-import { Box, Stack, TextField, TextFieldProps } from '@mui/material';
-import PaletteIcon from '@mui/icons-material/Palette';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { globalDescriptionFontSize } from '../../config/uiConfig';
+import React, { ChangeEvent } from 'react';
+import { Box, Stack, TextField, TextFieldProps } from '@components/ui';
 
 interface ColorSelectorProps {
   value: string;
@@ -18,12 +14,8 @@ const ColorSelector: React.FC<ColorSelectorProps & TextFieldProps> = ({
   description,
   ...props
 }) => {
-  const [color, setColor] = useState<string>(value);
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const handleColorChange = (event: ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
-    setColor(val);
     onColorChange(val);
   };
 
@@ -33,32 +25,22 @@ const ColorSelector: React.FC<ColorSelectorProps & TextFieldProps> = ({
         mb: 3
       }}
     >
-      <Stack direction={'row'}>
+      <Stack direction={'row'} spacing={1} sx={{ alignItems: 'end' }}>
         <TextField
           sx={{ backgroundColor: 'background.paper' }}
-          value={color}
+          value={value}
           onChange={handleColorChange}
           {...props}
+          label={uiText(props.label || description)}
         />
-        <IconButton onClick={() => inputRef.current?.click()}>
-          <PaletteIcon />
-        </IconButton>
-        <TextField
-          style={{ visibility: 'hidden' }}
-          inputRef={inputRef}
+        <input
+          aria-label={uiText(description)}
+          className="color-swatch"
           type="color"
-          value={color}
+          value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#ffffff'}
           onChange={handleColorChange}
         />
       </Stack>
-      <Typography
-        sx={{
-          fontSize: globalDescriptionFontSize,
-          mt: 1
-        }}
-      >
-        {uiText(description)}
-      </Typography>
     </Box>
   );
 };

@@ -7,18 +7,32 @@ export default defineConfig({
   retries: 1,
   reporter: [['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:4173',
-    storageState: { cookies: [], origins: [{ origin: 'http://localhost:4173', localStorage: [{ name: 'lang', value: 'en' }] }] },
+    baseURL: 'http://127.0.0.1:4173',
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: 'http://127.0.0.1:4173',
+          localStorage: [{ name: 'lang', value: 'en' }]
+        }
+      ]
+    },
     trace: 'on-first-retry'
   },
   webServer: {
-    command: 'npm run build && npm run serve',
-    url: 'http://localhost:4173'
+    command:
+      (process.env.PLAYWRIGHT_SKIP_BUILD ? '' : 'npm run build && ') +
+      'npm run serve -- --host 127.0.0.1 --port 4173 --strictPort',
+    url: 'http://127.0.0.1:4173',
+    reuseExistingServer: !process.env.CI
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: process.env.PLAYWRIGHT_CHANNEL
+      }
     },
     {
       name: 'firefox',

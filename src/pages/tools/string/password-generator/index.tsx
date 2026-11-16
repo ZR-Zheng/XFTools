@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, FormGroup } from '@components/ui';
 import { generatePassword } from './service';
 import { initialValues, InitialValuesType } from './initialValues';
 import ToolContent from '@components/ToolContent';

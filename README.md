@@ -1,4 +1,4 @@
-# XFTools 工具工作台
+# XFTools
 
 中文优先、支持英文的浏览器实用工具集合。将图像、PDF、音视频、文本、列表、日期、数字及 JSON / CSV / XML 工具放进同一个工作台，可自行部署和维护。
 
@@ -8,11 +8,15 @@
 
 - 分类导航与关键词搜索，支持 Ctrl / Cmd + K 聚焦搜索。
 - 收藏常用工具、查看最近使用记录；偏好保存在当前浏览器。
-- 统一的工具详情、输入输出面板、选项与可直接应用的示例。
-- 简体中文默认界面，可切换英文；已补齐工具选项、说明和示例的中文文案。
+- 根据文本、代码、对比、表格、图片、PDF、音视频、日期、计算器与生成器提供对应交互布局。
+- 文件预览、批量文件排序、参数设置与显式处理；支持复制、下载及可直接应用的示例。
+- 图片缩放提供联动尺寸与结果预览；PDF 可点选页面；音频显示波形与裁剪区间；时间戳和 bcrypt 使用专门表单。详见 [工具页面交互](docs/tool-interactions.md)。
+- 简体中文默认界面，可切换英文；品牌 XFTools 和英文宣传语保持原文，操作说明本地化。
 - 浅色与深色主题，适配桌面、平板和手机，支持键盘导航与减少动态效果设置。
 
 文件处理在浏览器中执行。部分高级功能首次使用会下载 WASM、编辑器资源或机器学习模型，需要网络连接；这些资源请求与本地文件处理是两回事。请在处理较大文件时为浏览器预留足够内存。
+
+界面使用 React + 原生 HTML/CSS/SVG，图片编辑使用 Canvas；已移除 Material UI、Emotion、Monaco、Tailwind 和 Filerobot。工具选项、示例及详细说明按分类延迟加载，首页仅加载检索所需的元数据。具体说明见 [依赖与构建](docs/dependencies.md) 和 [界面设计规范](docs/design-system.md)。
 
 ## 本地开发
 
@@ -33,7 +37,7 @@ npm run build
 npm run serve
 ```
 
-工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。
+工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。包含全部工具的桌面和手机布局巡检，以及文件排序、PDF 合并与表单导出、图片编辑导出、代码编辑和语言切换。可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已有 Chrome。
 
 `npm test` 进入测试监听模式；`npm run test:e2e` 运行 Playwright 测试，首次使用需先执行 `npx playwright install` 安装对应浏览器。现有端到端功能测试使用英文环境，新工作台的测试另行覆盖中文默认与语言切换。
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Box, Paper, Typography } from '@mui/material';
+import { Alert, Box, Paper, Typography } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';

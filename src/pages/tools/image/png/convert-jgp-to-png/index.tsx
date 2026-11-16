@@ -1,5 +1,5 @@
 import { uiText } from 'i18n/uiText';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import ToolImageInput from 'components/input/ToolImageInput';
 import CheckboxWithDesc from 'components/options/CheckboxWithDesc';
 import ColorSelector from 'components/options/ColorSelector';
@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { areColorsSimilar } from 'utils/color';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
+import { canvasToBlob } from '@utils/image';
 
 const initialValues = {
   enableTransparency: false,
@@ -66,14 +67,8 @@ export default function ConvertJgpToPng({ title }: ToolComponentProps) {
         ctx.putImageData(imageData, 0, 0);
       }
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const newFile = new File([blob], file.name, {
-            type: 'image/png'
-          });
-          setResult(newFile);
-        }
-      }, 'image/png');
+      const blob = await canvasToBlob(canvas);
+      setResult(new File([blob], file.name, { type: 'image/png' }));
     };
 
     if (optionsValues.enableTransparency) {
@@ -85,12 +80,12 @@ export default function ConvertJgpToPng({ title }: ToolComponentProps) {
         return;
       }
 
-      processImage(input, {
+      return processImage(input, {
         color: rgb,
         similarity: Number(optionsValues.similarity)
       });
     } else {
-      processImage(input);
+      return processImage(input);
     }
   };
 
@@ -117,10 +112,10 @@ export default function ConvertJgpToPng({ title }: ToolComponentProps) {
             <Box>
               <CheckboxWithDesc
                 key="enableTransparency"
-                title={uiText("Enable PNG Transparency")}
+                title={uiText('Enable PNG Transparency')}
                 checked={!!values.enableTransparency}
                 onChange={(value) => updateField('enableTransparency', value)}
-                description={uiText("Make the color below transparent.")}
+                description={uiText('Make the color below transparent.')}
               />
               <ColorSelector
                 value={values.color}

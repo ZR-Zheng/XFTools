@@ -17,7 +17,7 @@
   "jsonToXml": {
     "description": "将 JSON 数据转换为 XML 格式。将结构化的 JSON 对象转换为格式良好的 XML 文档。",
     "shortDescription": "将 JSON 转换为 XML 格式",
-    "title": "JSON 到 XML",
+    "title": "JSON 转 XML",
     "inputTitle": "输入 JSON",
     "options": {
       "addMetaTagDesc": "在 XML 输出开头添加声明信息",
@@ -38,7 +38,7 @@
     "inputTitle": "输入 JSON",
     "resultTitle": "最小化 JSON",
     "shortDescription": "通过删除空格来缩小 JSON",
-    "title": "最小化 JSON",
+    "title": "压缩 JSON",
     "toolInfo": {
       "description": "JSON 压缩是指在保持 JSON 数据有效性的同时，从中移除所有不必要的空格字符的过程。这包括移除 JSON 正确解析所需的空格、换行符和缩进。压缩可以减小 JSON 数据的大小，使其在保持完全相同的数据结构和值的同时，更高效地存储和传输。",
       "title": "什么是 JSON 最小化？"
@@ -50,7 +50,7 @@
     "inputTitle": "输入 JSON",
     "resultTitle": "美化 JSON",
     "shortDescription": "格式化并美化 JSON 代码",
-    "title": "美化 JSON",
+    "title": "格式化 JSON",
     "toolInfo": {
       "description": "此工具允许您使用适当的缩进和间距格式化 JSON 数据，使其更具可读性且更易于使用。",
       "title": "美化 JSON"

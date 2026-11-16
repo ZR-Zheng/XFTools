@@ -6,7 +6,7 @@ import {
   FormControlLabel,
   Radio,
   Stack
-} from '@mui/material';
+} from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import ToolMultipleImageInput, {

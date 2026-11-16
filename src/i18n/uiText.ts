@@ -27,6 +27,7 @@ function addResourceCopy(
   }
 }
 addResourceCopy(i18n.store.data.en || {}, i18n.store.data.zh || {});
+i18n.store.on('added', () => addResourceCopy(i18n.store.data.en || {}, i18n.store.data.zh || {}));
 const feedbackPatterns = Object.entries(copy)
   .filter(([key]) => key.includes('{{0}}'))
   .map(([key, translated]) => ({

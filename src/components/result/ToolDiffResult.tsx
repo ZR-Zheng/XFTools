@@ -1,4 +1,4 @@
-import { Box, Typography, CircularProgress, useTheme } from '@mui/material';
+import { Box, Typography, CircularProgress, useTheme } from '@components/ui';
 import InputHeader from '../InputHeader';
 import ResultFooter from './ResultFooter';
 import { useContext } from 'react';

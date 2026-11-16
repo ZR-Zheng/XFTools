@@ -75,6 +75,22 @@
     "xml": {
       "description": "Tools for working with XML data structures - viewer, beautifier, validator and much more",
       "title": "XML Tools"
+    },
+    "encoding": {
+      "title": "Encoding & decoding",
+      "description": "Base64, Unicode, URL, Morse and QR codes."
+    },
+    "security": {
+      "title": "Passwords & security",
+      "description": "Password generation and bcrypt verification."
+    },
+    "network": {
+      "title": "URL & network",
+      "description": "URL editing, slugs and network ports."
+    },
+    "calculator": {
+      "title": "Science & engineering",
+      "description": "Electrical, geometry and engineering calculators."
     }
   },
   "converters": {
@@ -94,7 +110,7 @@
   },
   "hero": {
     "brand": "XFTools",
-    "description": "Boost your productivity with XFTools, the ultimate toolkit for getting things done quickly! Access thousands of user-friendly utilities for editing images, text, lists, and data, all directly from your browser.",
+    "description": "Work with images, documents, text and data in your browser.",
     "examples": {
       "calculateNumberSum": "Calculate number sum",
       "changeGifSpeed": "Change GIF speed",
@@ -110,7 +126,7 @@
       "noResult": "No results found, Try adjusting your search or filter criteria",
       "placeholder": "Search all tools"
     },
-    "title": "Get Things Done Quickly with"
+    "title": "Small tools. Clear focus."
   },
   "inputFooter": {
     "clear": "Clear",

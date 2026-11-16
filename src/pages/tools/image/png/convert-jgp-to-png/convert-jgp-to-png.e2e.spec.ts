@@ -13,6 +13,7 @@ test.describe('Convert JPG to PNG tool', () => {
     const fileInput = page.locator('input[type="file"]');
     const imagePath = path.join(__dirname, 'test.jpg');
     await fileInput?.setInputFiles(imagePath);
+    await page.getByTestId('process-tool').click();
 
     // Click on download
     const downloadPromise = page.waitForEvent('download');
@@ -45,8 +46,11 @@ test.describe('Convert JPG to PNG tool', () => {
     await fileInput?.setInputFiles(imagePath);
 
     // Enable transparency on color 0x808080
-    await page.getByLabel('Enable PNG Transparency').check();
+    await page
+      .getByRole('checkbox', { name: 'Enable PNG Transparency', exact: true })
+      .check();
     await page.getByTestId('color-input').fill('#808080');
+    await page.getByTestId('process-tool').click();
 
     // Click on download
     const downloadPromise = page.waitForEvent('download');

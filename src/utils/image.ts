@@ -4,6 +4,19 @@
  * @param file - The image file to get the dimensions from.
  * @returns A promise resolving to the image width and height in pixels.
  */
+export function canvasToBlob(
+  canvas: HTMLCanvasElement,
+  type = 'image/png'
+): Promise<Blob> {
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(
+      (blob) =>
+        blob ? resolve(blob) : reject(new Error('Image export failed')),
+      type
+    )
+  );
+}
+
 export function getImageDimensions(
   file: File
 ): Promise<{ width: number; height: number }> {

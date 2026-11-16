@@ -70,7 +70,7 @@
   "compressPng": {
     "description": "这是一个压缩 PNG 图片的程序。只要您将 PNG 图片粘贴到输入区域，程序就会对其进行压缩，并在输出区域显示结果。在选项中，您可以调整压缩级别，以及查看新旧图片文件的大小。",
     "shortDescription": "快速压缩 PNG",
-    "title": "压缩 png",
+    "title": "压缩 PNG",
     "compressionOptions": "压缩选项",
     "fileSizes": "文件大小",
     "alreadyOptimized": "该 PNG 已比可生成的压缩结果更小，因此保留原文件。",
@@ -96,7 +96,7 @@
   "convertJgpToPng": {
     "description": "快速将您的 JPG 图像转换为 PNG。只需在左侧的编辑器中导入您的 PNG 图像即可",
     "shortDescription": "快速将您的 JPG 图像转换为 PNG",
-    "title": "JPG 转换为 PNG"
+    "title": "JPG 转 PNG"
   },
   "createTransparent": {
     "description": "通过移除所选颜色，使图像背景变为透明。",
@@ -273,7 +273,7 @@
   "removeBackground": {
     "description": "自动移除图像背景，并保留主体为透明背景。",
     "shortDescription": "自动删除图像的背景",
-    "title": "从图像中删除背景"
+    "title": "移除图片背景"
   },
   "resize": {
     "description": "将图像调整为不同的尺寸。",

@@ -1,0 +1,416 @@
+.image-resize-workbench {
+  min-width: 0;
+}
+.resize-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 292px;
+  gap: 20px;
+  align-items: start;
+}
+.resize-stage-panel,
+.resize-controls {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  min-width: 0;
+}
+.resize-stage-panel {
+  overflow: hidden;
+}
+.resize-stage-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.resize-tabs,
+.resize-mode {
+  display: flex;
+  gap: 4px;
+}
+.resize-tabs button,
+.resize-mode button {
+  padding: 8px 12px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.resize-tabs button[aria-pressed='true'],
+.resize-mode button[aria-pressed='true'] {
+  color: var(--blue);
+  background: var(--blue-soft);
+  font-weight: 650;
+}
+.resize-stage-toolbar > .text-link {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  border: 0;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.resize-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 238px;
+  padding: 28px 16px;
+  border: 0;
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+.resize-upload > svg {
+  color: var(--blue);
+}
+.resize-upload > strong {
+  font-size: 16px;
+  color: var(--ink);
+}
+.resize-upload > span {
+  font-size: 12px;
+}
+.resize-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  height: clamp(260px, 29vw, 370px);
+  padding: 20px;
+  background-color: var(--surface-soft);
+  background-image: repeating-conic-gradient(
+    #80808010 0 25%,
+    transparent 0 50%
+  );
+  background-size: 20px 20px;
+}
+.resize-stage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+.resize-dimension-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  font:
+    12px/1.6 Consolas,
+    monospace;
+  color: var(--muted);
+}
+.resize-source-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.resize-source-info > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.resize-source-info > span:last-child {
+  white-space: nowrap;
+}
+.resize-controls {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.resize-control-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.resize-control-heading h2 {
+  font-size: 16px;
+  font-weight: 650;
+}
+.resize-control-heading button {
+  font-size: 12px;
+  border: 0;
+}
+.resize-controls fieldset {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.resize-mode {
+  background: var(--surface-soft);
+  border-radius: 8px;
+  padding: 4px;
+}
+.resize-mode button {
+  flex: 1;
+}
+.resize-mode button[aria-pressed='true'] {
+  background: var(--surface);
+  box-shadow: 0 1px 4px #0001;
+  color: var(--ink);
+}
+.resize-dimensions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.resize-dimensions label,
+.resize-percentage {
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--muted);
+}
+.resize-dimensions label > div,
+.resize-percentage > div {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+  padding-right: 9px;
+}
+.resize-dimensions input,
+.resize-percentage input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 9px;
+  min-height: 44px;
+  font-size: 16px;
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.resize-dimensions input:focus,
+.resize-percentage input:focus {
+  outline-offset: -3px;
+}
+.resize-ratio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  min-height: 28px;
+  cursor: pointer;
+}
+.resize-ratio input {
+  accent-color: var(--action);
+  width: 17px;
+  height: 17px;
+}
+.resize-presets {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.resize-presets button {
+  min-height: 34px;
+  padding: 5px 9px;
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+.resize-presets button:hover,
+.resize-presets button[aria-pressed='true'] {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.resize-summary {
+  padding: 12px;
+  background: var(--surface-soft);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.resize-summary strong {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--ink);
+}
+.resize-submit {
+  width: 100%;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+.resize-local {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.resize-scale-range {
+  width: 100%;
+  accent-color: var(--action);
+}
+.resize-batch-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.resize-file-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.resize-file-card {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  padding: 8px;
+  min-width: 0;
+}
+.resize-file-card.selected {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+.resize-file-focus {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  text-align: left;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+}
+.resize-file-focus img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 5px;
+  background: var(--surface-soft);
+}
+.resize-file-focus > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+.resize-file-focus strong {
+  font-size: 12px;
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.resize-file-focus small {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.resize-file-card .icon-button {
+  min-width: 36px;
+  width: 36px;
+  height: 40px;
+  min-height: 40px;
+}
+.resize-help {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 16px;
+}
+.resize-stage-panel.dragging {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+@media (max-width: 1100px) and (min-width: 900px) {
+  .resize-editor {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 14px;
+  }
+  .resize-controls {
+    padding: 16px;
+  }
+  .resize-stage-toolbar {
+    padding: 10px;
+  }
+  .resize-tabs button {
+    padding: 8px;
+  }
+  .resize-stage-toolbar > .text-link {
+    font-size: 12px;
+  }
+}
+@media (max-width: 699px) {
+  .resize-mode button,
+  .resize-presets button,
+  .resize-stage-toolbar button,
+  .resize-control-heading button,
+  .resize-file-card .icon-button {
+    min-height: 44px;
+  }
+  .resize-editor {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .resize-upload {
+    min-height: 170px;
+  }
+  .resize-stage {
+    height: 235px;
+    min-height: 200px;
+  }
+  .resize-controls {
+    padding: 16px;
+    gap: 14px;
+  }
+  .resize-stage-toolbar {
+    padding: 10px 12px;
+  }
+  .resize-help {
+    font-size: 12px;
+  }
+  .resize-file-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .resize-controls fieldset {
+    gap: 14px;
+  }
+  .resize-local {
+    font-size: 12px;
+  }
+}

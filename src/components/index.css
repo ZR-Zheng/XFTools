@@ -1,7 +1,9 @@
-@import 'tailwindcss';
-@config "../../tailwind.config.mjs";
-
 :root {
+  --control-border: #7d899b;
+  --action: #285ee8;
+  --action-hover: #194dd1;
+  --danger: #b42318;
+  --danger-soft: #fff0ee;
   --page: #f7f8fa;
   --surface: #fff;
   --surface-soft: #f0f3f8;
@@ -11,6 +13,7 @@
   --blue: #285ee8;
   --blue-soft: #edf2fe;
   --green: #087c60;
+  --green-soft: #eaf8f4;
   --sidebar: #161b25;
   font-family:
     'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
@@ -18,6 +21,9 @@
   font-synthesis: none;
 }
 :root[data-theme='dark'] {
+  --control-border: #667790;
+  --danger: #ffb4aa;
+  --danger-soft: #3d2426;
   --page: #151a23;
   --surface: #1d2430;
   --surface-soft: #273142;
@@ -27,11 +33,17 @@
   --blue: #82aaff;
   --blue-soft: #253556;
   --green: #70dab5;
+  --green-soft: #183c34;
   color-scheme: dark;
 }
 * {
   box-sizing: border-box;
 }
+body { font-size: 16px; line-height: 1.5; }
+button, input, select, textarea { font: inherit; }
+img, video, canvas { max-width: 100%; }
+h1, h2, h3, h4, p { margin: 0; }
+button { background: transparent; }
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
@@ -1520,36 +1532,6 @@ a {
 .language-trigger:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
-}
-.language-menu-paper.MuiPaper-root {
-  min-width: 172px;
-  margin-top: 8px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: 0 8px 24px #1018281a;
-}
-.language-menu-paper .MuiList-root {
-  padding: 6px;
-}
-.language-menu-paper .MuiMenuItem-root {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 44px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-}
-.language-menu-paper .MuiMenuItem-root.Mui-selected {
-  background: var(--blue-soft);
-  color: var(--blue);
-}
-.language-menu-paper .MuiMenuItem-root.Mui-focusVisible {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-  background: var(--surface-soft);
 }
 .catalog-count-only {
   justify-content: flex-end;

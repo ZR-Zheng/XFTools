@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import { useState, useCallback } from 'react';
+import { Box } from '@components/ui';
+import { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
@@ -9,7 +9,6 @@ import { t } from 'i18next';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import { updateNumberField } from '@utils/string';
 import { splitImagesToPDF, fromPts, toPts } from './service';
-import { debounce } from 'lodash';
 import { PageSizes } from 'pdf-lib';
 import ToolFileResult from '@components/result/ToolFileResult';
 import SelectWithDesc from '@components/options/SelectWithDesc';
@@ -42,8 +41,6 @@ export default function Split({ title, longDescription }: ToolComponentProps) {
       setIsProcessing(false);
     }
   };
-
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
 
   const getGroups: GetGroupsType<InitialValuesType> | null = ({
     values,
@@ -177,7 +174,7 @@ export default function Split({ title, longDescription }: ToolComponentProps) {
       initialValues={initialValues}
       getGroups={getGroups}
       setInput={setInput}
-      compute={debouncedCompute}
+      compute={compute}
       toolInfo={{ title: `What is a ${title}?`, description: longDescription }}
     />
   );

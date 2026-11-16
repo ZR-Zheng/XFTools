@@ -1,5 +1,5 @@
 import { uiText } from 'i18n/uiText';
-import { Box, CircularProgress, Typography, useTheme } from '@mui/material';
+import { Box, CircularProgress, Typography, useTheme } from '@components/ui';
 import React, { useContext } from 'react';
 import InputHeader from '../InputHeader';
 import greyPattern from '@assets/grey-pattern.png';
@@ -7,10 +7,11 @@ import { globalInputHeight } from '../../config/uiConfig';
 import ResultFooter from './ResultFooter';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
 import { useTranslation } from 'react-i18next';
+import { ToolResultVisibleContext } from '../../tools/page-context';
 
 export default function ToolFileResult({
   title,
-  value,
+  value: resultValue,
   extension,
   loading,
   loadingText
@@ -22,6 +23,8 @@ export default function ToolFileResult({
   loadingText?: string;
 }) {
   const { t } = useTranslation();
+  const resultVisible = useContext(ToolResultVisibleContext);
+  const value = resultVisible ? resultValue : null;
   const [preview, setPreview] = React.useState<string | null>(null);
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const theme = useTheme();
@@ -96,6 +99,7 @@ export default function ToolFileResult({
     <Box>
       <InputHeader title={title || t('toolFileResult.result')} />
       <Box
+        className={`file-result-frame ${value || loading ? 'has-result' : 'is-empty'}`}
         sx={{
           width: '100%',
           height: globalInputHeight,
@@ -105,7 +109,9 @@ export default function ToolFileResult({
           bgcolor: 'background.paper'
         }}
       >
-        {loading ? (
+        {!value && !loading ? (
+          <span>{uiText('Result will appear after processing')}</span>
+        ) : loading ? (
           <Box
             sx={{
               display: 'flex',
@@ -174,6 +180,16 @@ export default function ToolFileResult({
           )
         )}
       </Box>
+      {value && (
+        <div className="file-result-meta">
+          <span>{value.name}</span>
+          <span>
+            {value.size < 1024 * 1024
+              ? `${(value.size / 1024).toFixed(1)} KB`
+              : `${(value.size / (1024 * 1024)).toFixed(2)} MB`}
+          </span>
+        </div>
+      )}
       <ResultFooter
         disabled={!value}
         handleCopy={handleCopy}

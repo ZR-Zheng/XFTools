@@ -5,7 +5,7 @@ import ToolCodeInput from '@components/input/ToolCodeInput';
 import ToolTextResult from '@components/result/ToolTextResult';
 import { compareJson } from './service';
 import { ToolComponentProps } from '@tools/defineTool';
-import { Grid } from '@mui/material';
+import { Grid } from '@components/ui';
 
 type InitialValuesType = {};
 

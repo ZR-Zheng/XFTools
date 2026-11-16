@@ -1,6 +1,7 @@
 import { uiText } from 'i18n/uiText';
 import React from 'react';
-import { Box, Checkbox, FormControlLabel, Typography } from '@mui/material';
+import { Box, Checkbox, FormControlLabel } from '@components/ui';
+import { useWorkbenchText } from '../../i18n/workbench';
 
 const CheckboxWithDesc = ({
   title,
@@ -15,14 +16,16 @@ const CheckboxWithDesc = ({
   onChange: (value: boolean) => void;
   disabled?: boolean;
 }) => {
+  const { english } = useWorkbenchText();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.checked);
   };
 
   return (
     <Box
+      className="option-check"
       sx={{
-        mb: 3
+        mb: 2
       }}
     >
       <FormControlLabel
@@ -36,14 +39,12 @@ const CheckboxWithDesc = ({
         label={title}
       />
       {description && (
-        <Typography
-          sx={{
-            fontSize: 12,
-            mt: 1
-          }}
-        >
-          {uiText(description)}
-        </Typography>
+        <details className="option-field-help">
+          <summary aria-label={`${title} · ${english ? 'Help' : '说明'}`}>
+            ?
+          </summary>
+          <p>{uiText(description)}</p>
+        </details>
       )}
     </Box>
   );

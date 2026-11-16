@@ -7,7 +7,7 @@ import { convertTsvToJson } from './service';
 import { CardExampleType } from '@components/examples/ToolExamples';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import { ToolComponentProps } from '@tools/defineTool';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import { updateNumberField } from '@utils/string';
 import SimpleRadio from '@components/options/SimpleRadio';
 import CheckboxWithDesc from '@components/options/CheckboxWithDesc';

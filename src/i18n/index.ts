@@ -1,5 +1,8 @@
 import i18n, { Namespace, ParseKeys } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import catalog from './catalog.generated.json';
+import zhCommon from '../../public/locales/zh/translation.json';
+import enCommon from '../../public/locales/en/translation.json';
 
 export const validNamespaces = [
   'string',
@@ -22,13 +25,28 @@ export type FullI18nKey = {
 }[I18nNamespaces];
 
 const files = import.meta.glob('../../public/locales/{zh,en}/*.json', {
-  eager: true,
   import: 'default'
 });
-const resources: Record<string, Record<string, object>> = { zh: {}, en: {} };
-for (const [path, content] of Object.entries(files)) {
-  const [, language, namespace] = path.match(/locales\/(zh|en)\/(.+)\.json$/)!;
-  resources[language][namespace] = content as object;
+const resources = {
+  zh: { ...catalog.zh, translation: zhCommon },
+  en: { ...catalog.en, translation: enCommon }
+};
+const loaded = new Map<string, Promise<void>>();
+export function ensureToolLocale(namespace: string): Promise<void> {
+  if (namespace === 'translation') return Promise.resolve();
+  const existing = loaded.get(namespace);
+  if (existing) return existing;
+  const pending = Promise.all(
+    ['zh', 'en'].map(async (lang) => {
+      const loader = files[`../../public/locales/${lang}/${namespace}.json`];
+      if (!loader) throw new Error(`Missing tool locale: ${lang}/${namespace}`);
+      const data = await loader();
+      i18n.addResourceBundle(lang, namespace, data, true, true);
+    })
+  ).then(() => {});
+  loaded.set(namespace, pending);
+  pending.catch(() => loaded.delete(namespace));
+  return pending;
 }
 let language = 'zh';
 try {

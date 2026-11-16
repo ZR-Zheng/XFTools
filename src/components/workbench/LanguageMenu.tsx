@@ -1,5 +1,5 @@
 import { useId, useState } from 'react';
-import { Menu, MenuItem } from '@mui/material';
+import { Menu, MenuItem } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import Glyph from './Glyph';
 

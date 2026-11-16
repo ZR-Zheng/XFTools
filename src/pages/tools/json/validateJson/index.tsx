@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import ToolCodeInput from '@components/input/ToolCodeInput';
-import ToolTextResult from '@components/result/ToolTextResult';
 import { CardExampleType } from '@components/examples/ToolExamples';
 import { validateJson } from './service';
 import { ToolComponentProps } from '@tools/defineTool';
 import ToolContent from '@components/ToolContent';
 import { useTranslation } from 'react-i18next';
 import { JsonFormat } from '@utils/json';
+import { useWorkbenchText } from 'i18n/workbench';
+import InputHeader from '@components/InputHeader';
 
 const exampleCards: CardExampleType<{}>[] = [
   {
@@ -49,13 +50,16 @@ const exampleCards: CardExampleType<{}>[] = [
 
 export default function ValidateJson({ title }: ToolComponentProps) {
   const { t } = useTranslation('json');
+  const { english } = useWorkbenchText();
   const [input, setInput] = useState<string>('');
   const [result, setResult] = useState<string>('');
   const [format, setFormat] = useState<JsonFormat | undefined>('json');
+  const [valid, setValid] = useState<boolean | null>(null);
 
   const compute = (options: any, input: string) => {
     if (input) {
       const { valid, error, format } = validateJson(input);
+      setValid(valid);
 
       if (valid) {
         setResult(t('validateJson.validJson'));
@@ -63,7 +67,7 @@ export default function ValidateJson({ title }: ToolComponentProps) {
       } else {
         setResult(t('validateJson.invalidJson', { error }));
       }
-    }
+    } else { setResult(''); setValid(null); }
   };
 
   return (
@@ -78,7 +82,7 @@ export default function ValidateJson({ title }: ToolComponentProps) {
         />
       }
       resultComponent={
-        <ToolTextResult title={t('validateJson.resultTitle')} value={result} />
+        <div><InputHeader title={t('validateJson.resultTitle')} /><div className={`validation-result ${valid === null ? 'empty' : valid ? 'success' : 'error'}`} role="status"><p>{valid === null ? (english ? 'Paste JSON to check its syntax.' : '粘贴 JSON 后，将自动检查语法。') : result.replace(/^[✅❌]\s*/, '')}</p></div></div>
       }
       initialValues={{}}
       getGroups={null}

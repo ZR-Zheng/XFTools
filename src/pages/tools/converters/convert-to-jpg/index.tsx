@@ -1,4 +1,4 @@
-import { Box, Slider, Typography } from '@mui/material';
+import { Box, Slider, Typography } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import ToolMultipleImageInput, {
   MultiImageInput
@@ -6,14 +6,13 @@ import ToolMultipleImageInput, {
 import ColorSelector from 'components/options/ColorSelector';
 import ToolFileResult from '@components/result/ToolFileResult';
 import ToolMultiFileResult from '@components/result/ToolMultiFileResult';
-import React, { useState, useContext, useCallback } from 'react';
+import React, { useState, useContext } from 'react';
 import * as Yup from 'yup';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import InitialValuesType from './types';
 import { convertToJPG } from './service';
 import { CustomSnackBarContext } from 'contexts/CustomSnackBarContext';
-import debounce from 'lodash/debounce';
 
 const initialValues: InitialValuesType = {
   quality: 85,
@@ -65,8 +64,6 @@ export default function ConvertToJpg({ title }: ToolComponentProps) {
     }
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   return (
     <ToolContent
       title={title}
@@ -103,15 +100,22 @@ export default function ConvertToJpg({ title }: ToolComponentProps) {
           title: t('convertToJPG.options.title'),
           component: (
             <Box>
-              <Box sx={{
-                mb: 3
-              }}>
-                <Typography variant="body2" gutterBottom sx={{
-                  color: "text.secondary"
-                }}>
+              <Box
+                sx={{
+                  mb: 3
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  gutterBottom
+                  sx={{
+                    color: 'text.secondary'
+                  }}
+                >
                   {t('convertToJPG.options.quality')} {values.quality}%
                 </Typography>
                 <Slider
+                  aria-label={t('convertToJPG.options.quality')}
                   value={values.quality}
                   onChange={(_, value) =>
                     updateField(
@@ -126,9 +130,12 @@ export default function ConvertToJpg({ title }: ToolComponentProps) {
                   valueLabelFormat={(value) => `${value}%`}
                   sx={{ mt: 1 }}
                 />
-                <Typography variant="caption" sx={{
-                  color: "text.secondary"
-                }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary'
+                  }}
+                >
                   {t('convertToJPG.options.qualityDescription')}
                 </Typography>
               </Box>
@@ -145,7 +152,7 @@ export default function ConvertToJpg({ title }: ToolComponentProps) {
           )
         }
       ]}
-      compute={debouncedCompute}
+      compute={compute}
       setInput={setInput}
     />
   );

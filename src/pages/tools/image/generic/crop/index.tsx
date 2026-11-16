@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import ToolImageInput from '@components/input/ToolImageInput';
@@ -8,6 +8,7 @@ import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import SimpleRadio from '@components/options/SimpleRadio';
+import { canvasToBlob } from '@utils/image';
 
 const initialValues = {
   xPosition: '0',
@@ -98,17 +99,11 @@ export default function CropImage({ title }: ToolComponentProps) {
       }
 
       // Convert canvas to blob and create file
-      destCanvas.toBlob((blob) => {
-        if (blob) {
-          const newFile = new File([blob], file.name, {
-            type: file.type
-          });
-          setResult(newFile);
-        }
-      }, file.type);
+      const blob = await canvasToBlob(destCanvas, file.type);
+      setResult(new File([blob], file.name, { type: file.type }));
     };
 
-    processImage(input, x, y, width, height, isCircular);
+    return processImage(input, x, y, width, height, isCircular);
   };
   const handleCropChange =
     (values: InitialValuesType, updateField: UpdateField<InitialValuesType>) =>

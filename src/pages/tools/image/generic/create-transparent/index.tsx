@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 import ToolImageInput from '@components/input/ToolImageInput';
@@ -10,6 +10,7 @@ import { areColorsSimilar } from 'utils/color';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
+import { canvasToBlob } from '@utils/image';
 
 const initialValues = {
   fromColor: 'white',
@@ -78,15 +79,11 @@ export default function CreateTransparent({ title }: ToolComponentProps) {
 
       ctx.putImageData(imageData, 0, 0);
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const newFile = new File([blob], file.name, { type: 'image/png' });
-          setResult(newFile);
-        }
-      }, 'image/png');
+      const blob = await canvasToBlob(canvas);
+      setResult(new File([blob], file.name, { type: 'image/png' }));
     };
 
-    processImage(input, fromRgb, Number(similarity));
+    return processImage(input, fromRgb, Number(similarity));
   };
 
   const getGroups: GetGroupsType<typeof initialValues> = ({

@@ -1,4 +1,4 @@
-import { Box, Typography, FormControlLabel, Switch } from '@mui/material';
+import { Box, Typography, FormControlLabel, Switch } from '@components/ui';
 import { useEffect, useState } from 'react';
 import ToolFileResult from '@components/result/ToolFileResult';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
@@ -8,6 +8,7 @@ import { parsePageRanges, rotatePdf } from './service';
 import { CardExampleType } from '@components/examples/ToolExamples';
 import { PDFDocument } from 'pdf-lib';
 import ToolPdfInput from '@components/input/ToolPdfInput';
+import * as Yup from 'yup';
 import SimpleRadio from '@components/options/SimpleRadio';
 import { InitialValuesType, RotationAngle } from './types';
 import { useTranslation } from 'react-i18next';
@@ -140,14 +141,29 @@ export default function RotatePdf({
       initialValues={initialValues}
       compute={compute}
       exampleCards={exampleCards}
-      inputComponent={
+      validationSchema={Yup.object({
+        pageRanges: Yup.string().test(
+          'pages',
+          t('rotatePdf.pageRangesDescription'),
+          (value, context) =>
+            context.parent.applyToAllPages ||
+            !totalPages ||
+            parsePageRanges(value || '', totalPages).length > 0
+        )
+      })}
+      renderCustomInput={(values, setFieldValue) => (
         <ToolPdfInput
           value={input}
           onChange={setInput}
           accept={['application/pdf']}
           title={t('rotatePdf.inputTitle')}
+          pageRanges={values.applyToAllPages ? '' : values.pageRanges}
+          onPageRangesChange={(ranges) => {
+            setFieldValue('applyToAllPages', ranges === '');
+            setFieldValue('pageRanges', ranges);
+          }}
         />
-      }
+      )}
       resultComponent={
         <ToolFileResult
           title={t('rotatePdf.resultTitle')}
@@ -201,6 +217,7 @@ export default function RotatePdf({
                     </Typography>
                   )}
                   <TextFieldWithDesc
+                    label={t('splitPdf.pageSelection')}
                     value={values.pageRanges}
                     onOwnChange={(val) => {
                       updateField('pageRanges', val);

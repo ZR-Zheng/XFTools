@@ -1,14 +1,12 @@
 import { useTranslation } from 'react-i18next';
 const zh = {
-  workspace: '工具工作台',
-  tagline: '让每一件小事，更简单。',
+  workspace: 'Workspace',
+  tagline: 'YOUR EVERYDAY TOOLKIT',
   all: '全部工具',
   favorites: '我的收藏',
   recent: '最近使用',
   categories: '工具分类',
   localDetail: '文件处理在浏览器中完成',
-  headline: '好用的工具，',
-  headlineAccent: '触手可及。',
   intro:
     '图像、文档、文本与数据，一个工作台就够了。找到趁手的工具，把时间留给更重要的事。',
   search: '搜索工具',
@@ -42,7 +40,7 @@ const zh = {
   closeMenu: '关闭导航',
   navigation: '主导航',
   skip: '跳转到主要内容',
-  footer: '小工具，大效率。',
+  footer: 'Small tools. Clear focus.',
   privacy: '浏览器本地处理',
   license: 'MIT 开源许可',
   back: '返回全部工具',
@@ -74,18 +72,20 @@ const zh = {
   png: 'PNG 图像',
   xml: 'XML 工具',
   gif: 'GIF 动图',
-  converters: '格式转换'
+  converters: '格式转换',
+  encoding: '编码与解码',
+  security: '密码与安全',
+  network: 'URL 与网络',
+  calculator: '科学与工程计算'
 };
 const en: Record<keyof typeof zh, string> = {
-  workspace: 'Tool workspace',
-  tagline: 'Make the everyday easier.',
+  workspace: 'Workspace',
+  tagline: 'YOUR EVERYDAY TOOLKIT',
   all: 'All tools',
   favorites: 'Favorites',
   recent: 'Recently used',
   categories: 'CATEGORIES',
   localDetail: 'Files are processed in your browser',
-  headline: 'Everyday tools,',
-  headlineAccent: 'one workspace.',
   intro:
     'Images, documents, text and data. Find the right tool and make room for the work that matters.',
   search: 'Search tools',
@@ -121,7 +121,7 @@ const en: Record<keyof typeof zh, string> = {
   closeMenu: 'Close navigation',
   navigation: 'Main navigation',
   skip: 'Skip to main content',
-  footer: 'Small tools. More possibilities.',
+  footer: 'Small tools. Clear focus.',
   privacy: 'Processed in your browser',
   license: 'MIT licensed',
   back: 'Back to all tools',
@@ -154,7 +154,11 @@ const en: Record<keyof typeof zh, string> = {
   png: 'PNG images',
   xml: 'XML',
   gif: 'GIF animation',
-  converters: 'Converters'
+  converters: 'Converters',
+  encoding: 'Encoding & decoding',
+  security: 'Passwords & security',
+  network: 'URL & network',
+  calculator: 'Science & engineering'
 };
 export type WorkbenchKey = keyof typeof zh;
 export function useWorkbenchText() {

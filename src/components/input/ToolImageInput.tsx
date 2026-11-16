@@ -1,6 +1,6 @@
 import { uiText } from 'i18n/uiText';
 import React, { useEffect, useRef, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import BaseFileInput from './BaseFileInput';

@@ -1,7 +1,7 @@
-import { Box, Slider, Typography } from '@mui/material';
+import { Box, Slider, Typography } from '@components/ui';
 import ColorSelector from 'components/options/ColorSelector';
 import ToolFileResult from 'components/result/ToolFileResult';
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useContext, useState } from 'react';
 import * as Yup from 'yup';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -13,7 +13,6 @@ import ToolMultiFileResult from '@components/result/ToolMultiFileResult';
 import { CustomSnackBarContext } from '../../../../contexts/CustomSnackBarContext';
 import { convertToWebp } from './service';
 import { useTranslation } from 'react-i18next';
-import debounce from 'lodash/debounce';
 
 const initialValues: InitialValuesType = {
   backgroundColor: '#ffffff',
@@ -70,8 +69,6 @@ export default function ConvertToWebp({ title }: ToolComponentProps) {
     console.log('Images are processed');
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   return (
     <ToolContent
       title={title}
@@ -109,15 +106,22 @@ export default function ConvertToWebp({ title }: ToolComponentProps) {
           title: t('convertToWebp.options.title'),
           component: (
             <Box>
-              <Box sx={{
-                mb: 3
-              }}>
-                <Typography variant="body2" gutterBottom sx={{
-                  color: "text.secondary"
-                }}>
+              <Box
+                sx={{
+                  mb: 3
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  gutterBottom
+                  sx={{
+                    color: 'text.secondary'
+                  }}
+                >
                   {t('convertToWebp.options.quality')} {values.quality}%
                 </Typography>
                 <Slider
+                  aria-label={t('convertToWebp.options.quality')}
                   value={values.quality}
                   onChange={(_, value) =>
                     updateField(
@@ -132,9 +136,12 @@ export default function ConvertToWebp({ title }: ToolComponentProps) {
                   valueLabelFormat={(value) => `${value}%`}
                   sx={{ mt: 1 }}
                 />
-                <Typography variant="caption" sx={{
-                  color: "text.secondary"
-                }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary'
+                  }}
+                >
                   {t('convertToWebp.options.qualityDescription')}
                 </Typography>
               </Box>
@@ -151,7 +158,7 @@ export default function ConvertToWebp({ title }: ToolComponentProps) {
           )
         }
       ]}
-      compute={debouncedCompute}
+      compute={compute}
       setInput={setInput}
     />
   );

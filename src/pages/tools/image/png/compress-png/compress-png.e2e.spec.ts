@@ -7,7 +7,8 @@ import JSZip from 'jszip';
 
 const imagePath = path.join(__dirname, 'test.png');
 
-async function download(page: import('@playwright/test').Page) {
+async function download(page: import('@playwright/test').Page, process = true) {
+  if (process) await page.getByTestId('process-tool').click();
   const downloadPromise = page.waitForEvent('download');
   await page.getByText('Download').click();
   const stream = await (await downloadPromise).createReadStream();
@@ -21,7 +22,7 @@ test.describe('Compress PNG tool', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/png/compress-png');
     await page.locator('input[type="file"]').setInputFiles(imagePath);
-    await expect(page.getByText('Colors in the palette')).toBeVisible();
+    await expect(page.locator('input[name="quality"]')).toBeVisible();
   });
 
   test('should compress without touching the dimensions', async ({ page }) => {
@@ -36,18 +37,11 @@ test.describe('Compress PNG tool', () => {
 
   test('should honor the maximum output size', async ({ page }) => {
     await page.locator('input[name="maxOutputSizeInKB"]').fill('5');
+    await page.getByTestId('process-tool').click();
 
-    // Wait for the run that honors the new budget to land.
-    await expect
-      .poll(async () => {
-        const stats = await page.getByText(/Compressed size:/).innerText();
-        const size = stats.match(/([\d.]+) KB/);
-        return size ? parseFloat(size[1]) : Infinity;
-      })
-      .toBeLessThanOrEqual(5);
-
+    // The download waits for processing; verify the actual bytes below.
     const original = await Jimp.read(fs.readFileSync(imagePath));
-    const compressed = await download(page);
+    const compressed = await download(page, false);
 
     expect(compressed.length).toBeLessThanOrEqual(5 * 1024);
     const image = await Jimp.read(compressed);
@@ -65,6 +59,7 @@ test.describe('Compress PNG tool with several files', () => {
       { name: 'second.png', mimeType: 'image/png', buffer }
     ]);
 
+    await page.getByTestId('process-tool').click();
     const downloadPromise = page.waitForEvent('download');
     await page.getByText('Download All as ZIP').click();
     const stream = await (await downloadPromise).createReadStream();

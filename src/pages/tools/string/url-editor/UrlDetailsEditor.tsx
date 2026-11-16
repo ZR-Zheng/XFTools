@@ -8,7 +8,7 @@ import {
   MenuItem,
   Select,
   TextField
-} from '@mui/material';
+} from '@components/ui';
 import { EditableUrlField, ParsedUrl } from './types';
 
 const PROTOCOLS = ['https:', 'http:'] as const;

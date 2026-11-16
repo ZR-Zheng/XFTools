@@ -32,3 +32,15 @@ test('legacy resource keys resolve in both supported languages', async () => {
     i18n.t('categories.pdf.title')
   );
 });
+
+test('brand names and editorial slogans stay in their original language', async () => {
+  await i18n.changeLanguage('zh');
+  for (const text of [
+    'XFTools',
+    'YOUR EVERYDAY TOOLKIT',
+    'Image studio',
+    'PDF workspace',
+    'LESS WORK. MORE FLOW.'
+  ])
+    expect(uiText(text)).toBe(text);
+});

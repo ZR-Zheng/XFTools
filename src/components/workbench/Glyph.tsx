@@ -1,5 +1,12 @@
 import type { CSSProperties } from 'react';
 const paths: Record<string, string> = {
+  add: 'M12 4v16 M4 12h16',
+  copy: 'M8 8h13v13H8z M16 8V3H3v13h5',
+  trash: 'M3 6h18 M9 6V3h6v3 M5 6l1 15h12l1-15 M10 10v7 M14 10v7',
+  download: 'M12 3v12 M7 10l5 5 5-5 M4 16v5h16v-5',
+  upload: 'M12 16V3 M7 8l5-5 5 5 M4 16v5h16v-5',
+  palette:
+    'M12 3a9 9 0 1 0 0 18c3 0 1-4 4-4h2c5 0 5-14-6-14Z M7 10h.01 M10 6h.01 M16 7h.01 M6 15h.01',
   grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
   star: 'm12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z',
   clock: 'M12 8v4l3 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
@@ -41,7 +48,11 @@ export const categoryGlyph: Record<string, string> = {
   list: 'list',
   csv: 'table',
   number: 'number',
-  converters: 'convert'
+  converters: 'convert',
+  encoding: 'code',
+  security: 'shield',
+  network: 'globe',
+  calculator: 'number'
 };
 export default function Glyph({
   name,

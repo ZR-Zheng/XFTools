@@ -8,7 +8,7 @@ import {
   Stack,
   TextField,
   useTheme
-} from '@mui/material';
+} from '@components/ui';
 import React, { useContext, useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -24,9 +24,9 @@ import 'nerdamer-prime/Solve';
 import 'nerdamer-prime/Calculus';
 import Qty from 'js-quantities';
 import { CustomSnackBarContext } from 'contexts/CustomSnackBarContext';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import { Typography } from '@components/ui';
+import { Grid } from '@components/ui';
+import { useMediaQuery } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import { validNamespaces } from '../../../../i18n';
 

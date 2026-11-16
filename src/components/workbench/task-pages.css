@@ -1,0 +1,393 @@
+/* Content determines height. Empty file panes never reserve a result canvas. */
+.tool-options-panel .option-check {
+  position: relative;
+  padding-right: 28px;
+}
+.experience-editor .tool-option-group > div:has(> .option-select) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  align-items: end;
+  gap: 14px 20px;
+}
+.experience-editor .tool-option-group > div:has(> .option-select) > * {
+  margin-bottom: 0;
+}
+.experience-editor
+  .tool-option-group
+  > div:has(> .option-select)
+  > .option-check {
+  align-self: center;
+}
+.experience-generator .flow-result .compact-result textarea {
+  min-height: 74px;
+}
+.tool-page {
+  padding-top: 28px;
+}
+.tool-breadcrumb {
+  margin-bottom: 20px;
+}
+.tool-heading {
+  margin-bottom: 22px;
+  gap: 16px;
+}
+.tool-heading-icon {
+  width: 48px;
+  height: 48px;
+}
+.tool-heading h1 {
+  font-size: 26px;
+}
+.tool-heading-copy > p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.tool-taskbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  min-height: 28px;
+}
+.taskbar-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-left: auto;
+}
+.taskbar-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  font-size: 12px;
+  min-height: 32px;
+}
+.separator-quick-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--muted);
+}
+.separator-quick-control select {
+  min-height: 36px;
+  padding: 6px 10px;
+  width: auto;
+  font-size: 13px;
+}
+.tool-support-details {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin-top: 24px;
+  background: var(--surface);
+}
+.tool-support-details > summary {
+  cursor: pointer;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 550;
+  min-height: 48px;
+  color: var(--muted);
+}
+.tool-support-details[open] {
+  padding: 0 18px 20px;
+}
+.tool-support-details[open] > summary {
+  padding-inline: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.tool-support-details .tool-info {
+  margin-top: 12px;
+}
+.tool-support-details .tool-examples {
+  margin-top: 20px;
+}
+.advanced-tool-options {
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 12px;
+}
+.advanced-tool-options > summary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 36px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  list-style: revert;
+}
+.advanced-tool-options > summary:before {
+  content: '›';
+  font-size: 17px;
+  line-height: 1;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+.advanced-tool-options[open] > summary:before {
+  transform: rotate(90deg);
+}
+.advanced-tool-options > summary > span {
+  font-size: 11px;
+  background: var(--surface-soft);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.advanced-tool-options[open] > .tool-option-groups {
+  padding-top: 16px;
+}
+.experience-editor:not(.no-settings) {
+  grid-template-areas: 'settings settings' 'input result' 'action action';
+}
+.experience-editor .tool-options-panel {
+  padding: 14px 18px;
+}
+.experience-editor .tool-options-panel > h2 {
+  display: none;
+}
+.experience-editor .tool-option-groups {
+  gap: 14px 24px;
+}
+.experience-editor .tool-option-group > h3 {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 550;
+}
+.experience-editor .tool-option-group > div:has(> .ui-choice) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+}
+.experience-editor .tool-option-group > div:has(> .ui-choice) > .ui-field {
+  flex: 1;
+  min-width: min(180px, 100%);
+}
+.experience-editor .tool-option-group .ui-choice {
+  font-size: 14px;
+  min-height: 36px;
+}
+.experience-visual.phase-empty {
+  grid-template-areas: 'input settings' 'action settings';
+  grid-template-rows: auto auto;
+}
+.experience-visual.phase-empty > .flow-result {
+  display: none;
+}
+.experience-visual.phase-empty.no-settings {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'input' 'action';
+}
+.experience-visual.phase-empty.no-settings > .flow-input,
+.experience-visual.phase-empty.no-settings > .flow-action {
+  width: min(760px, 100%);
+  justify-self: center;
+}
+.compact-entry textarea.ui-input,
+.compact-result textarea.ui-input {
+  min-height: 74px;
+  line-height: 1.7;
+}
+.compact-result textarea.ui-input {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.experience-form .tool-panel {
+  padding: 18px;
+}
+.experience-form .tool-option-groups {
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+.experience-generator:not(.no-settings) {
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
+  grid-template-areas: 'settings result' 'action result';
+}
+.experience-generator .flow-result textarea {
+  min-height: 150px;
+  font-family: Consolas, monospace;
+  font-size: 17px;
+}
+.experience-generator .tool-option-groups {
+  grid-template-columns: minmax(0, 1fr);
+}
+.experience-comparison .flow-input,
+.experience-comparison .flow-result {
+  width: 100%;
+}
+.file-result-frame.is-empty {
+  height: auto !important;
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  border-style: dashed !important;
+  background: var(--surface-soft);
+}
+.file-result-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.file-result-meta > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-result-meta > span:last-child {
+  flex-shrink: 0;
+}
+.tool-flow .file-dropzone,
+.tool-flow .multi-file-dropzone {
+  min-height: 190px;
+  height: auto;
+}
+.tool-flow .multi-file-dropzone {
+  max-height: 400px;
+}
+.tool-flow .multi-file-dropzone > .file-select-button {
+  min-height: 170px;
+}
+.tool-flow .file-select-button {
+  min-height: 190px;
+}
+.tool-flow .file-preview {
+  min-height: 200px;
+  max-height: 330px;
+}
+.tool-flow .file-preview > div {
+  min-height: 200px;
+}
+.tool-flow .file-preview img {
+  max-height: 300px;
+}
+.cron-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.cron-presets .secondary-button {
+  font-size: 12px;
+  min-height: 34px;
+  padding: 5px 10px;
+}
+.tool-options-panel .option-field {
+  position: relative;
+  margin-bottom: 16px;
+}
+.option-field .ui-field > label {
+  padding-right: 28px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.option-field-help {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 3;
+}
+.option-field-help > summary {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  list-style: none;
+}
+.option-field-help > summary::-webkit-details-marker {
+  display: none;
+}
+.option-field-help > p {
+  position: absolute;
+  right: 0;
+  top: 28px;
+  width: min(290px, 65vw);
+  padding: 12px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px #0002;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.tool-panel .ui-input {
+  font-size: 15px;
+}
+@media (max-width: 1100px) {
+  .experience-visual.phase-empty {
+    grid-template-areas: 'input' 'settings' 'action';
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 767px) {
+  .taskbar-actions button,
+  .separator-quick-control select,
+  .advanced-tool-options > summary {
+    min-height: 44px;
+  }
+  .tool-page {
+    padding-top: 22px;
+  }
+  .tool-heading h1 {
+    font-size: 23px;
+  }
+  .tool-taskbar {
+    gap: 8px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .taskbar-actions {
+    gap: 12px;
+  }
+  .experience-editor:not(.no-settings) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'settings' 'input' 'result' 'action';
+  }
+  .experience-generator:not(.no-settings) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'settings' 'action' 'result';
+  }
+  .tool-heading-icon {
+    width: 44px;
+    height: 44px;
+  }
+  .compact-entry textarea.ui-input,
+  .compact-result textarea.ui-input {
+    font-size: 16px;
+  }
+  .experience-editor .tool-options-panel {
+    padding: 14px;
+  }
+  .tool-option-group > h3 {
+    margin-bottom: 10px;
+  }
+  .separator-quick-control {
+    font-size: 12px;
+  }
+  .separator-quick-control select {
+    font-size: 14px;
+  }
+  .tool-panel .ui-input {
+    font-size: 16px;
+  }
+  .tool-support-details > summary {
+    font-size: 13px;
+  }
+}

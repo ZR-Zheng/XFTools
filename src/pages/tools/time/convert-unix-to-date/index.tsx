@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -11,6 +11,8 @@ import { UnixDateConverter } from './service';
 import { useTranslation } from 'react-i18next';
 import InitialValuesType from './types';
 import SimpleRadio from '@components/options/SimpleRadio';
+import TimestampWorkbench from './TimestampWorkbench';
+import { useWorkbenchText } from '../../../../i18n/workbench';
 
 const initialValues: InitialValuesType = {
   mode: 'unix-to-date',
@@ -79,7 +81,7 @@ const exampleCards: CardExampleType<InitialValuesType>[] = [
   }
 ];
 
-export default function ConvertUnixToDate({ title }: ToolComponentProps) {
+function UnixBatch({ title }: ToolComponentProps) {
   const { t } = useTranslation('time');
   const [input, setInput] = useState<string>('');
   const [result, setResult] = useState<string>('');
@@ -153,5 +155,22 @@ export default function ConvertUnixToDate({ title }: ToolComponentProps) {
         description: t('convertUnixToDate.toolInfo.description')
       }}
     />
+  );
+}
+
+export default function ConvertUnixToDate(props: ToolComponentProps) {
+  const { english } = useWorkbenchText();
+  return (
+    <>
+      <TimestampWorkbench />
+      <details className="tool-support-details">
+        <summary>
+          {english
+            ? 'Batch conversion & advanced options'
+            : '批量转换与高级选项'}
+        </summary>
+        <UnixBatch {...props} />
+      </details>
+    </>
   );
 }

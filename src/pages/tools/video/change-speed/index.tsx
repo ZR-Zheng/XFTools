@@ -1,5 +1,5 @@
-import { Box, Slider, Typography } from '@mui/material';
-import React, { useState, useCallback } from 'react';
+import { Box, Slider, Typography } from '@components/ui';
+import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import { GetGroupsType } from '@components/options/ToolOptions';
@@ -8,7 +8,6 @@ import ToolVideoInput from '@components/input/ToolVideoInput';
 import ToolFileResult from '@components/result/ToolFileResult';
 import { ChangeVideoSpeed } from './service';
 import { useTranslation } from 'react-i18next';
-import debounce from 'lodash/debounce';
 
 const initialValues: InitialValuesType = {
   speed: 2
@@ -38,8 +37,6 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
     }
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   const getGroups: GetGroupsType<InitialValuesType> | null = ({
     values,
     updateField
@@ -48,12 +45,17 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
       title: t('changeSpeed.options'),
       component: (
         <Box>
-          <Typography variant="body2" gutterBottom sx={{
-            color: "text.secondary"
-          }}>
+          <Typography
+            variant="body2"
+            gutterBottom
+            sx={{
+              color: 'text.secondary'
+            }}
+          >
             {t('changeSpeed.speedLabel')} {values.speed}
           </Typography>
           <Slider
+            aria-label={t('changeSpeed.speedLabel')}
             value={values.speed}
             onChange={(_, value) =>
               updateField('speed', Array.isArray(value) ? value[0] : value)
@@ -91,7 +93,7 @@ export default function ChangeSpeed({ title }: ToolComponentProps) {
       initialValues={initialValues}
       getGroups={getGroups}
       setInput={setInput}
-      compute={debouncedCompute}
+      compute={compute}
       toolInfo={{
         title: t('changeSpeed.toolInfo.title', { title }),
         description: t('changeSpeed.toolInfo.longDescription', { title })

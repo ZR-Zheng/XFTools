@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography } from '@components/ui';
 import { useEffect, useState } from 'react';
 import ToolFileResult from '@components/result/ToolFileResult';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
@@ -9,6 +9,7 @@ import { CardExampleType } from '@components/examples/ToolExamples';
 import { PDFDocument } from 'pdf-lib';
 import ToolPdfInput from '@components/input/ToolPdfInput';
 import { useTranslation } from 'react-i18next';
+import * as Yup from 'yup';
 
 type InitialValuesType = {
   pageRanges: string;
@@ -118,14 +119,24 @@ export default function SplitPdf({ title }: ToolComponentProps) {
       initialValues={initialValues}
       compute={compute}
       exampleCards={exampleCards}
-      inputComponent={
+      validationSchema={Yup.object({
+        pageRanges: Yup.string().test(
+          'pages',
+          t('splitPdf.pageRangesDescription'),
+          (value) =>
+            !totalPages || parsePageRanges(value || '', totalPages).length > 0
+        )
+      })}
+      renderCustomInput={(values, setFieldValue) => (
         <ToolPdfInput
           value={input}
           onChange={setInput}
           accept={['application/pdf']}
           title={t('splitPdf.inputTitle')}
+          pageRanges={values.pageRanges}
+          onPageRangesChange={(ranges) => setFieldValue('pageRanges', ranges)}
         />
-      }
+      )}
       resultComponent={
         <ToolFileResult
           title={t('splitPdf.resultTitle')}
@@ -149,6 +160,7 @@ export default function SplitPdf({ title }: ToolComponentProps) {
                 </Typography>
               )}
               <TextFieldWithDesc
+                label={t('splitPdf.pageSelection')}
                 value={values.pageRanges}
                 onOwnChange={(val) => {
                   updateField('pageRanges', val);

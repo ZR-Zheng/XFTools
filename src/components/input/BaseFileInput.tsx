@@ -101,6 +101,7 @@ export default function BaseFileInput({
           </button>
         )}
       </div>
+      {value && <div className="file-details"><span>{value.name}</span><span>{value.size < 1024 * 1024 ? `${(value.size / 1024).toFixed(1)} KB` : `${(value.size / (1024 * 1024)).toFixed(1)} MB`}</span></div>}
       <InputFooter
         handleImport={() => input.current?.click()}
         handleClear={

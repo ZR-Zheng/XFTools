@@ -5,10 +5,10 @@
     "inputTitle": "输入 XML",
     "resultTitle": "美化 XML",
     "shortDescription": "格式化和美化 XML 代码",
-    "title": "XML美化器",
+    "title": "格式化 XML",
     "toolInfo": {
       "description": "此工具允许您使用适当的缩进和间距来格式化 XML 数据，使其更易读且更易于使用。",
-      "title": "XML美化器"
+      "title": "格式化 XML"
     },
     "useSpaces": "使用空格",
     "useSpacesDescription": "使用空格缩进输出",
@@ -24,10 +24,10 @@
     "description": "验证 XML 语法和结构。",
     "placeholder": "在此处粘贴或导入 XML...",
     "shortDescription": "验证 XML 代码是否存在错误",
-    "title": "XML验证器",
+    "title": "验证 XML",
     "toolInfo": {
       "description": "此工具可用于验证 XML 的语法和结构。它会检查 XML 格式是否正确，并针对发现的任何问题提供详细的错误消息。",
-      "title": "XML验证器"
+      "title": "验证 XML"
     }
   },
   "xmlViewer": {

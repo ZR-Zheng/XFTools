@@ -10,7 +10,7 @@ import { Entries } from 'type-fest';
 import { jsonTools } from '../pages/tools/json';
 import { csvTools } from '../pages/tools/csv';
 import { timeTools } from '../pages/tools/time';
-import { IconifyIcon } from '@iconify/react';
+import { IconifyIcon } from '@tools/icon';
 import { pdfTools } from '../pages/tools/pdf';
 import { xmlTools } from '../pages/tools/xml';
 import { convertersTools } from '../pages/tools/converters';
@@ -31,7 +31,11 @@ const toolCategoriesOrder: ToolCategory[] = [
   'png',
   'xml',
   'gif',
-  'converters'
+  'converters',
+  'encoding',
+  'security',
+  'network',
+  'calculator'
 ];
 export const tools: DefinedTool[] = [
   ...imageTools,
@@ -53,6 +57,30 @@ const categoriesConfig: {
   value: FullI18nKey;
   icon: IconifyIcon | string;
 }[] = [
+  {
+    type: 'encoding',
+    icon: 'code',
+    title: 'translation:categories.encoding.title',
+    value: 'translation:categories.encoding.description'
+  },
+  {
+    type: 'security',
+    icon: 'code',
+    title: 'translation:categories.security.title',
+    value: 'translation:categories.security.description'
+  },
+  {
+    type: 'network',
+    icon: 'code',
+    title: 'translation:categories.network.title',
+    value: 'translation:categories.network.description'
+  },
+  {
+    type: 'calculator',
+    icon: 'code',
+    title: 'translation:categories.calculator.title',
+    value: 'translation:categories.calculator.description'
+  },
   {
     type: 'string',
     icon: 'solar:text-bold-duotone',
@@ -399,7 +427,7 @@ export const getToolsByCategory = (
       const filteredTools =
         userTypes.length > 0
           ? filterToolsByUserTypes(categoryTools ?? [], userTypes)
-          : categoryTools ?? [];
+          : (categoryTools ?? []);
 
       // Aggregate unique userTypes from all tools in this category
       const aggregatedUserTypes = Array.from(

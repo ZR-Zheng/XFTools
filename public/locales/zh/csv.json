@@ -120,6 +120,6 @@
   "tsvToJson": {
     "description": "将 TSV（制表符分隔值）数据转换为 JSON 格式。将表格数据转换为结构化的 JSON 对象。",
     "shortDescription": "将 TSV 转换为 JSON 格式",
-    "title": "TSV 到 JSON"
+    "title": "TSV 转 JSON"
   }
 }

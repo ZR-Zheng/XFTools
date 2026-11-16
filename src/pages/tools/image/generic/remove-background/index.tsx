@@ -5,7 +5,6 @@ import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
 import ToolImageInput from '@components/input/ToolImageInput';
 import { removeBackground } from '@imgly/background-removal';
-import * as heic2any from 'heic2any';
 
 const initialValues = {};
 
@@ -27,23 +26,17 @@ export default function RemoveBackgroundFromImage({
       let fileToProcess = input;
       // Check if the file is HEIC (by MIME type or extension)
       if (
-        input.type === 'image/heic' ||
-        input.name?.toLowerCase().endsWith('.heic')
+        /image\/hei[cf]/.test(input.type) ||
+        /\.hei[cf]$/i.test(input.name || '')
       ) {
-        // Convert HEIC to PNG using heic2any
-        const convertedBlob = await heic2any.default({
+        // Share the same on-demand decoder as the multiple-image picker.
+        const { heicTo } = await import('heic-to');
+        const convertedBlob = await heicTo({
           blob: input,
-          toType: 'image/png'
+          type: 'image/png'
         });
-        // heic2any returns a Blob or an array of Blobs
-        let pngBlob;
-        if (Array.isArray(convertedBlob)) {
-          pngBlob = convertedBlob[0];
-        } else {
-          pngBlob = convertedBlob;
-        }
         fileToProcess = new File(
-          [pngBlob],
+          [convertedBlob],
           input.name.replace(/\.[^/.]+$/, '') + '.png',
           { type: 'image/png' }
         );
@@ -53,11 +46,16 @@ export default function RemoveBackgroundFromImage({
       const inputUrl = URL.createObjectURL(fileToProcess);
 
       // Process the image with the background removal library
-      const blob = await removeBackground(inputUrl, {
-        progress: (progress) => {
-          console.log(`Background removal progress: ${progress}`);
-        }
-      });
+      let blob: Blob;
+      try {
+        blob = await removeBackground(inputUrl, {
+          progress: (progress) => {
+            console.log(`Background removal progress: ${progress}`);
+          }
+        });
+      } finally {
+        URL.revokeObjectURL(inputUrl);
+      }
 
       // Create a new file from the blob
       const newFile = new File(

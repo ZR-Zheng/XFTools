@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button } from '@components/ui';
 import {
   PDFViewer,
   I18nPlugin,

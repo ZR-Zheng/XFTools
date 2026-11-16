@@ -270,7 +270,9 @@
     },
     "resultTitle": "Highlighted differences",
     "shortDescription": "Compare two texts and spot differences instantly",
-    "title": "Compare Texts"
+    "title": "Compare Texts",
+    "firstInputTitle": "First text",
+    "secondInputTitle": "Second text"
   },
   "textReplacer": {
     "description": "Replace text patterns with new content.",

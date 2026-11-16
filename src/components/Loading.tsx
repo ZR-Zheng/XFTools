@@ -1,4 +1,4 @@
-import { CircularProgress } from '@mui/material';
+import { CircularProgress } from '@components/ui';
 import { useWorkbenchText } from '../i18n/workbench';
 export default function Loading() {
   const { english } = useWorkbenchText();

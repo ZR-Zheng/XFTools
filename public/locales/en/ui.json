@@ -789,5 +789,15 @@
   "Timezone abbreviation {{0}} not supported": "Timezone abbreviation {{0}} not supported",
   "useUserTypeFilter must be used within a UserTypeFilterProvider. {{0}}": "useUserTypeFilter must be used within a UserTypeFilterProvider. {{0}}",
   "Invalid JSON: {{0}}": "Invalid JSON: {{0}}",
-  "Invalid JSON at line {{0}}: {{1}}": "Invalid JSON at line {{0}}: {{1}}"
+  "Invalid JSON at line {{0}}: {{1}}": "Invalid JSON at line {{0}}: {{1}}",
+  "Small tools. Clear focus.": "Small tools. Clear focus.",
+  "Loading": "Loading",
+  "Navigation": "Navigation",
+  "Close": "Close",
+  "Value": "Value",
+  "First text": "First text",
+  "Second text": "Second text",
+  "Start time": "Start time",
+  "End time": "End time",
+  "Result will appear after processing": "Your result will appear here after processing"
 }

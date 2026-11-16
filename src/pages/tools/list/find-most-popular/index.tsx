@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ToolTextInput from '@components/input/ToolTextInput';

@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import React, { useState, useCallback } from 'react';
+import { Box } from '@components/ui';
+import React, { useState } from 'react';
 import ToolFileResult from '@components/result/ToolFileResult';
 import TextFieldWithDesc from 'components/options/TextFieldWithDesc';
 import ToolContent from '@components/ToolContent';
@@ -12,7 +12,6 @@ import { InitialValuesType } from './types';
 import { updateNumberField } from '@utils/string';
 import { useTranslation } from 'react-i18next';
 import { imagesToGif } from './service';
-import { debounce } from 'lodash';
 
 const initialValues: InitialValuesType = {
   frameRateMode: 'fps',
@@ -43,8 +42,6 @@ export default function ImagesToGif({ title }: ToolComponentProps) {
       setLoading(false);
     }
   };
-
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
 
   return (
     <ToolContent
@@ -88,9 +85,11 @@ export default function ImagesToGif({ title }: ToolComponentProps) {
                 onClick={() => updateField('frameRateMode', 'delay')}
               />
 
-              <Box sx={{
-                mt: 2
-              }}>
+              <Box
+                sx={{
+                  mt: 2
+                }}
+              >
                 <TextFieldWithDesc
                   name="frameRate"
                   type="number"
@@ -110,9 +109,10 @@ export default function ImagesToGif({ title }: ToolComponentProps) {
                   }}
                   value={values.frameRateValue}
                   slotProps={{
-                    htmlInput: values.frameRateMode === 'fps'
-                      ? { min: 1, max: 60, step: 1 }
-                      : { min: 50, max: 10000, step: 50 }
+                    htmlInput:
+                      values.frameRateMode === 'fps'
+                        ? { min: 1, max: 60, step: 1 }
+                        : { min: 50, max: 10000, step: 50 }
                   }}
                 />
               </Box>
@@ -120,7 +120,7 @@ export default function ImagesToGif({ title }: ToolComponentProps) {
           )
         }
       ]}
-      compute={debouncedCompute}
+      compute={compute}
       setInput={setInput}
     />
   );

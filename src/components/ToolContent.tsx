@@ -1,5 +1,11 @@
-import React, { ReactNode, useContext, useEffect } from 'react';
-import { Box } from '@mui/material';
+import React, {
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
+import { Box } from '@components/ui';
 import { Formik, FormikValues, useFormikContext } from 'formik';
 import ToolOptions, { GetGroupsType } from '@components/options/ToolOptions';
 import ToolInputAndResult from '@components/ToolInputAndResult';
@@ -9,33 +15,173 @@ import ToolExamples, {
   CardExampleType
 } from '@components/examples/ToolExamples';
 import { ToolComponentProps } from '@tools/defineTool';
-import { CustomSnackBarContext } from '../contexts/CustomSnackBarContext';
+import { ToolInteractionContext } from '../tools/interaction';
+import { useWorkbenchText } from '../i18n/workbench';
+import { uiText } from '../i18n/uiText';
+import {
+  ToolPageContext,
+  ToolSourceContext,
+  ToolResultVisibleContext
+} from '../tools/page-context';
+import ToolTaskbar from './workbench/ToolTaskbar';
+import { replaceSpecialCharacters } from '../utils/string';
 
 const FormikListenerComponent = <T,>({
   input,
   compute,
-  onValuesChange
+  onValuesChange,
+  onResultReady
 }: {
   input: any;
   compute: (optionsValues: T, input: any) => void;
   onValuesChange?: (values: T) => void;
+  onResultReady: (ready: boolean) => void;
 }) => {
-  const { values } = useFormikContext<T>();
-  const { showSnackBar } = useContext(CustomSnackBarContext);
+  const { values, validateForm } = useFormikContext<T>();
+  const interaction = useContext(ToolInteractionContext);
+  const { english } = useWorkbenchText();
+  const { title, experience } = useContext(ToolPageContext);
+  const manual = ['image', 'pdf', 'media'].includes(interaction);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [completed, setCompleted] = useState(false);
+  const computeRef = useRef(compute);
+  computeRef.current = compute;
+  const latestInput = useRef({ values, input });
+  latestInput.current = { values, input };
+  const active = useRef(true);
+  useEffect(() => {
+    active.current = true;
+    return () => {
+      active.current = false;
+    };
+  }, []);
+  const run = async () => {
+    setBusy(true);
+    onResultReady(false);
+    setError('');
+    setCompleted(false);
+    try {
+      if (manual) {
+        const errors = await validateForm();
+        if (Object.keys(errors).length) {
+          const firstError = (value: unknown): string | undefined => {
+            if (typeof value === 'string') return value;
+            if (value && typeof value === 'object') {
+              for (const child of Object.values(value)) {
+                const found = firstError(child);
+                if (found) return found;
+              }
+            }
+          };
+          setError(
+            uiText(
+              firstError(errors) ||
+                (english ? 'Check the tool options.' : '请检查工具参数。')
+            )
+          );
+          return;
+        }
+      }
+      const computedValues = { ...values } as Record<string, unknown>;
+      if (experience.separator) {
+        const separator = experience.separator;
+        if (
+          typeof computedValues[separator.input] === 'string' &&
+          (!separator.operator ||
+            computedValues[separator.operator] !== 'regex')
+        )
+          computedValues[separator.input] = replaceSpecialCharacters(
+            computedValues[separator.input] as string
+          );
+        if (typeof computedValues.joinSeparator === 'string')
+          computedValues.joinSeparator = replaceSpecialCharacters(
+            computedValues.joinSeparator
+          );
+      }
+      await computeRef.current(computedValues as T, input);
+      if (
+        active.current &&
+        latestInput.current.values === values &&
+        latestInput.current.input === input
+      ) {
+        setCompleted(true);
+        onResultReady(true);
+      }
+    } catch (exception: unknown) {
+      if (active.current)
+        setError(
+          uiText(
+            exception instanceof Error ? exception.message : String(exception)
+          )
+        );
+    } finally {
+      if (active.current) setBusy(false);
+    }
+  };
 
   React.useEffect(() => {
-    try {
-      compute(values, input);
-    } catch (exception: unknown) {
-      if (exception instanceof Error) showSnackBar(exception.message, 'error');
-      else console.error(exception);
-    }
-  }, [values, input, showSnackBar]);
+    setCompleted(false);
+    setError('');
+    onResultReady(false);
+    if (manual) return;
+    const timer = setTimeout(() => {
+      void run();
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [values, input, manual, english]);
 
   useEffect(() => {
     onValuesChange?.(values);
   }, [onValuesChange, values]);
-  return null; // This component doesn't render anything
+  const hasInput =
+    input instanceof File ||
+    (Array.isArray(input) ? input.length > 0 : Boolean(input));
+  return (
+    <div className="tool-run-bar">
+      {(manual || interaction === 'generator') && (
+        <button
+          type="button"
+          data-testid="process-tool"
+          className="primary-button"
+          disabled={busy || (manual && !hasInput)}
+          onClick={() => {
+            void run();
+          }}
+        >
+          {busy
+            ? english
+              ? 'Processing…'
+              : '正在处理…'
+            : experience.action?.[english ? 1 : 0] ||
+              title ||
+              (english ? 'Apply' : '应用')}
+        </button>
+      )}
+      <span className="tool-run-status" role="status">
+        {busy
+          ? english
+            ? 'Processing…'
+            : '正在处理…'
+          : manual
+            ? completed
+              ? english
+                ? 'Processing finished. Save your result below.'
+                : '处理完成，可在下方保存结果。'
+              : english
+                ? 'Choose files and adjust the options, then process.'
+                : '选择文件并设置参数后，点击开始处理。'
+            : english
+              ? 'Updates as you type'
+              : '修改内容或参数后自动更新'}
+      </span>
+      {error && (
+        <p className="tool-inline-error" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
 };
 
 interface ToolContentProps<Options, Input> extends ToolComponentProps {
@@ -79,53 +225,115 @@ export default function ToolContent<T extends FormikValues, I>({
   onValuesChange,
   verticalGroups
 }: ToolContentProps<T, I>) {
+  const interaction = useContext(ToolInteractionContext);
+  const { experience } = useContext(ToolPageContext);
+  const { english } = useWorkbenchText();
+  const preparedValues =
+    experience.separator && experience.separator.input in initialValues
+      ? {
+          ...initialValues,
+          [experience.separator.input]: '\\n',
+          ...('joinSeparator' in initialValues ? { joinSeparator: '\\n' } : {})
+        }
+      : initialValues;
+  const fileTool = experience.entry === 'file';
+  const [resultReady, setResultReady] = useState(false);
+  const hasSource =
+    input instanceof File ||
+    (Array.isArray(input) ? input.length > 0 : Boolean(input));
   return (
-    <Box>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={() => {}}
-      >
-        {({ values, setFieldValue }) => {
-          return (
-            <>
-              <ToolInputAndResult
-                input={
-                  inputComponent ??
-                  (renderCustomInput &&
-                    renderCustomInput(values, setFieldValue))
-                }
-                result={resultComponent}
-              />
-              <FormikListenerComponent<T>
-                compute={compute}
-                input={input}
-                onValuesChange={onValuesChange}
-              />
-              <ToolOptions getGroups={getGroups} vertical={verticalGroups} />
-
-              {toolInfo && toolInfo.title && toolInfo.description && (
-                <ToolInfo
-                  title={toolInfo.title}
-                  description={toolInfo.description}
+    <ToolSourceContext.Provider value={input}>
+      <Box>
+        <Formik
+          initialValues={preparedValues}
+          validationSchema={validationSchema}
+          onSubmit={() => {}}
+        >
+          {({ values, setFieldValue, setValues }) => {
+            return (
+              <>
+                <ToolTaskbar
+                  onExample={
+                    exampleCards?.length
+                      ? () => {
+                          const example = exampleCards[0];
+                          if (!fileTool && example.sampleText !== undefined)
+                            setInput?.(example.sampleText as I);
+                          void setValues(example.sampleOptions);
+                        }
+                      : undefined
+                  }
                 />
-              )}
+                <ToolInputAndResult
+                  input={
+                    inputComponent ??
+                    (renderCustomInput &&
+                      renderCustomInput(values, setFieldValue))
+                  }
+                  result={
+                    resultComponent ? (
+                      <ToolResultVisibleContext.Provider
+                        value={!fileTool || resultReady}
+                      >
+                        {resultComponent}
+                      </ToolResultVisibleContext.Provider>
+                    ) : undefined
+                  }
+                  layout={interaction}
+                  experience={experience.layout}
+                  phase={fileTool && !hasSource ? 'empty' : 'ready'}
+                  settings={
+                    getGroups ? (
+                      <ToolOptions
+                        getGroups={getGroups}
+                        vertical={verticalGroups}
+                      />
+                    ) : undefined
+                  }
+                  action={
+                    <FormikListenerComponent<T>
+                      compute={compute}
+                      input={input}
+                      onValuesChange={onValuesChange}
+                      onResultReady={setResultReady}
+                    />
+                  }
+                />
 
-              {exampleCards && exampleCards.length > 0 && (
-                <>
-                  <Separator backgroundColor="var(--line)" margin="32px" />
-                  <ToolExamples
-                    title={title}
-                    exampleCards={exampleCards}
-                    getGroups={getGroups}
-                    setInput={setInput}
-                  />
-                </>
-              )}
-            </>
-          );
-        }}
-      </Formik>
-    </Box>
+                {((toolInfo?.title && toolInfo.description) ||
+                  !!exampleCards?.length) && (
+                  <details className="tool-support-details">
+                    <summary>
+                      {english ? 'Examples & instructions' : '示例与使用说明'}
+                    </summary>
+                    {toolInfo && toolInfo.title && toolInfo.description && (
+                      <ToolInfo
+                        title={toolInfo.title}
+                        description={toolInfo.description}
+                      />
+                    )}
+
+                    {exampleCards && exampleCards.length > 0 && (
+                      <>
+                        <Separator
+                          backgroundColor="var(--line)"
+                          margin="32px"
+                        />
+                        <ToolExamples
+                          title={title}
+                          exampleCards={exampleCards}
+                          getGroups={getGroups}
+                          setInput={setInput}
+                        />
+                      </>
+                    )}
+                  </details>
+                )}
+              </>
+            );
+          }}
+        </Formik>
+      </Box>
+    </ToolSourceContext.Provider>
   );
 }

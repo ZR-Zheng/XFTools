@@ -2,7 +2,7 @@ import { uiText } from 'i18n/uiText';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Drawer } from '@mui/material';
+import { Drawer } from '@components/ui';
 import { tools, getToolsByCategory } from '@tools/index';
 import { validNamespaces } from '../../i18n';
 import { useWorkbenchText, WorkbenchKey } from '../../i18n/workbench';

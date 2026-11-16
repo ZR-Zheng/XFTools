@@ -45,7 +45,7 @@ export default function Home() {
       ? w('recent')
       : category?.rawTitle ||
         (categoryName ? w('categoryNotFound') : w('browse'));
-  usePageTitle(isHome ? w('workspace') : title);
+  usePageTitle(isHome ? 'XFTools' : title);
   useEffect(() => {
     setLimit(24);
   }, [query, location.pathname]);
@@ -88,11 +88,9 @@ export default function Home() {
       {isHome ? (
         <section className="welcome">
           <div className="welcome-copy">
-            <h1>
-              {w('headline')}
-              <br />
-              <span>{w('headlineAccent')}</span>
-            </h1>
+            <span className="eyebrow">YOUR EVERYDAY TOOLKIT</span>
+            <h1>XFTools<span className="brand-period" aria-hidden="true">.</span></h1>
+            <p className="welcome-tagline">Small tools. Clear focus.</p>
             <p className="welcome-description">{w('intro')}</p>
             <div className="welcome-meta">
               <span>

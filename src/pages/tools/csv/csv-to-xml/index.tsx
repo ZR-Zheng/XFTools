@@ -6,7 +6,7 @@ import ToolTextResult from '@components/result/ToolTextResult';
 import { convertCsvToXml } from './service';
 import { CardExampleType } from '@components/examples/ToolExamples';
 import { ToolComponentProps } from '@tools/defineTool';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import CheckboxWithDesc from '@components/options/CheckboxWithDesc';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import { InitialValuesType } from './types';

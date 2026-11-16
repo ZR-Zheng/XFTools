@@ -1,6 +1,5 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { normalizePath } from 'vite';
@@ -11,20 +10,7 @@ const reactPdfWorker = require.resolve('pdfjs-dist/build/pdf.worker.min.mjs', {
   paths: [dirname(require.resolve('react-pdf'))]
 });
 export default defineConfig({
-  plugins: [
-    {
-      name: 'filerobot-react-import',
-      enforce: 'pre',
-      transform(code, id) {
-        // These Filerobot 5.0.1 components use React.createElement without importing React.
-        if (/\/react-filerobot-image-editor\/lib\/components\/(?:buttons\/HistoryButtons\/HistoryButtons|Tabs\/TabsResponsive|Tabs\/TabsNavbar\/index)\.js$/.test(id.replace(/\\/g, '/'))) {
-          return { code: "import React from 'react';\n" + code, map: null };
-        }
-      }
-    },
-    react(),
-    tailwindcss()
-  ],
+  plugins: [react()],
   resolve: {
     tsconfigPaths: true,
     alias: { '@react-pdf-worker': normalizePath(dirname(reactPdfWorker)) }
@@ -34,7 +20,13 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(packageJson.version)
   },
   optimizeDeps: {
-    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util', 'react-filerobot-image-editor']
+    exclude: [
+      '@ffmpeg/ffmpeg',
+      '@ffmpeg/util',
+      '@react-pdf-worker',
+      '@react-pdf-worker/pdf.worker.min.mjs?url',
+      '@react-pdf-worker/pdf.worker.min.mjs'
+    ]
   },
   test: {
     globals: true,

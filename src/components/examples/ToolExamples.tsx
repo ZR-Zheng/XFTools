@@ -1,5 +1,6 @@
 import ExampleCard, { ExampleCardProps } from './ExampleCard';
-import type { Dispatch, SetStateAction } from 'react';
+import { useContext, type Dispatch, type SetStateAction } from 'react';
+import { ToolPageContext } from '../../tools/page-context';
 import { GetGroupsType } from '@components/options/ToolOptions';
 import { useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -22,8 +23,9 @@ export default function ToolExamples<T>({
 }: ExampleProps<T>) {
   const { t } = useTranslation();
   const { setValues } = useFormikContext<T>();
+  const { experience } = useContext(ToolPageContext);
   function changeInputResult(input: string | undefined, options: T) {
-    if (input !== undefined) setInput?.(input);
+    if (input !== undefined && experience.entry !== 'file') setInput?.(input);
     void setValues(options);
     document.getElementById('tool')?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches

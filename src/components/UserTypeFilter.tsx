@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Chip } from '@mui/material';
+import { Box, Chip } from '@components/ui';
 import { UserType } from '@tools/defineTool';
 import { useTranslation } from 'react-i18next';
 

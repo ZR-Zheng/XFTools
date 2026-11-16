@@ -1,0 +1,1474 @@
+{
+  "zh": {
+    "audio": {
+      "changeSpeed": {
+        "description": "更改音频文件的播放速度。在保持音调不变的情况下加快或减慢音频速度。",
+        "shortDescription": "更改音频文件的速度",
+        "title": "更改音频速度"
+      },
+      "extractAudio": {
+        "description": "从视频文件中提取音轨。",
+        "shortDescription": "将视频文件（MP4、MOV 等）中的音频提取为 AAC、MP3 或 WAV。",
+        "title": "从视频中提取音频"
+      },
+      "loop": {
+        "description": "将原始音频重复多次，生成循环音频文件。",
+        "shortDescription": "将音频重复拼接为循环音频",
+        "title": "循环音频"
+      },
+      "mergeAudio": {
+        "description": "按顺序连接多个音频文件，将其合并为一个音频文件。",
+        "longDescription": "此工具允许您将多个音频文件按照上传顺序串联成一个文件。非常适合合并播客片段、音乐曲目或任何需要合并的音频文件。支持多种音频格式，包括 MP3、AAC 和 WAV。",
+        "shortDescription": "将多个音频文件合并为一个（MP3、AAC、WAV）。",
+        "title": "合并音频"
+      },
+      "trim": {
+        "description": "通过指定开始和结束时间来剪切和修剪音频文件以提取特定片段。",
+        "longDescription": "此工具允许您通过指定开始和结束时间来修剪音频文件。您可以从较长的音频文件中提取特定片段，删除不需要的部分，或创建较短的片段。支持多种音频格式，包括 MP3、AAC 和 WAV。非常适合播客编辑、音乐制作或任何音频编辑需求。",
+        "shortDescription": "修剪音频文件以提取特定时间段（MP3、AAC、WAV）。",
+        "title": "修剪音频"
+      }
+    },
+    "converters": {
+      "audioConverter": {
+        "description": "在不同格式之间转换音频文件。",
+        "longDescription": "此工具允许您将音频文件从一种格式转换为另一种格式，支持多种音频格式的无缝转换。",
+        "shortDescription": "将音频文件转换为各种格式。",
+        "title": "音频转换器"
+      },
+      "convertToJPG": {
+        "description": "将多种格式的图片转换为 JPG，并自定义图片质量及透明区域的背景颜色。",
+        "shortDescription": "将图片转换为 JPG，并调整输出质量",
+        "title": "图片转 JPG"
+      },
+      "convertToWebp": {
+        "description": "使用可自定义的质量和背景颜色设置将各种图像格式转换为 WebP 格式。",
+        "shortDescription": "使用质量控制将图像转换为 WebP 格式。",
+        "title": "将图像转换为 WebP"
+      },
+      "videoToGif": {
+        "description": "将视频转换为 GIF 动图，可截取指定时间段，生成便于分享的动画。",
+        "shortDescription": "将视频片段转换为 GIF 动图",
+        "title": "视频转 GIF"
+      }
+    },
+    "csv": {
+      "changeCsvSeparator": {
+        "description": "更改 CSV 文件中的分隔符。在不同的 CSV 格式（例如逗号、分号、制表符或自定义分隔符）之间进行转换。",
+        "shortDescription": "更改 CSV 文件分隔符",
+        "title": "更改 CSV 分隔符"
+      },
+      "csvRowsToColumns": {
+        "description": "此工具可将 CSV（逗号分隔值）文件的行转换为列。它会从输入的 CSV 文件中逐行提取水平线，将其旋转 90 度，然后将其输出为垂直列，并以逗号分隔。', longDescription: '此工具可将 CSV（逗号分隔值）文件的行转换为列。例如，如果输入的 CSV 数据有 6 行，则输出将有 6 列，并且行中的元素将按从上到下的顺序排列。在格式正确的 CSV 文件中，每行的值数量相同。但是，如果行中缺少字段，程序可以修复它们，您可以从可用选项中进行选择：用空元素填充缺失数据，或用自定义元素（例如“missing”、“?”或“x”）替换缺失数据。在转换过程中，该工具还会清除 CSV 文件中的不必要信息，例如空行（这些行没有可见的信息）和注释。为了帮助工具正确识别注释，您可以在选项中指定行首的注释符号。此符号通常是井号“#”或双斜杠“//”。CSV 真棒！",
+        "longDescription": "此工具可将 CSV（逗号分隔值）文件的行转换为列。例如，如果输入的 CSV 数据有 6 行，则输出将有 6 列，并且行中的元素将按从上到下的顺序排列。在格式正确的 CSV 文件中，每行的值数量相同。但是，如果行中缺少字段，程序可以修复它们，您可以从以下选项中进行选择：用空元素填充缺失数据，或用自定义元素替换缺失数据，例如",
+        "shortDescription": "将 CSV 行转换为列。",
+        "title": "将 CSV 行转换为列"
+      },
+      "csvToJson": {
+        "description": "将 CSV 文件转换为 JSON 格式，并可自定义分隔符、引号和输出格式。支持标题、注释和动态类型转换。",
+        "shortDescription": "将 CSV 数据转换为 JSON 格式。",
+        "title": "将 CSV 转换为 JSON"
+      },
+      "csvToTsv": {
+        "description": "使用下方表单上传您的 CSV 文件，它将自动转换为 TSV 文件。在工具选项中，您可以自定义输入的 CSV 格式——指定字段分隔符、引号和注释符号，以及跳过空的 CSV 行，并选择是否保留 CSV 列标题。",
+        "longDescription": "此工具将逗号分隔值 (CSV) 数据转换为制表符分隔值 (TSV)。CSV 和 TSV 都是用于存储表格数据的常用文件格式，但它们使用不同的分隔符来分隔值——CSV 使用逗号 (",
+        "shortDescription": "将 CSV 数据转换为 TSV 格式。",
+        "title": "将 CSV 转换为 TSV"
+      },
+      "csvToXml": {
+        "description": "使用可自定义的选项将 CSV 文件转换为 XML 格式。",
+        "shortDescription": "将 CSV 数据转换为 XML 格式。",
+        "title": "将 CSV 转换为 XML"
+      },
+      "csvToYaml": {
+        "description": "只需在下方表单中上传您的 CSV 文件，它就会自动转换为 YAML 文件。在工具选项中，您可以指定字段分隔符、字段引号和注释符，以使工具适应自定义 CSV 格式。此外，您还可以选择输出 YAML 格式：保留 CSV 标头或不包含 CSV 标头。",
+        "longDescription": "此工具可将 CSV（逗号分隔值）数据转换为 YAML（另一种标记语言）数据。CSV 是一种简单的表格格式，用于表示由行和列组成的矩阵式数据类型。而 YAML 是一种更高级的格式（实际上是 JSON 的超集），它能够创建更易于序列化的数据，并且支持列表、字典和嵌套对象。此程序支持多种 CSV 输入格式——输入数据可以使用逗号分隔（默认）、分号分隔、竖线分隔或使用其他完全不同的分隔符。您可以在选项中指定数据使用的确切分隔符。同样，您可以在选项中指定用于包装 CSV 字段的引号字符（默认为双引号）。您还可以通过在选项中指定注释符号来跳过以注释开头的行。这样可以通过跳过不必要的行来保持数据整洁。有两种方法可以将 CSV 转换为 YAML。第一种方法将每个 CSV 行转换为 YAML 列表。第二种方法从第一个 CSV 行中提取标题，并根据这些标题创建带有键的 YAML 对象。您还可以通过指定 YAML 结构缩进的空格数来自定义输出 YAML 格式。如果您需要执行反向转换，即将 YAML 转换为 CSV，可以使用我们的“将 YAML 转换为 CSV”工具。CSV 真棒！",
+        "shortDescription": "快速将 CSV 文件转换为 YAML 文件。",
+        "title": "将 CSV 转换为 YAML"
+      },
+      "findIncompleteCsvRecords": {
+        "description": "只需将您的 CSV 文件上传到下方表单，此工具就会自动检查所有行或列是否均缺失值。在工具选项中，您可以调整输入文件格式（指定分隔符、引号和注释符）。此外，您还可以启用空值检查、跳过空行，以及设置输出中错误消息的数量限制。",
+        "shortDescription": "快速查找 CSV 中缺少值的行和列。",
+        "title": "查找不完整的 CSV 记录"
+      },
+      "insertCsvColumns": {
+        "description": "在指定位置向 CSV 数据添加新列。",
+        "shortDescription": "在 CSV 文件中的任何位置快速插入一个或多个新列。",
+        "title": "插入 CSV 列"
+      },
+      "swapCsvColumns": {
+        "description": "只需在下方表单中上传您的 CSV 文件，指定要交换的列，该工具就会自动更改输出文件中指定列的位置。在工具选项中，您可以指定要交换的列位置或名称，还可以修复不完整的数据，并选择性地删除空记录和已注释掉的记录。",
+        "longDescription": "此工具通过交换列的位置来重新组织 CSV 数据。交换列可以将常用数据放在一起或放在最前面，以便于数据比较和编辑，从而提高 CSV 文件的可读性。例如，您可以将第一列与最后一列交换，或者将第二列与第三列交换。要根据列的位置交换列，请选择",
+        "shortDescription": "重新排序 CSV 列。",
+        "title": "交换 CSV 列"
+      },
+      "transposeCsv": {
+        "description": "只需使用下方表格上传您的 CSV 文件，此工具就会自动转置您的 CSV 文件。在工具选项中，您可以指定 CSV 文件中注释行的起始字符，以将其移除。此外，如果 CSV 文件不完整（缺少值），您可以使用空字符或自定义字符替换缺失值。",
+        "longDescription": "此工具用于转置逗号分隔值 (CSV)。它将 CSV 视为数据矩阵，并将所有元素沿主对角线翻转。输出包含与输入相同的 CSV 数据，但现在所有行都变成了列，所有列都变成了行。转置后，CSV 文件的尺寸将相反。例如，如果输入文件有 4 列 3 行，则输出文件将有 3 列 4 行。在转换过程中，程序还会清除数据中不必要的行，并更正不完整的数据。具体来说，该工具会自动删除所有以特定字符开头的空记录和注释，您可以在选项中设置这些字符。此外，如果 CSV 数据损坏或丢失，该实用程序会使用空字段或自定义字段（可在选项中指定）来填充文件。CSV 真是太棒了！",
+        "shortDescription": "快速转置 CSV 文件。",
+        "title": "转置 CSV"
+      },
+      "tsvToJson": {
+        "description": "将 TSV（制表符分隔值）数据转换为 JSON 格式。将表格数据转换为结构化的 JSON 对象。",
+        "shortDescription": "将 TSV 转换为 JSON 格式",
+        "title": "TSV 转 JSON"
+      }
+    },
+    "image": {
+      "changeColors": {
+        "description": "快速准确地将图像中的选定颜色替换为新颜色。",
+        "shortDescription": "快速交换图像中的颜色",
+        "title": "改变图像的颜色"
+      },
+      "changeOpacity": {
+        "description": "轻松调整图片透明度。只需上传图片，使用滑块在 0（完全透明）和 1（完全不透明）之间设置所需的不透明度，然后下载修改后的图片即可。",
+        "shortDescription": "调整图像的透明度",
+        "title": "更改图像不透明度"
+      },
+      "compress": {
+        "description": "在保持质量的同时减小图像文件大小。",
+        "shortDescription": "压缩图像以减小文件大小，同时保持合理的质量。",
+        "title": "压缩图像"
+      },
+      "compressPng": {
+        "description": "这是一个压缩 PNG 图片的程序。只要您将 PNG 图片粘贴到输入区域，程序就会对其进行压缩，并在输出区域显示结果。在选项中，您可以调整压缩级别，以及查看新旧图片文件的大小。",
+        "shortDescription": "快速压缩 PNG",
+        "title": "压缩 PNG"
+      },
+      "convertJgpToPng": {
+        "description": "快速将您的 JPG 图像转换为 PNG。只需在左侧的编辑器中导入您的 PNG 图像即可",
+        "shortDescription": "快速将您的 JPG 图像转换为 PNG",
+        "title": "JPG 转 PNG"
+      },
+      "createTransparent": {
+        "description": "通过移除所选颜色，使图像背景变为透明。",
+        "shortDescription": "快速使图像透明",
+        "title": "创建透明 PNG"
+      },
+      "crop": {
+        "description": "裁剪图像以删除不需要的区域。",
+        "shortDescription": "快速裁剪图像。",
+        "title": "裁剪图片"
+      },
+      "editor": {
+        "description": "高级图像编辑器，包含裁剪、旋转、注释、调整颜色和添加水印等工具。直接在浏览器中使用专业级工具编辑图像。",
+        "shortDescription": "使用高级工具和功能编辑图像",
+        "title": "图像编辑器"
+      },
+      "imageToText": {
+        "description": "使用光学字符识别 (OCR) 从图像 (JPG、PNG) 中提取文本。",
+        "shortDescription": "使用 OCR 从图像中提取文本。",
+        "title": "图像转文本 (OCR)"
+      },
+      "qrCode": {
+        "description": "为不同数据类型生成二维码：URL、文本、电子邮件、电话、短信、WiFi、vCard 等。",
+        "shortDescription": "为各种数据格式创建定制的二维码。",
+        "title": "二维码生成器"
+      },
+      "removeBackground": {
+        "description": "自动移除图像背景，并保留主体为透明背景。",
+        "shortDescription": "自动删除图像的背景",
+        "title": "移除图片背景"
+      },
+      "resize": {
+        "description": "将图像调整为不同的尺寸。",
+        "shortDescription": "轻松调整图像大小。",
+        "title": "调整图像大小"
+      },
+      "rotate": {
+        "description": "按指定角度旋转图像。",
+        "shortDescription": "轻松旋转图像。",
+        "title": "旋转图像"
+      },
+      "split": {
+        "description": "根据纸张格式和页边距，将地图或大图分割为多页。通过设置打印方格对应的像素和方格数量，控制图片缩放比例。",
+        "shortDescription": "将大图分割为多页 PDF，方便打印拼接。",
+        "title": "图片分页打印"
+      },
+      "watermark": {
+        "description": "使用文件名或自定义文字，为一张或多张图片添加文字水印。",
+        "shortDescription": "为图片添加自定义文字水印",
+        "title": "图片添加水印"
+      }
+    },
+    "json": {
+      "comparison": {
+        "description": "比较两个 JSON 对象以识别结构和值的差异。",
+        "shortDescription": "查找两个 JSON 对象之间的差异",
+        "title": "比较 JSON"
+      },
+      "escapeJson": {
+        "description": "转义 JSON 字符串中的特殊字符。将 JSON 数据转换为正确的转义格式，以便安全传输或存储。",
+        "shortDescription": "转义 JSON 中的特殊字符",
+        "title": "转义 JSON"
+      },
+      "jsonToCsv": {
+        "description": "将 JSON 转为 CSV，支持嵌套对象、数组、自动识别表头，以及自定义分隔符和引号，可用于 Excel、Google 表格等应用。",
+        "shortDescription": "将 JSON 数据转换为 CSV 表格",
+        "title": "JSON 转 CSV"
+      },
+      "jsonToXml": {
+        "description": "将 JSON 数据转换为 XML 格式。将结构化的 JSON 对象转换为格式良好的 XML 文档。",
+        "shortDescription": "将 JSON 转换为 XML 格式",
+        "title": "JSON 转 XML"
+      },
+      "minify": {
+        "description": "从 JSON 中删除所有不必要的空格。",
+        "shortDescription": "通过删除空格来缩小 JSON",
+        "title": "压缩 JSON"
+      },
+      "prettify": {
+        "description": "使用适当的缩进和间距来格式化 JSON。",
+        "shortDescription": "格式化并美化 JSON 代码",
+        "title": "格式化 JSON"
+      },
+      "sortJson": {
+        "description": "按选定键值升序或降序排列 JSON 对象数组，或按字母顺序排列对象键名。",
+        "longDescription": "以明确、可预测的方式整理 JSON 数据。可以按任意键值升序或降序排列对象数组，适合整理用户、商品或记录列表；也可以按字母顺序排列对象键名，提升可读性和一致性。支持常见 JSON 结构及多种排序方式。",
+        "shortDescription": "按值或对象键名对 JSON 数组排序",
+        "title": "JSON 排序"
+      },
+      "stringify": {
+        "description": "将 JavaScript 对象转换为 JSON 字符串格式。将数据结构序列化为 JSON 字符串以便存储或传输。",
+        "shortDescription": "将对象转换为 JSON 字符串",
+        "title": "字符串化 JSON"
+      },
+      "validateJson": {
+        "description": "检查 JSON 是否有效且格式正确。",
+        "shortDescription": "验证 JSON 代码是否存在错误",
+        "title": "验证 JSON"
+      }
+    },
+    "list": {
+      "chunk": {
+        "description": "将列表按固定大小依次分组。支持自定义输入分隔符、补齐最后一个不完整分组，以及设置输出分隔符和包裹字符。",
+        "shortDescription": "将列表分割为指定大小的分组",
+        "title": "列表分组"
+      },
+      "duplicate": {
+        "description": "浏览器中的列表项复制实用程序。输入您的列表并指定复制条件即可创建项目副本。非常适合数据扩展、测试或创建重复模式。",
+        "shortDescription": "按照指定条件复制列表项",
+        "title": "重复列表项"
+      },
+      "findMostPopular": {
+        "description": "浏览器中的实用程序，用于查找列表中最热门的项目。输入您的列表，即可立即获取出现频率最高的项目。非常适合数据分析、趋势识别或查找共同点。",
+        "shortDescription": "查找最常出现的项目",
+        "title": "查找高频列表项"
+      },
+      "findUnique": {
+        "description": "浏览器中的实用程序，用于在列表中查找唯一项。输入您的列表，即可立即获取所有唯一值（已删除重复项）。非常适合数据清理、重复数据删除或查找不同元素。",
+        "shortDescription": "在列表中查找唯一项",
+        "title": "列表去重"
+      },
+      "reverse": {
+        "description": "在浏览器中反向打印所有列表项。输入项可以用任意符号分隔，并且您还可以更改反向列表项的分隔符。",
+        "shortDescription": "快速反转列表",
+        "title": "反转列表"
+      },
+      "rotate": {
+        "description": "浏览器中的列表项旋转工具。输入您的列表并指定旋转量，即可将列表项移动指定的位置。非常适合数据操作、循环移动或列表重新排序。",
+        "shortDescription": "按指定位置旋转列表项",
+        "title": "循环移位列表"
+      },
+      "shuffle": {
+        "description": "浏览器中的列表项随机排序工具。输入您的列表，即可立即获得一个按随机顺序排列的列表项随机版本。非常适合创建多样性、测试随机性或混合有序数据。",
+        "shortDescription": "随机化列表项的顺序",
+        "title": "打乱列表"
+      },
+      "sort": {
+        "description": "浏览器中的列表项排序工具。输入您的列表并指定排序条件，即可按升序或降序排列项目。非常适合数据整理、文本处理或创建有序列表。",
+        "shortDescription": "按指定顺序对列表项进行排序",
+        "title": "列表排序"
+      },
+      "truncate": {
+        "description": "浏览器中的列表截断工具。输入您的列表并指定要保留的最大项目数。非常适合数据处理、列表管理或限制内容长度。",
+        "shortDescription": "将列表截断为指定数量的项目",
+        "title": "截取列表"
+      },
+      "unwrap": {
+        "description": "浏览器中的列表项展开工具。输入已展开的列表，并指定展开条件以展平有序的列表项。非常适合数据处理、文本操作或从结构化列表中提取内容。",
+        "shortDescription": "从结构化格式中解开列表项",
+        "title": "移除列表项包围字符"
+      },
+      "wrap": {
+        "description": "在每个列表项之前和之后添加文本。",
+        "shortDescription": "使用指定条件包装列表项",
+        "title": "添加列表项包围字符"
+      }
+    },
+    "number": {
+      "arithmeticSequence": {
+        "description": "生成具有可定制参数的算术序列。",
+        "shortDescription": "生成等差序列",
+        "title": "等差序列"
+      },
+      "byteConverter": {
+        "description": "在不同字节单位之间换算，支持 SI 十进制和 IEC 二进制单位，也支持逐行批量转换。",
+        "shortDescription": "在字节及其常用单位之间快速换算",
+        "title": "字节单位换算"
+      },
+      "generate": {
+        "description": "生成具有可定制参数的数字序列。",
+        "shortDescription": "生成指定范围内的随机数",
+        "title": "生成数字序列"
+      },
+      "numberToWords": {
+        "description": "将数字转换为文字表达，输出语言自动匹配当前界面语言。",
+        "shortDescription": "将数字转换为文字表达",
+        "title": "数字转文字"
+      },
+      "ohmsLaw": {
+        "description": "计算电压、电流和电阻",
+        "longDescription": "此计算器应用欧姆定律 (V = I × R)，在已知其他两个电参数的情况下，确定任意三个电参数。欧姆定律是电气工程中的一个基本原理，描述了电压 (V)、电流 (I) 和电阻 (R) 之间的关系。对于电子爱好者、电气工程师和从事电路设计的学生来说，此工具必不可少，可以帮助他们快速求解电气设计中的未知值。",
+        "shortDescription": "使用欧姆定律计算电路中的电压、电流或电阻",
+        "title": "欧姆定律"
+      },
+      "randomNumberGenerator": {
+        "description": "使用可自定义的选项生成指定范围内的随机数。",
+        "longDescription": "生成指定范围内的随机数，可选择整数或小数，允许或禁止重复，并对结果进行排序。非常适合模拟、测试、游戏和统计分析。",
+        "shortDescription": "生成自定义范围内的随机数",
+        "title": "随机数生成器"
+      },
+      "randomPortGenerator": {
+        "description": "使用可定制的选项在指定范围内生成随机网络端口。",
+        "longDescription": "在指定范围内（知名、注册、动态或自定义）生成随机网络端口。非常适合开发、测试和网络配置。包含常用端口的端口服务识别。",
+        "shortDescription": "生成随机网络端口",
+        "title": "随机端口生成器"
+      },
+      "slackline": {
+        "description": "计算松弛线的张力",
+        "longDescription": "该计算器假设绳索中心有负载",
+        "shortDescription": "计算松弛绳或晾衣绳的大致张力。不要依赖它来确保安全。",
+        "title": "扁带张力计算"
+      },
+      "sphereArea": {
+        "description": "球体的面积",
+        "longDescription": "此计算器使用公式 A = 4πr² 计算球体的表面积。您可以输入半径来计算表面积，也可以直接输入表面积来计算所需的半径。此工具适用于学习几何的学生、处理球形物体的工程师以及任何需要进行球面计算的人。",
+        "shortDescription": "根据球体的半径计算其表面积",
+        "title": "球体表面积"
+      },
+      "sphereVolume": {
+        "description": "球体的体积",
+        "longDescription": "此计算器使用公式 V = (4/3)πr³ 计算球体的体积。您可以输入半径或直径来计算体积，也可以直接输入体积来确定所需的半径。对于在物理、工程和制造等领域处理球形物体的学生、工程师和专业人士来说，此工具非常有用。",
+        "shortDescription": "使用半径或直径计算球体的体积",
+        "title": "球体体积"
+      },
+      "sum": {
+        "description": "计算一串数字的总和。输入以逗号或换行符分隔的数字，即可计算出它们的总和。",
+        "shortDescription": "计算数字之和",
+        "title": "数字求和"
+      },
+      "voltageDropInWire": {
+        "description": "计算双芯电缆的往返电压和功率损耗",
+        "longDescription": "这款计算器可帮助计算双芯电缆的电压降和功率损耗。它考虑了电缆长度、线规（横截面积）、材料电阻率和电流。该工具可计算往返电压降、电缆总电阻以及以热量形式耗散的功率。这对于电气工程师、电工和业余爱好者在设计电气系统时尤其有用，可确保负载下的电压水平保持在可接受的范围内。",
+        "shortDescription": "根据长度、材料和电流计算电缆的电压降和功率损耗",
+        "title": "电缆往返电压降"
+      }
+    },
+    "pdf": {
+      "compressPdf": {
+        "description": "使用 Ghostscript 减小 PDF 文件大小同时保持质量",
+        "shortDescription": "在浏览器中安全地压缩 PDF 文件",
+        "title": "压缩 PDF"
+      },
+      "convertToPdf": {
+        "description": "将各种图像格式（PNG, GIF, JPG, TIF, PSD, SVG, WEBP, HEIC, RAW）转换为 PDF，并可调整图像大小和页面方向。",
+        "shortDescription": "将图像转换为 PDF，可调整大小和方向",
+        "title": "将图像转换为 PDF"
+      },
+      "editor": {
+        "description": "高级 PDF 编辑器，具备注释、表单填写、高亮显示和导出功能。您可以使用专业级工具（包括文本插入、绘图、高亮显示、签名和表单填写）直接在浏览器中编辑 PDF。",
+        "shortDescription": "使用高级注释、签名和编辑工具编辑 PDF",
+        "title": "PDF 编辑器"
+      },
+      "extractImagesFromPdf": {
+        "description": "以原始质量提取 PDF 中所有内嵌图片。",
+        "shortDescription": "从 PDF 文档中提取内嵌图片。",
+        "title": "提取 PDF 图片"
+      },
+      "formBuilder": {
+        "description": "直接在浏览器中创建和自定义交互式 PDF 表单。支持添加文本框、复选框、单选框、标签等控件，并通过拖放布局、调整样式和导出文件。",
+        "shortDescription": "通过拖放控件设计交互式 PDF 表单",
+        "title": "PDF 表单设计"
+      },
+      "mergePdf": {
+        "description": "合并多个 PDF 文件为一个文档。",
+        "shortDescription": "将多个 PDF 文件合并为一个文档",
+        "title": "合并 PDF"
+      },
+      "pdfToEpub": {
+        "description": "将 PDF 文档转换为 EPUB 文件，以实现更好的电子阅读器兼容性。",
+        "shortDescription": "将 PDF 文件转换为 EPUB 格式",
+        "title": "PDF 转 EPUB"
+      },
+      "pdfToPng": {
+        "description": "将 PDF 文档转换为 PNG 面板。",
+        "longDescription": "上传 PDF 后，直接在浏览器中将每个页面转换为高质量的 PNG 图像。此工具非常适合提取视觉内容或分享单个页面。无需上传数据，所有操作均在本地运行。",
+        "shortDescription": "将 PDF 转换为 PNG 图像",
+        "title": "PDF 转 PNG"
+      },
+      "protectPdf": {
+        "description": "在浏览器中安全地为 PDF 文件添加密码保护",
+        "shortDescription": "使用密码安全地保护 PDF 文件",
+        "title": "保护 PDF"
+      },
+      "rotatePdf": {
+        "description": "旋转 PDF 文档中的页面。",
+        "longDescription": "通过将 PDF 页面旋转 90 度、180 度或 270 度来更改其方向。这对于修复扫描错误的文档或准备打印 PDF 非常有用。",
+        "shortDescription": "旋转 PDF 文档中的页面",
+        "title": "旋转 PDF"
+      },
+      "splitPdf": {
+        "description": "从 PDF 文档中提取特定页面。",
+        "shortDescription": "从 PDF 文件中提取特定页面",
+        "title": "拆分 PDF"
+      }
+    },
+    "string": {
+      "base64": {
+        "description": "使用 Base64 编码对文本进行编码或解码。",
+        "shortDescription": "使用 Base64 对数据进行编码或解码。",
+        "title": "Base64 编码与解码"
+      },
+      "bcrypt": {
+        "description": "使用 Bcrypt 算法对字符串进行哈希处理。",
+        "shortDescription": "使用 Bcrypt 对字符串生成哈希",
+        "title": "bcrypt 哈希"
+      },
+      "censor": {
+        "description": "用于审查文本中单词的实用程序。在左侧的输入表单中加载您的文本，并在选项中指定所有脏话，您将立即在输出区域获得已审查的文本。\", longDescription: '使用此在线工具，您可以审查任何文本中的某些单词。您可以指定不想要的单词列表（例如脏话或秘密单词），程序会用替代单词替换它们，并创建可安全阅读的文本。您可以在选项中的多行文本字段中通过每行输入一个单词来指定这些单词。', keywords: ['text', 'censor', 'words', 'characters'], component: lazy(() => import('./index')), i18n: { name: 'string:censor.title', description: 'string:censor.description",
+        "shortDescription": "快速掩盖脏话或用替代词代替。",
+        "title": "屏蔽指定文本"
+      },
+      "createPalindrome": {
+        "description": "浏览器中的回文创建工具，可从任何文本创建回文。输入文本即可立即将其转换为正反读相同的回文。非常适合文字游戏、创建对称文本模式或探索语言学知识。",
+        "shortDescription": "创建正读和倒读相同的文本",
+        "title": "创建回文"
+      },
+      "emailExtractor": {
+        "description": "从文本中提取所有邮箱地址。粘贴文本，即可得到整理后的邮箱列表。",
+        "shortDescription": "从文本中识别并提取邮箱地址",
+        "title": "邮箱地址提取"
+      },
+      "extractSubstring": {
+        "description": "浏览器中的文本子字符串提取工具。输入文本并指定起始和终止位置即可提取所需部分。非常适合数据处理、文本分析或从较大文本块中提取特定内容。",
+        "shortDescription": "提取指定位置之间的部分文本",
+        "title": "提取子字符串"
+      },
+      "hiddenCharacterDetector": {
+        "description": "检测隐藏的 Unicode 字符，尤其是可能用于攻击的 RTL 覆盖字符。",
+        "longDescription": "此工具可帮助您检测文本中隐藏的 Unicode 字符，尤其是可能用于攻击的从右到左 (RTL) 覆盖字符。它可以识别隐藏字符、零宽度字符以及其他可能隐藏在看似无害的文本中的潜在恶意 Unicode 序列。",
+        "shortDescription": "查找文本中隐藏的 Unicode 字符",
+        "title": "隐藏字符检测器"
+      },
+      "join": {
+        "description": "使用可自定义的分隔符将文本片段连接在一起。",
+        "shortDescription": "使用指定的分隔符连接文本元素",
+        "title": "合并文本"
+      },
+      "palindrome": {
+        "description": "浏览器中的回文检测工具。即时验证文本正读和反读是否一致。非常适合字谜游戏、语言分析或验证对称文本模式。支持各种分隔符和多词回文检测。",
+        "shortDescription": "检查文本正读和反读是否相同",
+        "title": "回文检测"
+      },
+      "passwordGenerator": {
+        "description": "生成安全的随机密码，可自定义长度和字符类型。密码类型包括小写字母、大写字母、数字和特殊字符。此外，还可选择避免使用模糊字符，以提高可读性。",
+        "shortDescription": "使用自定义选项生成安全的随机密码",
+        "title": "密码生成器"
+      },
+      "quote": {
+        "description": "使用可自定义的选项在文本周围添加引号。",
+        "shortDescription": "使用各种样式在文本周围添加引号",
+        "title": "文本添加引号"
+      },
+      "randomizeCase": {
+        "description": "浏览器中的文本大小写随机化工具。输入文本后，即可立即将其转换为随机的大小写字母。非常适合创建独特的文本效果、测试大小写敏感度或生成丰富的文本模式。",
+        "shortDescription": "随机化文本中字母的大小写",
+        "title": "随机转换大小写"
+      },
+      "removeDuplicateLines": {
+        "description": "在左侧的输入表单中加载文本，即可立即在输出区域获得无重复行的文本。功能强大、免费且快速。加载文本行 – 获取独特的文本行",
+        "shortDescription": "快速删除文本中所有重复的行",
+        "title": "删除重复的行"
+      },
+      "repeat": {
+        "description": "使用可自定义的分隔符多次重复文本。",
+        "shortDescription": "重复文本多次",
+        "title": "重复文本"
+      },
+      "reverse": {
+        "description": "浏览器中的文本反转工具。输入任意文本即可立即逐字符反转。非常适合创建镜像文本、分析回文或玩转文本模式。反转时保留空格和特殊字符。",
+        "shortDescription": "逐个字符地反转任何文本",
+        "title": "反转文本"
+      },
+      "rot13": {
+        "description": "使用 ROT13 密码对文本进行编码或解码。",
+        "shortDescription": "使用 ROT13 密码对文本进行编码或解码。",
+        "title": "ROT13 编码与解码"
+      },
+      "rotate": {
+        "description": "按指定位置旋转文本中的字符。",
+        "shortDescription": "按位置移动文本中的字符。",
+        "title": "循环移位文本"
+      },
+      "slugGenerator": {
+        "description": "将文本转换为适用于网址的路径片段。",
+        "longDescription": "将文本转换为整洁、适合网址使用的路径片段，支持空格、特殊字符、带重音的字母和逐行批量处理。适用于将文章标题、商品名称或页面标题转换为统一、易读的 URL 路径。",
+        "shortDescription": "将文本转换为适用于网址的路径片段。",
+        "title": "URL 路径生成器"
+      },
+      "split": {
+        "description": "浏览器中的文本分割工具。输入文本并指定分隔符即可将其拆分为多个部分。非常适合数据处理、文本操作或从较大的文本块中提取特定内容。",
+        "shortDescription": "使用分隔符将文本拆分为多个部分",
+        "title": "拆分文本"
+      },
+      "statistic": {
+        "description": "分析文本并生成综合统计数据。",
+        "shortDescription": "获取有关文本的统计数据",
+        "title": "文本统计"
+      },
+      "tableTextConverter": {
+        "description": "在 Markdown、CSV、TSV、HTML、MySQL 查询结果和 JSON 之间转换表格文本。",
+        "longDescription": "在 Markdown 表格、CSV、TSV、HTML 表格、MySQL 或命令行查询结果，以及 JSON 数组之间转换。粘贴表格后选择输出格式，可自动识别输入格式。适用于把查询结果整理为文档中的表格、将 HTML 表格导入电子表格，或将 JSON 数据转换为易读表格。",
+        "shortDescription": "在 Markdown、CSV、HTML、MySQL 和 JSON 之间转换表格",
+        "title": "表格格式转换"
+      },
+      "textCompare": {
+        "description": "对比两段文本，突出显示新增、删除及修改内容。",
+        "longDescription": "快速定位两个文本版本之间的差异，突出显示新增、删除和修改的内容。适用于审阅编辑、跟踪更改或对比文档，可按单词或字符级别调整对比精度。",
+        "shortDescription": "对比两段文本，快速定位差异",
+        "title": "文本差异对比"
+      },
+      "textReplacer": {
+        "description": "用新内容替换文本模式。",
+        "shortDescription": "快速替换内容中的文本",
+        "title": "文本替换器"
+      },
+      "toMorse": {
+        "description": "将文本转换为摩尔斯电码。",
+        "shortDescription": "快速将文本编码为摩尔斯电码",
+        "title": "Morse 编码与解码"
+      },
+      "truncate": {
+        "description": "将文本缩短至指定长度。",
+        "shortDescription": "将文本截断为指定长度",
+        "title": "截断文本"
+      },
+      "unicode": {
+        "description": "将文本转换为 Unicode 转义序列，或将其解码回可读文本。",
+        "shortDescription": "使用 Unicode 转义序列对文本进行编码或解码。",
+        "title": "Unicode 编码与解码"
+      },
+      "uppercase": {
+        "description": "将文本转换为大写字母。",
+        "shortDescription": "将文本转换为大写",
+        "title": "转换为大写"
+      },
+      "urlDecode": {
+        "toolInfo": {
+          "description": "加载您的字符串，它将自动获得 URL 非转义。",
+          "longDescription": "此工具用于对先前 URL 编码的字符串进行 URL 解码。URL 解码是 URL 编码的逆操作。所有百分号编码的字符都会被解码为您可以理解的字符。一些最常用的百分号编码值包括：%20 表示空格，%3a 表示冒号，%2f 表示斜杠，%3f 表示问号。百分号后面的两位数字是该字符的十六进制字符码值。",
+          "shortDescription": "快速对字符串进行 URL 转义。",
+          "title": "字符串 URL 解码器"
+        }
+      },
+      "urlEditor": {
+        "toolInfo": {
+          "description": "粘贴网址并点击“解析网址”，即可查看和编辑各个部分。",
+          "longDescription": "将网址解析为协议、主机、路径、片段标识和查询参数，并以可视化方式编辑。修改输入网址后，再次点击“解析网址”更新内容。可添加、移除或修改参数，并复制生成的网址，整个过程不向服务器发送请求。",
+          "shortDescription": "查看并编辑网址结构和查询参数。",
+          "title": "URL 编辑器"
+        }
+      },
+      "urlEncode": {
+        "toolInfo": {
+          "description": "加载您的字符串，它将自动进行 URL 转义。",
+          "longDescription": "此工具会对字符串进行 URL 编码。特殊 URL 字符会被转换为百分号编码。这种编码之所以称为百分号编码，是因为每个字符的数值都会被转换为百分号，后跟两位十六进制值。十六进制值根据字符的代码点值确定。例如，空格会被转义为 %20，冒号会被转义为 %3a，斜杠会被转义为 %2f。非特殊字符保持不变。如果您还需要将非特殊字符转换为百分号编码，我们还添加了一个额外的选项来实现此目的。选择“encode-non-special-chars”选项即可启用此行为。",
+          "shortDescription": "快速对字符串进行 URL 转义。",
+          "title": "字符串 URL 编码器"
+        }
+      }
+    },
+    "time": {
+      "checkLeapYears": {
+        "description": "检查某一年份是否为闰年并获取闰年信息。",
+        "shortDescription": "检查年份是否为闰年",
+        "title": "检查闰年"
+      },
+      "convertDaysToHours": {
+        "description": "使用可自定义的选项将天数转换为小时数。",
+        "shortDescription": "将天数转换为小时数",
+        "title": "将天数转换为小时数"
+      },
+      "convertHoursToDays": {
+        "description": "使用可自定义的选项将小时转换为天。",
+        "shortDescription": "将小时转换为天",
+        "title": "将小时转换为天"
+      },
+      "convertSecondsToTime": {
+        "description": "将秒转换为可读的时间格式（小时:分钟:秒）。输入秒数即可获取格式化的时间。",
+        "shortDescription": "将秒数转换为时间格式",
+        "title": "将秒转换为时间"
+      },
+      "convertTimeToDecimal": {
+        "description": "将格式化的时间长度（HH:MM:SS）转换为小数小时值。",
+        "longDescription": "将格式化的时间字符串（HH:MM:SS 或 HH:MM）转换为其等效的小数小时值。小时可以是任意正数，而分钟和秒接受 0-59 之间的值，可以是一位或两位数字（例如，'12:5' 或 '12:05'）。此函数解析小时、分钟和秒，然后将总时长计算为单一小数值。它适用于生产力追踪、薪资计算、按时计费、数据分析，或任何需要将人类可读时间转换为易于求和、比较或处理的数值格式的工作流程。例如，'03:26:00' 转换为 3.43 小时，'12:5' 转换为 12.08 小时。",
+        "shortDescription": "把时段转化为小数小时值",
+        "title": "把时间转换至十进制格式"
+      },
+      "convertTimeToSeconds": {
+        "description": "将格式化的时间（HH：MM：SS）转换为秒。",
+        "shortDescription": "将时间格式转换为秒",
+        "title": "将时间转换为秒"
+      },
+      "convertUnixToDate": {
+        "description": "将 Unix 时间戳转换为可读日期，并将格式化日期转换回 Unix 时间戳（双向转换）。",
+        "shortDescription": "双向转换 Unix 时间戳和日期。",
+        "title": "Unix 时间戳与日期互转"
+      },
+      "crontabGuru": {
+        "description": "用中文解析和解释 cron 表达式。即时了解任何 cron 计划的作用，验证语法，并一次处理多个表达式。",
+        "longDescription": "Crontab Guru 是一个 cron 表达式解析器和验证器，可将复杂的 cron 语法转换为清晰易读的描述。无论您是在安排自动备份、系统维护任务还是 CI/CD 流水线，此工具都能帮助您准确了解您的任务何时运行。支持标准的 5 字段 cron 表达式，实时验证语法，并一次处理多个表达式——每行一个。支持英语、法语、西班牙语、德语、日语、中文、葡萄牙语、荷兰语和俄语。",
+        "shortDescription": "用简单语言解析和解释 cron 表达式",
+        "title": "Cron 表达式解析"
+      },
+      "dateWeekdayCalculator": {
+        "description": "查找指定年份范围内，某月某日恰逢目标星期的所有年份。",
+        "longDescription": "选择月份、日期、目标星期及起止年份，程序会逐年检查并列出匹配的完整日期。支持 2 月 29 日，自动跳过非闰年。无效日期（例如 4 月 31 日）或年份范围会显示明确的错误提示。",
+        "shortDescription": "查找指定日期恰逢某个星期的年份",
+        "title": "日期星期计算器"
+      },
+      "discordTimestamp": {
+        "description": "将日期和时间转换为 Discord 的特殊时间戳格式，自动适应每位用户的本地时区和语言",
+        "name": "Discord 时间戳生成器",
+        "shortDescription": "从日期生成 Discord 时间戳",
+        "toolInfo": {
+          "description": "Discord 时间戳是一种动态显示日期和时间的特殊语法。它不显示固定时间，而是自动转换为每位查看者的本地时区和语言 — 让每个人都能看到适合其所在位置的正确时间。只需每行输入一个日期时间，选择格式，然后将结果直接粘贴到 Discord 中。该工具独立处理每一行 — 空行在输出中保留，无效行以 ❌ 标记，有效的日期时间即时转换。启用 UTC 模式可确保结果不受本地时区影响。"
+        }
+      },
+      "timeBetweenDates": {
+        "description": "计算两个日期之间的时差。获取精确的天、小时、分钟和秒数。",
+        "shortDescription": "计算两个日期之间的时间",
+        "title": "日期间隔计算"
+      },
+      "truncateClockTime": {
+        "description": "截断时钟时间以删除秒数或分钟数。将时间四舍五入到最接近的小时数、分钟数或自定义间隔。",
+        "shortDescription": "将时钟时间截断为指定的精度",
+        "title": "截断时钟时间"
+      }
+    },
+    "video": {
+      "addAudio": {
+        "description": "为视频添加音轨，可完全替换原音频，也可将新音轨与原音频混合。支持调整音量、循环播放，以及精确设置起止时间，兼容常见音视频格式。",
+        "shortDescription": "为视频添加或替换音轨",
+        "title": "视频添加音频"
+      },
+      "changeSpeed": {
+        "description": "更改视频文件的播放速度。在保持音频同步的同时，加快或减慢视频速度。支持各种倍速器和常见视频格式。",
+        "shortDescription": "更改视频播放速度",
+        "title": "更改视频速度"
+      },
+      "compress": {
+        "description": "通过将视频缩放到不同的分辨率（例如 240p、480p、720p 等）来压缩视频。此工具有助于在保持可接受质量的同时减小文件大小。支持 MP4、WebM 和 OGG 等常见视频格式。",
+        "shortDescription": "通过缩放到不同的分辨率来压缩视频",
+        "title": "压缩视频"
+      },
+      "cropVideo": {
+        "description": "裁剪视频以删除不需要的区域。",
+        "shortDescription": "裁剪视频以删除不需要的区域",
+        "title": "裁剪视频"
+      },
+      "flip": {
+        "description": "水平或垂直翻转视频文件。镜像视频以获得特殊效果或纠正方向问题。",
+        "shortDescription": "水平或垂直翻转视频",
+        "title": "翻转视频"
+      },
+      "gif": {
+        "changeSpeed": {
+          "description": "更改 GIF 动画的播放速度。在保持动画流畅的情况下，加快或减慢 GIF 的速度。",
+          "shortDescription": "更改 GIF 动画速度",
+          "title": "更改 GIF 速度"
+        },
+        "imagesToGif": {
+          "description": "将多张图片合成为 GIF 动图，可调整帧顺序和时长，生成流畅的动画。",
+          "shortDescription": "将多张图片合成为 GIF 动图",
+          "title": "图片转 GIF"
+        }
+      },
+      "loop": {
+        "description": "通过多次重复播放原始视频来创建循环视频。",
+        "shortDescription": "创建循环视频文件",
+        "title": "循环视频"
+      },
+      "mergeVideo": {
+        "description": "将多个视频文件合并为一个连续的视频。",
+        "longDescription": "此工具允许您将多个视频文件合并或附加为一个连续的视频。只需上传您的视频文件，按所需顺序排列，然后将它们合并为一个文件，即可轻松共享或编辑。",
+        "shortDescription": "轻松附加和合并视频。",
+        "title": "合并视频"
+      },
+      "resize": {
+        "description": "将视频调整为 240p、360p、480p、720p、1080p 等分辨率，也可自定义宽度和高度。默认保持宽高比，避免画面拉伸，支持 MP4、WebM、OGG 等常见格式。",
+        "shortDescription": "调整视频尺寸与分辨率",
+        "title": "调整视频尺寸"
+      },
+      "rotate": {
+        "description": "将视频文件旋转 90 度、180 度或 270 度。通过精确的旋转控制来校正视频方向或创建特殊效果。",
+        "shortDescription": "按指定角度旋转视频",
+        "title": "旋转视频"
+      },
+      "trim": {
+        "description": "通过指定开始和结束时间来修剪视频文件。从视频的开头或结尾删除不需要的部分。",
+        "shortDescription": "通过删除不需要的部分来修剪视频",
+        "title": "修剪视频"
+      }
+    },
+    "xml": {
+      "xmlBeautifier": {
+        "description": "使用适当的缩进和间距来格式化 XML。",
+        "shortDescription": "格式化和美化 XML 代码",
+        "title": "格式化 XML"
+      },
+      "xmlValidator": {
+        "description": "验证 XML 语法和结构。",
+        "shortDescription": "验证 XML 代码是否存在错误",
+        "title": "验证 XML"
+      }
+    }
+  },
+  "en": {
+    "audio": {
+      "changeSpeed": {
+        "description": "Change the playback speed of audio files. Speed up or slow down audio while maintaining pitch.",
+        "shortDescription": "Change the speed of audio files",
+        "title": "Change audio speed"
+      },
+      "extractAudio": {
+        "description": "Extract audio track from video files.",
+        "shortDescription": "Extract audio from video files (MP4, MOV, etc.) to AAC, MP3, or WAV.",
+        "title": "Extract Audio from Video"
+      },
+      "loop": {
+        "description": "Create a looping audio file by repeating the original audio multiple times.",
+        "shortDescription": "Create looping audio files",
+        "title": "Loop Audio"
+      },
+      "mergeAudio": {
+        "description": "Combine multiple audio files into a single audio file by concatenating them in sequence.",
+        "longDescription": "This tool allows you to merge multiple audio files into a single file by concatenating them in the order you upload them. Perfect for combining podcast segments, music tracks, or any audio files that need to be joined together. Supports various audio formats including MP3, AAC, and WAV.",
+        "shortDescription": "Merge multiple audio files into one (MP3, AAC, WAV).",
+        "title": "Merge Audio"
+      },
+      "trim": {
+        "description": "Cut and trim audio files to extract specific segments by specifying start and end times with sub-second precision.",
+        "longDescription": "This tool allows you to trim audio files by specifying start and end times with sub-second precision. You can extract specific segments from longer audio files, remove unwanted parts, or create shorter clips. Supports various audio formats including MP3, AAC, and WAV. Perfect for podcast editing, music production, or any audio editing needs.",
+        "shortDescription": "Trim audio files to extract specific time segments with sub-second precision (MP3, AAC, WAV).",
+        "title": "Trim Audio"
+      }
+    },
+    "converters": {
+      "audioConverter": {
+        "description": "Convert audio files between different formats.",
+        "longDescription": "This tool allows you to convert audio files from one format to another, supporting a wide range of audio formats for seamless conversion.",
+        "shortDescription": "Convert audio files to various formats.",
+        "title": "Audio Converter"
+      },
+      "convertToJPG": {
+        "description": "Convert various image formats to JPG with customizable quality and background color settings.",
+        "shortDescription": "Convert images to JPG Format with quality control",
+        "title": "Convert Images to JPG"
+      },
+      "convertToWebp": {
+        "description": "Convert various image formats to WebP format with customizable quality and background color settings.",
+        "shortDescription": "Convert Images to WebP Format with quality control.",
+        "title": "Convert Images to WebP"
+      },
+      "videoToGif": {
+        "description": "Convert video files to animated GIF format. Extract specific time ranges and create shareable animated images.",
+        "shortDescription": "Convert video to animated GIF",
+        "title": "Video to GIF"
+      }
+    },
+    "csv": {
+      "changeCsvSeparator": {
+        "description": "Change the delimiter/separator in CSV files. Convert between different CSV formats like comma, semicolon, tab, or custom separators.",
+        "shortDescription": "Change CSV file delimiter",
+        "title": "Change CSV Separator"
+      },
+      "csvRowsToColumns": {
+        "description": "This tool converts rows of a CSV (Comma Separated Values) file into columns. It extracts the horizontal lines from the input CSV one by one, rotates them 90 degrees, and outputs them as vertical columns one after another, separated by commas.', longDescription: 'This tool converts rows of a CSV (Comma Separated Values) file into columns. For example, if the input CSV data has 6 rows, then the output will have 6 columns and the elements of the rows will be arranged from the top to bottom. In a well-formed CSV, the number of values in each row is the same. However, in cases when rows are missing fields, the program can fix them and you can choose from the available options: fill missing data with empty elements or replace missing data with custom elements, such as \"missing\", \"?\", or \"x\". During the conversion process, the tool also cleans the CSV file from unnecessary information, such as empty lines (these are lines without visible information) and comments. To help the tool correctly identify comments, in the options, you can specify the symbol at the beginning of a line that starts a comment. This symbol is typically a hash \"#\" or double slash \"//\". Csv-abulous!.",
+        "longDescription": "This tool converts rows of a CSV (Comma Separated Values) file into columns. For example, if the input CSV data has 6 rows, then the output will have 6 columns and the elements of the rows will be arranged from the top to bottom. In a well-formed CSV, the number of values in each row is the same. However, in cases when rows are missing fields, the program can fix them and you can choose from the available options: fill missing data with empty elements or replace missing data with custom elements, such as",
+        "shortDescription": "Convert CSV rows to columns.",
+        "title": "Convert CSV Rows to Columns"
+      },
+      "csvToJson": {
+        "description": "Convert CSV files to JSON format with customizable options for delimiters, quotes, and output formatting. Support for headers, comments, and dynamic type conversion.",
+        "shortDescription": "Convert CSV data to JSON format.",
+        "title": "Convert CSV to JSON"
+      },
+      "csvToTsv": {
+        "description": "Upload your CSV file in the form below and it will automatically get converted to a TSV file. In the tool options, you can customize the input CSV format – specify the field delimiter, quotation character, and comment symbol, as well as skip empty CSV lines, and choose whether to preserve CSV column headers.",
+        "longDescription": "This tool transforms Comma Separated Values (CSV) data to Tab Separated Values (TSV) data. Both CSV and TSV are popular file formats for storing tabular data but they use different delimiters to separate values – CSV uses commas (",
+        "shortDescription": "Convert CSV data to TSV format.",
+        "title": "Convert CSV to TSV"
+      },
+      "csvToXml": {
+        "description": "Convert CSV files to XML format with customizable options.",
+        "shortDescription": "Convert CSV data to XML format.",
+        "title": "Convert CSV to XML"
+      },
+      "csvToYaml": {
+        "description": "Just upload your CSV file in the form below and it will automatically get converted to a YAML file. In the tool options, you can specify the field delimiter character, field quote character, and comment character to adapt the tool to custom CSV formats. Additionally, you can select the output YAML format: one that preserves CSV headers or one that excludes CSV headers.",
+        "longDescription": "This tool transforms CSV (Comma Separated Values) data into the YAML (Yet Another Markup Language) data. CSV is a simple, tabular format that is used to represent matrix-like data types consisting of rows and columns. YAML, on the other hand, is a more advanced format (actually a superset of JSON), which creates more human-readable data for serialization, and it supports lists, dictionaries, and nested objects. This program supports various input CSV formats – the input data can be comma-separated (default), semicolon-separated, pipe-separated, or use another completely different delimiter. You can specify the exact delimiter your data uses in the options. Similarly, in the options, you can specify the quote character that is used to wrap CSV fields (by default a double-quote symbol). You can also skip lines that start with comments by specifying the comment symbols in the options. This allows you to keep your data clean by skipping unnecessary lines. There are two ways to convert CSV to YAML. The first method converts each CSV row into a YAML list. The second method extracts headers from the first CSV row and creates YAML objects with keys based on these headers. You can also customize the output YAML format by specifying the number of spaces for indenting YAML structures. If you need to perform the reverse conversion, that is, transform YAML into CSV, you can use our Convert YAML to CSV tool. Csv-abulous!",
+        "shortDescription": "Quickly convert a CSV file to a YAML file.",
+        "title": "Convert CSV to YAML"
+      },
+      "findIncompleteCsvRecords": {
+        "description": "Just upload your CSV file in the form below and this tool will automatically check if none of the rows or columns are missing values. In the tool options, you can adjust the input file format (specify the delimiter, quote character, and comment character). Additionally, you can enable checking for empty values, skip empty lines, and set a limit on the number of error messages in the output.",
+        "shortDescription": "Quickly find rows and columns in CSV that are missing values.",
+        "title": "Find incomplete CSV records"
+      },
+      "insertCsvColumns": {
+        "description": "Add new columns to CSV data at specified positions.",
+        "shortDescription": "Quickly insert one or more new columns anywhere in a CSV file.",
+        "title": "Insert CSV columns"
+      },
+      "swapCsvColumns": {
+        "description": "Just upload your CSV file in the form below, specify the columns to swap, and the tool will automatically change the positions of the specified columns in the output file. In the tool options, you can specify the column positions or names that you want to swap, as well as fix incomplete data and optionally remove empty records and records that have been commented out.",
+        "longDescription": "This tool reorganizes CSV data by swapping the positions of its columns. Swapping columns can enhance the readability of a CSV file by placing frequently used data together or in the front for easier data comparison and editing. For example, you can swap the first column with the last or swap the second column with the third. To swap columns based on their positions, select the",
+        "shortDescription": "Reorder CSV columns.",
+        "title": "Swap CSV Columns"
+      },
+      "transposeCsv": {
+        "description": "Just upload your CSV file in the form below, and this tool will automatically transpose your CSV. In the tool options, you can specify the character that starts the comment lines in the CSV to remove them. Additionally, if the CSV is incomplete (missing values), you can replace missing values with the empty character or a custom character.",
+        "longDescription": "This tool transposes Comma Separated Values (CSV). It treats the CSV as a matrix of data and flips all elements across the main diagonal. The output contains the same CSV data as the input, but now all the rows have become columns, and all the columns have become rows. After transposition, the CSV file will have opposite dimensions. For example, if the input file has 4 columns and 3 rows, the output file will have 3 columns and 4 rows. During conversion, the program also cleans the data from unnecessary lines and corrects incomplete data. Specifically, the tool automatically deletes all empty records and comments that begin with a specific character, which you can set in the option. Additionally, in cases where the CSV data is corrupted or lost, the utility completes the file with empty fields or custom fields that can be specified in the options. Csv-abulous!",
+        "shortDescription": "Quickly transpose a CSV file.",
+        "title": "Transpose CSV"
+      },
+      "tsvToJson": {
+        "description": "Convert TSV (Tab-Separated Values) data to JSON format. Transform tabular data into structured JSON objects.",
+        "shortDescription": "Convert TSV to JSON format",
+        "title": "TSV to JSON"
+      }
+    },
+    "image": {
+      "changeColors": {
+        "description": "Change specific colors in an image by selecting a source color and replacing it with a new one.",
+        "shortDescription": "Quickly swap colors in a image",
+        "title": "Change colors in image"
+      },
+      "changeOpacity": {
+        "description": "Easily adjust the transparency of your images. Simply upload your image, use the slider to set the desired opacity level between 0 (fully transparent) and 1 (fully opaque), and download the modified image.",
+        "shortDescription": "Adjust transparency of images",
+        "title": "Change image Opacity"
+      },
+      "compress": {
+        "description": "Reduce the file size of one or multiple images while preserving visual quality. Upload a batch of images and download them all at once as a ZIP archive.",
+        "shortDescription": "Compress one or multiple images at once.",
+        "title": "Compress Images"
+      },
+      "compressPng": {
+        "description": "This is a program that compresses one or more PNG pictures without ever resizing them. As soon as you add your PNG pictures in the input area, the program reduces their color palette and re-encodes them, so each output keeps the exact width and height of the input. In the options, you can adjust the compression level, ask for a maximum output size, and find the old and new picture file sizes.",
+        "shortDescription": "Quickly compress a PNG",
+        "title": "Compress png"
+      },
+      "convertJgpToPng": {
+        "description": "Quickly convert your JPG images to PNG. Just import your PNG image in the editor on the left",
+        "shortDescription": "Quickly convert your JPG images to PNG",
+        "title": "Convert JPG to PNG"
+      },
+      "createTransparent": {
+        "description": "Create a transparent version of an image by removing the chosen background color.",
+        "shortDescription": "Quickly make an image transparent",
+        "title": "Create transparent PNG"
+      },
+      "crop": {
+        "description": "Crop images to remove unwanted areas.",
+        "shortDescription": "Crop images quickly.",
+        "title": "Crop Image"
+      },
+      "editor": {
+        "description": "Advanced image editor with tools for cropping, rotating, annotating, adjusting colors, and adding watermarks. Edit your images with professional-grade tools directly in your browser.",
+        "shortDescription": "Edit images with advanced tools and features",
+        "title": "Image Editor"
+      },
+      "imageToText": {
+        "description": "Extract text from images (JPG, PNG) using optical character recognition (OCR).",
+        "shortDescription": "Extract text from images using OCR.",
+        "title": "Image to Text (OCR)"
+      },
+      "qrCode": {
+        "description": "Generate QR codes for different data types: URL, Text, Email, Phone, SMS, WiFi, vCard, and more.",
+        "shortDescription": "Create customized QR codes for various data formats.",
+        "title": "QR Code Generator"
+      },
+      "removeBackground": {
+        "description": "Remove the background from an image to isolate the main subject with transparency.",
+        "shortDescription": "Automatically remove backgrounds from images",
+        "title": "Remove Background from Image"
+      },
+      "resize": {
+        "description": "Resize images using pixel dimensions or percentage scaling. Maintain aspect ratio and set width or height with automatic adjustment. Download results individually or as a ZIP archive.",
+        "shortDescription": "Resize one or multiple images at once.",
+        "title": "Resize Image"
+      },
+      "rotate": {
+        "description": "Rotate an image by a specified angle.",
+        "shortDescription": "Rotate an image easily.",
+        "title": "Rotate Image"
+      },
+      "split": {
+        "description": "Split a map or large image into pages matching the selected paper format and padding. Specify pixels per printing square and square count to scale the image correctly.",
+        "shortDescription": "Split a large image into multiple pages (PDF).",
+        "title": "Split Image into Pages"
+      },
+      "watermark": {
+        "description": "Add text watermarks to one or more images using each filename or custom text.",
+        "shortDescription": "Add text watermarks to images",
+        "title": "Watermark Images"
+      }
+    },
+    "json": {
+      "comparison": {
+        "description": "Compare two JSON objects to identify differences in structure and values.",
+        "shortDescription": "Find differences between two JSON objects",
+        "title": "Compare JSON"
+      },
+      "escapeJson": {
+        "description": "Escape special characters in JSON strings. Convert JSON data to properly escaped format for safe transmission or storage.",
+        "shortDescription": "Escape special characters in JSON",
+        "title": "Escape JSON"
+      },
+      "jsonToCsv": {
+        "description": "Convert JSON data to CSV format. Supports nested objects and arrays, automatic header detection, and configurable delimiters and quoting — ready for Excel, Google Sheets, or any spreadsheet application.",
+        "shortDescription": "Convert JSON to CSV format",
+        "title": "JSON to CSV"
+      },
+      "jsonToXml": {
+        "description": "Convert JSON data to XML format. Transform structured JSON objects into well-formed XML documents.",
+        "shortDescription": "Convert JSON to XML format",
+        "title": "JSON to XML"
+      },
+      "minify": {
+        "description": "Remove all unnecessary whitespace from JSON.",
+        "shortDescription": "Minify JSON by removing whitespace",
+        "title": "Minify JSON"
+      },
+      "prettify": {
+        "description": "Format JSON with proper indentation and spacing.",
+        "shortDescription": "Format and beautify JSON code",
+        "title": "Prettify JSON"
+      },
+      "sortJson": {
+        "description": "Sort JSON data by organizing arrays of objects based on a selected key in ascending or descending order, or alphabetically sort the keys of a JSON object.",
+        "longDescription": "This tool allows you to easily sort JSON data in a structured and predictable way. You can sort an array of objects by any key, choosing either ascending or descending order, which is useful for organizing data such as lists of users, products, or records. Alternatively, you can sort the keys of a JSON object alphabetically to improve readability and consistency. The tool supports flexible sorting modes and handles common JSON structures, making it ideal for developers, data analysts, and anyone working with JSON data who needs clean, ordered output.",
+        "shortDescription": "Sort JSON arrays by value or object keys alphabetically",
+        "title": "Sort JSON"
+      },
+      "stringify": {
+        "description": "Convert JavaScript objects to JSON string format. Serialize data structures into JSON strings for storage or transmission.",
+        "shortDescription": "Convert objects to JSON string",
+        "title": "Stringify JSON"
+      },
+      "validateJson": {
+        "description": "Check if JSON is valid and well-formed.",
+        "shortDescription": "Validate JSON code for errors",
+        "title": "Validate JSON"
+      }
+    },
+    "list": {
+      "chunk": {
+        "description": "Split a list into consecutive chunks of a fixed size. This tool separates input items, chunks them sequentially, optionally pads incomplete chunks, and formats the output using custom separators and wrappers.",
+        "shortDescription": "Split a list into fixed-size chunks",
+        "title": "Chunk List"
+      },
+      "duplicate": {
+        "description": "World's simplest browser-based utility for duplicating list items. Input your list and specify duplication criteria to create copies of items. Perfect for data expansion, testing, or creating repeated patterns.",
+        "shortDescription": "Duplicate list items with specified criteria",
+        "title": "Duplicate"
+      },
+      "findMostPopular": {
+        "description": "World's simplest browser-based utility for finding the most popular items in a list. Input your list and instantly get the items that appear most frequently. Perfect for data analysis, trend identification, or finding common elements.",
+        "shortDescription": "Find most frequently occurring items",
+        "title": "Find most popular"
+      },
+      "findUnique": {
+        "description": "World's simplest browser-based utility for finding unique items in a list. Input your list and instantly get all unique values with duplicates removed. Perfect for data cleaning, deduplication, or finding distinct elements.",
+        "shortDescription": "Find unique items in a list",
+        "title": "Find unique"
+      },
+      "reverse": {
+        "description": "This is a super simple browser-based application prints all list items in reverse. The input items can be separated by any symbol and you can also change the separator of the reversed list items.",
+        "shortDescription": "Quickly reverse a list",
+        "title": "Reverse"
+      },
+      "rotate": {
+        "description": "World's simplest browser-based utility for rotating list items. Input your list and specify rotation amount to shift items by a specified number of positions. Perfect for data manipulation, circular shifts, or reordering lists.",
+        "shortDescription": "Rotate list items by specified positions",
+        "title": "Rotate"
+      },
+      "shuffle": {
+        "description": "World's simplest browser-based utility for shuffling list items. Input your list and instantly get a randomized version with items in random order. Perfect for creating variety, testing randomness, or mixing up ordered data.",
+        "shortDescription": "Randomize the order of list items",
+        "title": "Shuffle"
+      },
+      "sort": {
+        "description": "World's simplest browser-based utility for sorting list items. Input your list and specify sorting criteria to organize items in ascending or descending order. Perfect for data organization, text processing, or creating ordered lists.",
+        "shortDescription": "Sort list items in specified order",
+        "title": "Sort"
+      },
+      "truncate": {
+        "description": "World's simplest browser-based utility for truncating lists. Input your list and specify the maximum number of items to keep. Perfect for data processing, list management, or limiting content length.",
+        "shortDescription": "Truncate list to specified number of items",
+        "title": "Truncate"
+      },
+      "unwrap": {
+        "description": "World's simplest browser-based utility for unwrapping list items. Input your wrapped list and specify unwrapping criteria to flatten organized items. Perfect for data processing, text manipulation, or extracting content from structured lists.",
+        "shortDescription": "Unwrap list items from structured format",
+        "title": "Unwrap"
+      },
+      "wrap": {
+        "description": "Add text before and after each list item.",
+        "shortDescription": "Wrap list items with specified criteria",
+        "title": "Wrap"
+      }
+    },
+    "number": {
+      "arithmeticSequence": {
+        "description": "Generate arithmetic sequences with customizable parameters.",
+        "shortDescription": "Generate arithmetic sequences",
+        "title": "Arithmetic Sequence"
+      },
+      "byteConverter": {
+        "description": "Convert data values between different byte units, supporting both SI (decimal) and IEC (binary) systems. It supports multiple lines conversion.",
+        "shortDescription": "Quickly convert values between byte units",
+        "title": "Byte Converter"
+      },
+      "generate": {
+        "description": "Generate a sequence of numbers with customizable parameters.",
+        "shortDescription": "Generate random numbers in specified ranges",
+        "title": "Generate"
+      },
+      "numberToWords": {
+        "description": "Convert numbers into words in your selected language. The output automatically matches your current app language.",
+        "shortDescription": "Convert numbers to words",
+        "title": "Number to Words"
+      },
+      "ohmsLaw": {
+        "description": "Calculates voltage, current and resistance",
+        "longDescription": "This calculator applies Ohm's Law (V = I × R) to determine any of the three electrical parameters when the other two are known. Ohm's Law is a fundamental principle in electrical engineering that describes the relationship between voltage (V), current (I), and resistance (R). This tool is essential for electronics hobbyists, electrical engineers, and students working with circuits to quickly solve for unknown values in their electrical designs.",
+        "shortDescription": "Calculate voltage, current, or resistance in electrical circuits using Ohm's Law",
+        "title": "Ohm's Law"
+      },
+      "randomNumberGenerator": {
+        "description": "Generate random numbers within a specified range with customizable options.",
+        "longDescription": "Generate random numbers within a specified range with options for integers or decimals, allowing or preventing duplicates, and sorting results. Perfect for simulations, testing, games, and statistical analysis.",
+        "shortDescription": "Generate random numbers in custom ranges",
+        "title": "Random Number Generator"
+      },
+      "randomPortGenerator": {
+        "description": "Generate random network ports within specified ranges with customizable options.",
+        "longDescription": "Generate random network ports within specified ranges (well-known, registered, dynamic, or custom). Perfect for development, testing, and network configuration. Includes port service identification for common ports.",
+        "shortDescription": "Generate random network ports",
+        "title": "Random Port Generator"
+      },
+      "slackline": {
+        "description": "Calculates tension in a slackline",
+        "longDescription": "This calculator assumes a load in the center of the rope",
+        "shortDescription": "Calculate the approximate tension of a slackline or clothesline. Do not rely on this for safety.",
+        "title": "Slackline Tension"
+      },
+      "sphereArea": {
+        "description": "Area of a Sphere",
+        "longDescription": "This calculator determines the surface area of a sphere using the formula A = 4πr². You can either input the radius to find the surface area or enter the surface area to calculate the required radius. This tool is useful for students studying geometry, engineers working with spherical objects, and anyone needing to perform calculations involving spherical surfaces.",
+        "shortDescription": "Calculate the surface area of a sphere based on its radius",
+        "title": "Area of a Sphere"
+      },
+      "sphereVolume": {
+        "description": "Volume of a Sphere",
+        "longDescription": "This calculator computes the volume of a sphere using the formula V = (4/3)πr³. You can input either the radius or diameter to find the volume, or enter the volume to determine the required radius. The tool is valuable for students, engineers, and professionals working with spherical objects in fields such as physics, engineering, and manufacturing.",
+        "shortDescription": "Calculate the volume of a sphere using radius or diameter",
+        "title": "Volume of a Sphere"
+      },
+      "sum": {
+        "description": "Calculate the sum of a list of numbers. Enter numbers separated by commas or newlines to get their total sum.",
+        "shortDescription": "Calculate sum of numbers",
+        "title": "Sum"
+      },
+      "voltageDropInWire": {
+        "description": "Calculates round trip voltage and power loss in a 2 conductor cable",
+        "longDescription": "This calculator helps determine the voltage drop and power loss in a two-conductor electrical cable. It takes into account the cable length, wire gauge (cross-sectional area), material resistivity, and current flow. The tool calculates the round-trip voltage drop, total resistance of the cable, and the power dissipated as heat. This is particularly useful for electrical engineers, electricians, and hobbyists when designing electrical systems to ensure voltage levels remain within acceptable limits at the load.",
+        "shortDescription": "Calculate voltage drop and power loss in electrical cables based on length, material, and current",
+        "title": "Round trip voltage drop in cable"
+      }
+    },
+    "pdf": {
+      "compressPdf": {
+        "description": "Reduce PDF file size while maintaining quality using Ghostscript",
+        "shortDescription": "Compress PDF files securely in your browser",
+        "title": "Compress PDF"
+      },
+      "convertToPdf": {
+        "description": "Convert various image formats (PNG, GIF, JPG, WEBP, HEIC, HEIF) to PDF, with options to scale the image and choose page orientation.",
+        "shortDescription": "Convert images to PDF with scale and orientation control",
+        "title": "Images to PDF"
+      },
+      "editor": {
+        "description": "Advanced PDF editor with annotation, form-fill, highlight, and export capabilities. Edit your PDFs directly in the browser with professional-grade tools including text insertion, drawing, highlighting, signing and form filling.",
+        "shortDescription": "Edit PDFs with advanced annotation, signing and editing tools",
+        "title": "PDF Editor"
+      },
+      "extractImagesFromPdf": {
+        "description": "Extract all embedded images from your PDF file in their original quality.",
+        "shortDescription": "Extract images from a PDF file.",
+        "title": "Extract Images from PDF"
+      },
+      "formBuilder": {
+        "description": "Create and and customize interactive PDF forms directly in your browser. Add text fields, checkboxes, radio buttons, labels, and more, with full drag-and-drop support, styling options, and export capabilities.",
+        "shortDescription": "Design and build interactive PDF forms easily with drag-and-drop tools",
+        "title": "PDF Form Builder"
+      },
+      "mergePdf": {
+        "description": "Combine multiple PDF files into a single document.",
+        "shortDescription": "Merge multiple PDF files into a single document",
+        "title": "Merge PDF"
+      },
+      "pdfToEpub": {
+        "description": "Transform PDF documents into EPUB files for better e-reader compatibility.",
+        "shortDescription": "Convert PDF files to EPUB format",
+        "title": "PDF to EPUB"
+      },
+      "pdfToPng": {
+        "description": "Transform PDF documents into PNG panels.",
+        "longDescription": "Upload a PDF and convert each page into a high-quality PNG image directly in your browser. This tool is ideal for extracting visual content or sharing individual pages. No data is uploaded — everything runs locally.",
+        "shortDescription": "Convert PDF into PNG images",
+        "title": "PDF to PNG"
+      },
+      "protectPdf": {
+        "description": "Add password protection to your PDF files securely in your browser",
+        "shortDescription": "Password protect PDF files securely",
+        "title": "Protect PDF"
+      },
+      "rotatePdf": {
+        "description": "Rotate pages in a PDF document.",
+        "longDescription": "Change the orientation of PDF pages by rotating them 90, 180, or 270 degrees. Useful for fixing incorrectly scanned documents or preparing PDFs for printing.",
+        "shortDescription": "Rotate pages in a PDF document",
+        "title": "Rotate PDF"
+      },
+      "splitPdf": {
+        "description": "Extract specific pages from a PDF document.",
+        "shortDescription": "Extract specific pages from a PDF file",
+        "title": "Split PDF"
+      }
+    },
+    "string": {
+      "base64": {
+        "description": "Encode or decode text using Base64 encoding.",
+        "shortDescription": "Encode or decode data using Base64.",
+        "title": "Base64 Encoder/Decoder"
+      },
+      "bcrypt": {
+        "description": "Securely hash a string using the Bcrypt algorithm.",
+        "shortDescription": "Hash strings with Bcrypt",
+        "title": "Bcrypt"
+      },
+      "censor": {
+        "description": "utility for censoring words in text. Load your text in the input form on the left, specify all the bad words in the options, and you'll instantly get censored text in the output area.\", longDescription: 'With this online tool, you can censor certain words in any text. You can specify a list of unwanted words (such as swear words or secret words) and the program will replace them with alternative words and create a safe-to-read text. The words can be specified in a multi-line text field in the options by entering one word per line.', keywords: ['text', 'censor', 'words', 'characters'], component: lazy(() => import('./index')), i18n: { name: 'string:censor.title', description: 'string:censor.description",
+        "shortDescription": "Quickly mask bad words or replace them with alternative words.",
+        "title": "Text Censor"
+      },
+      "createPalindrome": {
+        "description": "World's simplest browser-based utility for creating palindromes from any text. Input text and instantly transform it into a palindrome that reads the same forward and backward. Perfect for word games, creating symmetrical text patterns, or exploring linguistic curiosities.",
+        "shortDescription": "Create text that reads the same forward and backward",
+        "title": "Create palindrome"
+      },
+      "emailExtractor": {
+        "description": "Extract all email addresses from any text. Simply paste your text and instantly get a clean list of the email addresses found.",
+        "shortDescription": "Extract email addresses from text",
+        "title": "Email Extractor"
+      },
+      "extractSubstring": {
+        "description": "World's simplest browser-based utility for extracting substrings from text. Input your text and specify start and end positions to extract the desired portion. Perfect for data processing, text analysis, or extracting specific content from larger text blocks.",
+        "shortDescription": "Extract a portion of text between specified positions",
+        "title": "Extract substring"
+      },
+      "hiddenCharacterDetector": {
+        "description": "Detect hidden Unicode characters, especially RTL Override characters that could be used in attacks.",
+        "longDescription": "This tool helps you detect hidden Unicode characters in text, particularly Right-to-Left (RTL) Override characters that can be used in attacks. It can identify invisible characters, zero-width characters, and other potentially malicious Unicode sequences that might be hidden in seemingly innocent text.",
+        "shortDescription": "Find hidden Unicode characters in text",
+        "title": "Hidden Character Detector"
+      },
+      "join": {
+        "description": "Join text pieces together with customizable separators.",
+        "shortDescription": "Join text elements with a specified separator",
+        "title": "Join Text"
+      },
+      "palindrome": {
+        "description": "World's simplest browser-based utility for checking if text is a palindrome. Instantly verify if your text reads the same forward and backward. Perfect for word puzzles, linguistic analysis, or validating symmetrical text patterns. Supports various delimiters and multi-word palindrome detection.",
+        "shortDescription": "Check if text reads the same forward and backward",
+        "title": "Palindrome"
+      },
+      "passwordGenerator": {
+        "description": "Generate secure random passwords with customizable length and character types. Choose from lowercase, uppercase, numbers, and special characters. Option to avoid ambiguous characters for better readability.",
+        "shortDescription": "Generate secure random passwords with custom options",
+        "title": "Password Generator"
+      },
+      "quote": {
+        "description": "Add quotes around text with customizable options.",
+        "shortDescription": "Add quotes around text with various styles",
+        "title": "Text Quoter"
+      },
+      "randomizeCase": {
+        "description": "World's simplest browser-based utility for randomizing text case. Input your text and instantly transform it with random upper and lower case letters. Perfect for creating unique text effects, testing case sensitivity, or generating varied text patterns.",
+        "shortDescription": "Randomize the case of letters in text",
+        "title": "Randomize case"
+      },
+      "removeDuplicateLines": {
+        "description": "Load your text in the input form on the left and you'll instantly get text with no duplicate lines in the output area. Powerful, free, and fast. Load text lines – get unique text lines",
+        "shortDescription": "Quickly delete all repeated lines from text",
+        "title": "Remove duplicate lines"
+      },
+      "repeat": {
+        "description": "Repeat text multiple times with customizable separators.",
+        "shortDescription": "Repeat text multiple times",
+        "title": "Repeat Text"
+      },
+      "reverse": {
+        "description": "World's simplest browser-based utility for reversing text. Input any text and get it instantly reversed, character by character. Perfect for creating mirror text, analyzing palindromes, or playing with text patterns. Preserves spaces and special characters while reversing.",
+        "shortDescription": "Reverse any text character by character",
+        "title": "Reverse"
+      },
+      "rot13": {
+        "description": "Encode or decode text using ROT13 cipher.",
+        "shortDescription": "Encode or decode text using ROT13 cipher.",
+        "title": "ROT13 Encoder/Decoder"
+      },
+      "rotate": {
+        "description": "Rotate characters in text by specified positions.",
+        "shortDescription": "Shift characters in text by position.",
+        "title": "Rotate Text"
+      },
+      "slugGenerator": {
+        "description": "Convert any text into a URL-friendly slug.",
+        "longDescription": "Convert any text into clean, SEO-friendly slugs for use in URLs. The tool handles spaces, special characters, accented letters, and multiple lines at once — making it easy to batch-process blog post titles, product names, or page headings into consistent, readable URL segments.",
+        "shortDescription": "Generate URL-friendly slugs from text.",
+        "title": "Slug Generator"
+      },
+      "split": {
+        "description": "World's simplest browser-based utility for splitting text. Input your text and specify a separator to split it into multiple parts. Perfect for data processing, text manipulation, or extracting specific content from larger text blocks.",
+        "shortDescription": "Split text into multiple parts using a separator",
+        "title": "Split"
+      },
+      "statistic": {
+        "description": "Analyze text and generate comprehensive statistics.",
+        "shortDescription": "Get statistics about your text",
+        "title": "Text Statistics"
+      },
+      "tableTextConverter": {
+        "description": "Convert tabular text between Markdown, CSV, TSV, HTML, MySQL query output, and JSON formats.",
+        "longDescription": "This tool converts tabular text between multiple formats, including Markdown tables, CSV, TSV, HTML tables, MySQL/CLI query result output, and JSON arrays. Paste your table in any supported format, choose the output format (or let the tool auto-detect the input format), and get the converted table instantly. Useful for turning a MySQL query result into a Markdown table for documentation, converting an HTML table into CSV for spreadsheets, or transforming JSON data into a readable table.",
+        "shortDescription": "Convert tables between Markdown, CSV, HTML, MySQL, and JSON",
+        "title": "Table Text Converter"
+      },
+      "textCompare": {
+        "description": "Analyze two text blocks to highlight differences, including additions, deletions, and changes.",
+        "longDescription": "This tool helps you quickly identify differences between two versions of a text. It highlights inserted, removed, and modified content, making it ideal for reviewing edits, tracking changes, or comparing documents. You can choose the level of precision to detect differences at the word or character level depending on your needs.",
+        "shortDescription": "Compare two texts and spot differences instantly",
+        "title": "Compare Texts"
+      },
+      "textReplacer": {
+        "description": "Replace text patterns with new content.",
+        "shortDescription": "Quickly replace text in your content",
+        "title": "Text Replacer"
+      },
+      "toMorse": {
+        "description": "Convert text to Morse code.",
+        "shortDescription": "Quickly encode text to morse",
+        "title": "String To morse"
+      },
+      "truncate": {
+        "description": "Shorten text to a specified length.",
+        "shortDescription": "Truncate text to a specified length",
+        "title": "Truncate Text"
+      },
+      "unicode": {
+        "description": "Convert text to Unicode escape sequences or decode them back to readable text.",
+        "shortDescription": "Encode or decode text using Unicode escape sequences.",
+        "title": "Unicode Encoder / Decoder"
+      },
+      "uppercase": {
+        "description": "Convert text to uppercase letters.",
+        "shortDescription": "Convert text to uppercase",
+        "title": "Convert to Uppercase"
+      },
+      "urlDecode": {
+        "toolInfo": {
+          "description": "Load your string and it will automatically get URL-unescaped.",
+          "longDescription": "This tool URL-decodes a previously URL-encoded string. URL-decoding is the inverse operation of URL-encoding. All percent-encoded characters get decoded to characters that you can understand. Some of the most well known percent-encoded values are %20 for a space, %3a for a colon, %2f for a slash, and %3f for a question mark. The two digits following the percent sign are character's char code values in hex.",
+          "shortDescription": "Quickly URL-unescape a string.",
+          "title": "String URL decoder"
+        }
+      },
+      "urlEditor": {
+        "toolInfo": {
+          "description": "Paste a URL and click \"Parse URL\" to inspect and edit its components.",
+          "longDescription": "This tool parses a URL into its components and lets you edit the protocol, host, path, fragment, and query parameters visually. After changing the input URL, click \"Parse URL\" again to refresh the parsed details. You can add, remove, or modify any part and copy the generated URL. No server requests.",
+          "shortDescription": "Inspect and edit URL components and query parameters.",
+          "title": "URL Editor"
+        }
+      },
+      "urlEncode": {
+        "toolInfo": {
+          "description": "Load your string and it will automatically get URL-escaped.",
+          "longDescription": "This tool URL-encodes a string. Special URL characters get converted to percent-sign encoding. This encoding is called percent-encoding because each character's numeric value gets converted to a percent sign followed by a two-digit hexadecimal value. The hex values are determined based on the character's codepoint value. For example, a space gets escaped to %20, a colon to %3a, a slash to %2f. Characters that are not special stay unchanged. In case you also need to convert non-special characters to percent-encoding, then we've also added an extra option that lets you do that. Select the encode-non-special-chars option to enable this behavior.",
+          "shortDescription": "Quickly URL-escape a string.",
+          "title": "String URL encoder"
+        }
+      }
+    },
+    "time": {
+      "checkLeapYears": {
+        "description": "Check if a year is a leap year and get leap year information.",
+        "shortDescription": "Check if a year is a leap year",
+        "title": "Check Leap Years"
+      },
+      "convertDaysToHours": {
+        "description": "Convert days to hours with customizable options.",
+        "shortDescription": "Convert days to hours",
+        "title": "Convert Days to Hours"
+      },
+      "convertHoursToDays": {
+        "description": "Convert hours to days with customizable options.",
+        "shortDescription": "Convert hours to days",
+        "title": "Convert Hours to Days"
+      },
+      "convertSecondsToTime": {
+        "description": "Convert seconds to a readable time format (hours:minutes:seconds). Enter the number of seconds to get the formatted time.",
+        "shortDescription": "Convert seconds to time format",
+        "title": "Convert Seconds to Time"
+      },
+      "convertTimeToDecimal": {
+        "description": "Convert a formatted time duration (HH:MM:SS) into a decimal hour value.",
+        "longDescription": "Convert a formatted time string (HH:MM:SS or HH:MM) into its decimal-hour equivalent. Hours can be any positive number, while minutes and seconds accept values from 0-59 and can be single or double digits (e.g., '12:5' or '12:05'). This function interprets hours, minutes, and seconds, then calculates the total duration as a single decimal value. It is useful for productivity tracking, payroll calculations, time-based billing, data analysis, or any workflow that requires converting human-readable time into a numerical format that can be easily summed, compared, or processed. For example, '03:26:00' becomes 3.43 hours, and '12:5' becomes 12.08 hours.",
+        "shortDescription": "Convert human time to decimal time",
+        "title": "Convert time to decimal"
+      },
+      "convertTimeToSeconds": {
+        "description": "Convert formatted time (HH:MM:SS) to seconds.",
+        "shortDescription": "Convert time format to seconds",
+        "title": "Convert Time to Seconds"
+      },
+      "convertUnixToDate": {
+        "description": "Convert Unix timestamps to readable dates and convert dates back to Unix timestamps.",
+        "shortDescription": "Convert Unix timestamps and dates in both directions.",
+        "title": "Convert Unix ↔ Date"
+      },
+      "crontabGuru": {
+        "description": "Parse and explain cron expressions in plain English. Instantly understand what any cron schedule does, validate syntax, and process multiple expressions at once.",
+        "longDescription": "Crontab Guru is a cron expression parser and validator that translates complex cron syntax into plain, human-readable descriptions. Whether you're scheduling automated backups, system maintenance tasks, or CI/CD pipelines, this tool helps you understand exactly when your jobs will run. Supports standard 5-field cron expressions, validates syntax in real time, and processes multiple expressions at once — one per line. Available in English, French, Spanish, German, Japanese, Chinese, Portuguese, Dutch, and Russian.",
+        "shortDescription": "Parse and explain cron expressions in plain English",
+        "title": "Crontab Guru"
+      },
+      "dateWeekdayCalculator": {
+        "description": "Find every year in a range where a month and day fall on a chosen weekday.",
+        "longDescription": "Select a month, day, and target weekday, then choose a start and end year. The calculator scans each year in the range and lists every match as a full formatted date. February 29 is supported: non-leap years are skipped automatically. Invalid dates (such as April 31) and invalid year ranges show clear error messages.",
+        "shortDescription": "Find years when a date falls on a weekday",
+        "title": "Date Weekday Calculator"
+      },
+      "discordTimestamp": {
+        "description": "Convert dates and times into Discord's special timestamp format that automatically adapts to each user's local timezone and language",
+        "name": "Discord Timestamp Generator",
+        "shortDescription": "Generate Discord timestamps from dates",
+        "toolInfo": {
+          "description": "Discord timestamps are a special syntax that displays dates and times dynamically. Instead of showing a fixed time, they automatically convert to each viewer's local timezone and language — so everyone sees the correct time for their location. Simply enter one datetime per line, choose a format, and paste the results directly into Discord. The tool processes each line independently — blank lines are preserved in the output, invalid lines are flagged with ❌, and valid datetimes are converted instantly. Enable UTC mode to ensure consistent results regardless of your local timezone."
+        }
+      },
+      "timeBetweenDates": {
+        "description": "Calculate the time difference between two dates. Get the exact duration in days, hours, minutes, and seconds.",
+        "shortDescription": "Calculate time between two dates",
+        "title": "Time Between Dates"
+      },
+      "truncateClockTime": {
+        "description": "Truncate clock time to remove seconds or minutes. Round time to the nearest hour, minute, or custom interval.",
+        "shortDescription": "Truncate clock time to specified precision",
+        "title": "Truncate Clock Time"
+      }
+    },
+    "video": {
+      "addAudio": {
+        "description": "Easily add an audio track to any video file. You can choose to replace the original audio entirely or mix a new track with the existing one. Adjust the volume, set looping options, and trim the audio with precise start and end times. Supports all common video and audio formats for flexible editing and quick results.",
+        "shortDescription": "Add or replace audio track in video",
+        "title": "Add Audio to Video"
+      },
+      "changeSpeed": {
+        "description": "Change the playback speed of video files. Speed up or slow down videos while maintaining audio synchronization. Supports various speed multipliers and common video formats.",
+        "shortDescription": "Change video playback speed",
+        "title": "Change Video Speed"
+      },
+      "compress": {
+        "description": "Compress videos by scaling them to different resolutions like 240p, 480p, 720p, etc. This tool helps reduce file size while maintaining acceptable quality. Supports common video formats like MP4, WebM, and OGG.",
+        "shortDescription": "Compress videos by scaling to different resolutions",
+        "title": "Compress Video"
+      },
+      "cropVideo": {
+        "description": "Crop video to remove unwanted areas.",
+        "shortDescription": "Crop video to remove unwanted areas",
+        "title": "Crop Video"
+      },
+      "flip": {
+        "description": "Flip video files horizontally or vertically. Mirror videos for special effects or correct orientation issues.",
+        "shortDescription": "Flip video horizontally or vertically",
+        "title": "Flip Video"
+      },
+      "gif": {
+        "changeSpeed": {
+          "description": "Change the playback speed of GIF animations. Speed up or slow down GIFs while maintaining smooth animation.",
+          "shortDescription": "Change GIF animation speed",
+          "title": "Change GIF Speed"
+        },
+        "imagesToGif": {
+          "description": "Create animated GIFs from multiple images. Arrange your frames, adjust the timing, and generate a smooth animation in just a few clicks.",
+          "shortDescription": "Convert multiple images into an animated GIF",
+          "title": "Images to GIF"
+        }
+      },
+      "loop": {
+        "description": "Create a looping video by repeating the original video multiple times.",
+        "shortDescription": "Create looping video files",
+        "title": "Loop Video"
+      },
+      "mergeVideo": {
+        "description": "Combine multiple video files into one continuous video.",
+        "longDescription": "This tool allows you to merge or append multiple video files into a single continuous video. Simply upload your video files, arrange them in the desired order, and merge them into one file for easy sharing or editing.",
+        "shortDescription": "Append and merge videos easily.",
+        "title": "Merge videos"
+      },
+      "resize": {
+        "description": "Resize videos to different resolutions like 240p, 360p, 480p, 720p, and 1080p, or set custom width and height dimensions. Maintains aspect ratio by default to prevent stretching. Supports common video formats like MP4, WebM, and OGG.",
+        "shortDescription": "Resize videos to different resolutions",
+        "title": "Resize Video"
+      },
+      "rotate": {
+        "description": "Rotate video files by 90, 180, or 270 degrees. Correct video orientation or create special effects with precise rotation control.",
+        "shortDescription": "Rotate video by specified degrees",
+        "title": "Rotate Video"
+      },
+      "trim": {
+        "description": "Trim video files by specifying start and end times. Remove unwanted sections from the beginning or end of videos.",
+        "shortDescription": "Trim video by removing unwanted sections",
+        "title": "Trim Video"
+      }
+    },
+    "xml": {
+      "xmlBeautifier": {
+        "description": "Format XML with proper indentation and spacing.",
+        "shortDescription": "Format and beautify XML code",
+        "title": "XML Beautifier"
+      },
+      "xmlValidator": {
+        "description": "Validate XML syntax and structure.",
+        "shortDescription": "Validate XML code for errors",
+        "title": "XML Validator"
+      }
+    }
+  }
+}

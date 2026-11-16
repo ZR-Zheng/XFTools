@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import ToolContent from '@components/ToolContent';
 import ToolMultipleImageInput, {

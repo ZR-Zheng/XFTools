@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { uiText } from 'i18n/uiText';
-import { Grid, Select, MenuItem } from '@mui/material';
+import { Grid, Select, MenuItem } from '@components/ui';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import Qty from 'js-quantities';
 import { useTranslation } from 'react-i18next';
@@ -137,7 +137,7 @@ export default function NumericInputWithUnit(props: {
           disabled={disabled}
           type="number"
           fullWidth
-          sx={{ width: { xs: '75%', sm: '80%', md: '90%' } }}
+          sx={{ width: '100%' }}
           value={(inputValue / siPrefixes[prefix])
             .toFixed(9)
             .replace(/(\d*\.\d+?)0+$/, '$1')}
@@ -150,7 +150,8 @@ export default function NumericInputWithUnit(props: {
           fullWidth
           disabled={disableChangingUnit}
           value={prefix}
-          sx={{ width: { xs: '75%', sm: '80%', md: '90%' } }}
+          aria-label={uiText('Default prefix')}
+          sx={{ width: '100%' }}
           onChange={(evt) => {
             handlePrefixChange(evt.target.value || '');
           }}
@@ -168,7 +169,7 @@ export default function NumericInputWithUnit(props: {
           fullWidth
           disabled={disableChangingUnit}
           aria-label={t('numericInputWithUnit.unit')}
-          sx={{ width: { xs: '75%', sm: '80%', md: '90%' } }}
+          sx={{ width: '100%' }}
           value={unit}
           onChange={(event) => {
             setUserSelectedUnit(true);

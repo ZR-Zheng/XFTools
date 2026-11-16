@@ -1,7 +1,8 @@
 import { uiText } from 'i18n/uiText';
-import { Box, TextField, TextFieldProps } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { Box, TextField, TextFieldProps } from '@components/ui';
 import React from 'react';
+import { useWorkbenchText } from 'i18n/workbench';
+import { fieldLabel } from './field-labels';
 
 type OwnProps = {
   description?: string;
@@ -16,10 +17,15 @@ const TextFieldWithDesc = ({
   placeholder,
   ...props
 }: TextFieldProps & OwnProps) => {
+  const { english } = useWorkbenchText();
+  const label = uiText(
+    props.label || props.title || fieldLabel(description, props.name, english)
+  );
   return (
     <Box
+      className="option-field"
       sx={{
-        mb: 3
+        mb: 2
       }}
     >
       <TextField
@@ -28,17 +34,15 @@ const TextFieldWithDesc = ({
         value={value}
         onChange={(event) => onOwnChange(event.target.value)}
         {...props}
-        label={uiText(props.label)}
+        label={label}
       />
-      {description && (
-        <Typography
-          sx={{
-            fontSize: 12,
-            mt: 1
-          }}
-        >
-          {uiText(description)}
-        </Typography>
+      {description && uiText(description) !== label && (
+        <details className="option-field-help">
+          <summary aria-label={`${label} · ${english ? 'Help' : '说明'}`}>
+            ?
+          </summary>
+          <p>{uiText(description)}</p>
+        </details>
       )}
     </Box>
   );

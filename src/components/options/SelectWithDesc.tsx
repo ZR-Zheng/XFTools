@@ -1,12 +1,6 @@
 import { uiText } from 'i18n/uiText';
 import React from 'react';
-import {
-  Box,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography
-} from '@mui/material';
+import { Box, MenuItem, Select, SelectChangeEvent } from '@components/ui';
 
 interface Option<T extends string | boolean> {
   label: string;
@@ -34,25 +28,23 @@ const SelectWithDesc = <T extends string | boolean>({
 
   return (
     <Box
+      className="option-select"
       sx={{
-        mb: 3
+        mb: 2
       }}
     >
-      <Select displayEmpty value={selected} onChange={handleChange}>
+      <Select
+        label={uiText(description)}
+        displayEmpty
+        value={selected}
+        onChange={handleChange}
+      >
         {options.map((option) => (
           <MenuItem key={option.label} value={option.value.toString()}>
             {uiText(option.label)}
           </MenuItem>
         ))}
       </Select>
-      <Typography
-        sx={{
-          fontSize: 12,
-          mt: 1
-        }}
-      >
-        {uiText(description)}
-      </Typography>
     </Box>
   );
 };

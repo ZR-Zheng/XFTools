@@ -1,8 +1,8 @@
-import { Stack } from '@mui/material';
-import Button from '@mui/material/Button';
-import PublishIcon from '@mui/icons-material/Publish';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Stack } from '@components/ui';
+import { Button } from '@components/ui';
+import { PublishIcon } from '@components/ui/icons';
+import { ContentPasteIcon } from '@components/ui/icons';
+import { ClearIcon } from '@components/ui/icons';
 import { useTranslation } from 'react-i18next';
 
 export default function InputFooter({

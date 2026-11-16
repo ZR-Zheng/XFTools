@@ -1,4 +1,4 @@
-import { Box, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import { Box, FormControlLabel, Radio, RadioGroup } from '@components/ui';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ToolContent from '@components/ToolContent';

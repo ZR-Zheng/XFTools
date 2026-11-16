@@ -5,7 +5,7 @@ import {
   Typography,
   useTheme,
   Button
-} from '@mui/material';
+} from '@components/ui';
 import InputHeader from '../InputHeader';
 import greyPattern from '@assets/grey-pattern.png';
 import { globalInputHeight } from '../../config/uiConfig';
@@ -13,11 +13,12 @@ import ResultFooter from './ResultFooter';
 import { useTranslation } from 'react-i18next';
 import React, { useContext } from 'react';
 import { CustomSnackBarContext } from '../../contexts/CustomSnackBarContext';
+import { ToolResultVisibleContext } from '../../tools/page-context';
 
 export default function ToolMultiFileResult({
   title,
-  value,
-  zipFile,
+  value: resultValue,
+  zipFile: resultZip,
   loading,
   loadingText
 }: {
@@ -28,6 +29,9 @@ export default function ToolMultiFileResult({
   loadingText?: string;
 }) {
   const { t } = useTranslation();
+  const resultVisible = useContext(ToolResultVisibleContext);
+  const value = resultVisible ? resultValue : [];
+  const zipFile = resultVisible ? resultZip : null;
   const theme = useTheme();
   const { showSnackBar } = useContext(CustomSnackBarContext);
 

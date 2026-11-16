@@ -1,8 +1,8 @@
 import { uiText } from 'i18n/uiText';
-import { Stack } from '@mui/material';
-import Button from '@mui/material/Button';
-import DownloadIcon from '@mui/icons-material/Download';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import { Stack } from '@components/ui';
+import { Button } from '@components/ui';
+import { DownloadIcon } from '@components/ui/icons';
+import { ContentPasteIcon } from '@components/ui/icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Box, MenuItem, TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, MenuItem, TextField } from '@components/ui';
 import { useTranslation } from 'react-i18next';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -8,7 +8,6 @@ import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
 import { InitialValuesType, QRCodeType, WifiEncryptionType } from './types';
 import ColorSelector from '@components/options/ColorSelector';
 import ToolFileResult from '@components/result/ToolFileResult';
-import { debounce } from 'lodash';
 import { generateQrCodeFile } from './service';
 
 const initialValues: InitialValuesType = {
@@ -466,14 +465,12 @@ export default function QRCodeGenerator({ title }: ToolComponentProps) {
     }
   };
 
-  const debouncedCompute = useCallback(debounce(compute, 1000), []);
-
   return (
     <ToolContent
       title={title}
       initialValues={initialValues}
       getGroups={getGroups}
-      compute={debouncedCompute}
+      compute={compute}
       resultComponent={
         <ToolFileResult title={t('qrCode.result.title')} value={result} />
       }

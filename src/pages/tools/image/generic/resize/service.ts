@@ -2,6 +2,19 @@ import { InitialValuesType } from './types';
 import { runFFmpegTask } from 'lib/ffmpeg';
 import { fetchFile } from '@ffmpeg/util';
 import JSZip from 'jszip';
+import { getResizeDimensions } from './resize-dimensions';
+
+async function decodeImage(file: File) {
+  const url = URL.createObjectURL(file);
+  try {
+    const image = new Image();
+    image.src = url;
+    await image.decode();
+    return image;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
 
 const processImage = async (
   file: File,
@@ -25,56 +38,14 @@ const processImage = async (
 
       const viewBox = svgElement.getAttribute('viewBox');
 
-      let originalWidth: string | number | null =
-        svgElement.getAttribute('width');
-
-      let originalHeight: string | number | null =
-        svgElement.getAttribute('height');
-
-      let viewBoxValues = null;
-
-      if (viewBox) {
-        viewBoxValues = viewBox.split(' ').map(Number);
-      }
-
-      if (!originalWidth && viewBoxValues?.length === 4) {
-        originalWidth = String(viewBoxValues[2]);
-      }
-
-      if (!originalHeight && viewBoxValues?.length === 4) {
-        originalHeight = String(viewBoxValues[3]);
-      }
-
-      originalWidth = originalWidth ? parseFloat(originalWidth) : 300;
-      originalHeight = originalHeight ? parseFloat(originalHeight) : 150;
-
-      let newWidth = originalWidth;
-      let newHeight = originalHeight;
-
-      if (resizeMethod === 'pixels') {
-        if (dimensionType === 'width') {
-          newWidth = parseInt(width);
-
-          if (maintainAspectRatio) {
-            newHeight = Math.round((newWidth / originalWidth) * originalHeight);
-          } else {
-            newHeight = parseInt(height);
-          }
-        } else {
-          newHeight = parseInt(height);
-
-          if (maintainAspectRatio) {
-            newWidth = Math.round((newHeight / originalHeight) * originalWidth);
-          } else {
-            newWidth = parseInt(width);
-          }
-        }
-      } else {
-        const scale = parseInt(percentage) / 100;
-
-        newWidth = Math.round(originalWidth * scale);
-        newHeight = Math.round(originalHeight * scale);
-      }
+      const image = await decodeImage(file);
+      const originalWidth = image.naturalWidth,
+        originalHeight = image.naturalHeight;
+      const { width: newWidth, height: newHeight } = getResizeDimensions(
+        originalWidth,
+        originalHeight,
+        options
+      );
 
       svgElement.setAttribute('width', String(newWidth));
       svgElement.setAttribute('height', String(newHeight));
@@ -94,6 +65,7 @@ const processImage = async (
       });
     } catch (error) {
       console.error('Error processing SVG:', error);
+      return null;
     }
   }
 
@@ -122,8 +94,8 @@ const processImage = async (
               : `scale=${parseInt(width)}:${newHeight}`;
           }
         } else {
-          const scale = parseInt(percentage) / 100;
-          scaleFilter = `scale=iw*${scale}:ih*${scale}`;
+          const scale = Number(percentage) / 100;
+          scaleFilter = `scale='max(1,round(iw*${scale}))':'max(1,round(ih*${scale}))'`;
         }
 
         await ffmpeg.exec([
@@ -142,6 +114,7 @@ const processImage = async (
       });
     } catch (error) {
       console.error('Error processing GIF with FFmpeg:', error);
+      return null;
     }
   }
 
@@ -151,38 +124,12 @@ const processImage = async (
 
     if (!ctx) return null;
 
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-
-    await img.decode();
-
-    let newWidth = img.width;
-    let newHeight = img.height;
-
-    if (resizeMethod === 'pixels') {
-      if (dimensionType === 'width') {
-        newWidth = parseInt(width);
-
-        if (maintainAspectRatio) {
-          newHeight = Math.round((newWidth / img.width) * img.height);
-        } else {
-          newHeight = parseInt(height);
-        }
-      } else {
-        newHeight = parseInt(height);
-
-        if (maintainAspectRatio) {
-          newWidth = Math.round((newHeight / img.height) * img.width);
-        } else {
-          newWidth = parseInt(width);
-        }
-      }
-    } else {
-      const scale = parseInt(percentage) / 100;
-
-      newWidth = Math.round(img.width * scale);
-      newHeight = Math.round(img.height * scale);
-    }
+    const img = await decodeImage(file);
+    const { width: newWidth, height: newHeight } = getResizeDimensions(
+      img.naturalWidth,
+      img.naturalHeight,
+      options
+    );
 
     canvas.width = newWidth;
     canvas.height = newHeight;
@@ -199,9 +146,17 @@ const processImage = async (
         }
 
         resolve(
-          new File([blob], file.name, {
-            type: outputType
-          })
+          new File(
+            [blob],
+            blob.type === file.type
+              ? file.name
+              : file.name.replace(/\.[^.]+$/, '') +
+                  '.' +
+                  (blob.type.split('/')[1] || 'png'),
+            {
+              type: blob.type
+            }
+          )
         );
       }, outputType);
     });

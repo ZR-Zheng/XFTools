@@ -1,6 +1,6 @@
 import { uiText } from 'i18n/uiText';
-import React, { useState, useRef } from 'react';
-import { Box, Paper, Typography, Button } from '@mui/material';
+import React, { useState, useRef, useContext } from 'react';
+import { Box, Paper, Typography, Button } from '@components/ui';
 import { Document, Page, pdfjs } from 'react-pdf';
 import workerUrl from '@react-pdf-worker/pdf.worker.min.mjs?url';
 import { Rnd } from 'react-rnd';
@@ -8,9 +8,10 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { useTranslation } from 'react-i18next';
 import 'react-pdf/dist/Page/TextLayer.css';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
+import { useWorkbenchText } from 'i18n/workbench';
+import { CustomSnackBarContext } from 'contexts/CustomSnackBarContext';
 
-pdfjs.GlobalWorkerOptions.workerSrc =
-  workerUrl;
+pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
 
 interface Field {
   id: string;
@@ -25,6 +26,9 @@ interface Field {
 
 export default function DragDropPdfEditor() {
   const { t } = useTranslation('pdf');
+  const { english } = useWorkbenchText();
+  const { showSnackBar } = useContext(CustomSnackBarContext);
+  const [exporting, setExporting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState(0);
   const [fields, setFields] = useState<Field[]>([]);
@@ -34,6 +38,42 @@ export default function DragDropPdfEditor() {
   }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedField = fields.find((field) => field.id === selectedId);
+  const addField = (type: Field['type']) => {
+    if (!file || !numPages) return;
+    const field: Field = {
+      id: crypto.randomUUID(),
+      type,
+      page: 1,
+      x: 24,
+      y: 24,
+      width: type === 'textarea' ? 160 : 120,
+      height: type === 'textarea' ? 60 : 32
+    };
+    setFields((current) => [...current, field]);
+    setSelectedId(field.id);
+  };
+  const updateSelectedField = (change: Partial<Field>) =>
+    setFields((current) =>
+      current.map((field) =>
+        field.id === selectedId ? { ...field, ...change } : field
+      )
+    );
+  const exportPdf = async () => {
+    setExporting(true);
+    try {
+      await generatePdf();
+    } catch (error) {
+      showSnackBar(
+        english
+          ? 'Could not export. Check the document and field content.'
+          : '无法导出，请检查文档和表单内容。',
+        'error'
+      );
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -160,6 +200,7 @@ export default function DragDropPdfEditor() {
 
   // styling
   const toolboxItemStyle = {
+    width: '100%',
     p: 1,
     mb: 2,
     border: '1px dashed #aaa',
@@ -181,38 +222,63 @@ export default function DragDropPdfEditor() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <Box
+      className="pdf-form-builder"
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: {
+          xs: 'minmax(0, 1fr)',
+          md: file ? '220px minmax(0, 1fr)' : 'minmax(0, 1fr)'
+        },
+        gap: 2,
+        alignItems: 'start'
+      }}
+    >
       {/* Toolbox */}
       {file && (
-        <Paper sx={{ p: 2, mr: 2, width: 240, overflowY: 'auto' }}>
+        <Paper sx={{ p: 2, width: '100%', minWidth: 0 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             {t('formBuilder.toolbox.title')}
           </Typography>
           {/* draggable items */}
           <Box
+            component="button"
+            type="button"
+            aria-label={t('formBuilder.toolbox.text')}
+            onClick={() => addField('text')}
             draggable
             onDragStart={() => setDraggingField('text')}
             sx={toolboxItemStyle}
           >
-            <input
-              type="text"
-              placeholder={t('formBuilder.toolbox.text')}
-              disabled
-              style={{ ...inputStyle, color: '#000' }}
-            />
+            <span style={{ ...inputStyle, display: 'block', color: '#000' }}>
+              {t('formBuilder.toolbox.text')}
+            </span>
           </Box>
           <Box
+            component="button"
+            type="button"
+            aria-label={t('formBuilder.toolbox.textarea')}
+            onClick={() => addField('textarea')}
             draggable
             onDragStart={() => setDraggingField('textarea')}
             sx={toolboxItemStyle}
           >
-            <textarea
-              placeholder={t('formBuilder.toolbox.textarea')}
-              disabled
-              style={{ ...inputStyle, height: 60, color: '#000' }}
-            />
+            <span
+              style={{
+                ...inputStyle,
+                display: 'block',
+                height: 60,
+                color: '#000'
+              }}
+            >
+              {t('formBuilder.toolbox.textarea')}
+            </span>
           </Box>
           <Box
+            component="button"
+            type="button"
+            aria-label={t('formBuilder.toolbox.checkbox')}
+            onClick={() => addField('checkbox')}
             draggable
             onDragStart={() => setDraggingField('checkbox')}
             sx={{
@@ -222,12 +288,25 @@ export default function DragDropPdfEditor() {
               gap: 1
             }}
           >
-            <input style={{ color: '#000' }} type="checkbox" disabled />{' '}
+            <span
+              aria-hidden="true"
+              style={{
+                display: 'inline-block',
+                width: 18,
+                height: 18,
+                border: '1px solid #333',
+                background: '#fff'
+              }}
+            />{' '}
             <span style={{ color: '#000' }}>
               {t('formBuilder.toolbox.checkbox')}
             </span>
           </Box>
           <Box
+            component="button"
+            type="button"
+            aria-label={t('formBuilder.toolbox.radio')}
+            onClick={() => addField('radio')}
             draggable
             onDragStart={() => setDraggingField('radio')}
             sx={{
@@ -252,6 +331,10 @@ export default function DragDropPdfEditor() {
             </span>
           </Box>
           <Box
+            component="button"
+            type="button"
+            aria-label={t('formBuilder.toolbox.label')}
+            onClick={() => addField('label')}
             draggable
             onDragStart={(e) => {
               setDraggingField('label');
@@ -294,11 +377,95 @@ export default function DragDropPdfEditor() {
               {t('formBuilder.toolbox.label')}
             </div>
           </Box>
+          <p className="ui-helper">
+            {english
+              ? 'Click a control to add it to page 1, or drag it onto a page.'
+              : '点击控件可添加到第 1 页，也可拖到指定页面。'}
+          </p>
+          {fields.length > 0 && (
+            <div className="pdf-field-properties">
+              <label>
+                {english ? 'Selected field' : '当前控件'}
+                <select
+                  className="ui-input"
+                  value={selectedId || ''}
+                  onChange={(event) => setSelectedId(event.target.value)}
+                >
+                  <option value="">
+                    {english ? 'Select a field' : '选择控件'}
+                  </option>
+                  {fields.map((field, index) => (
+                    <option value={field.id} key={field.id}>
+                      {index + 1}. {t(`formBuilder.toolbox.${field.type}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {selectedField && (
+                <>
+                  <div className="editor-crop-fields">
+                    {(['x', 'y', 'width', 'height'] as const).map(
+                      (key, index) => (
+                        <label key={key}>
+                          {
+                            (english
+                              ? ['Left', 'Top', 'Width', 'Height']
+                              : ['左侧', '顶部', '宽度', '高度'])[index]
+                          }
+                          <input
+                            className="ui-input"
+                            type="number"
+                            min={index < 2 ? 0 : 8}
+                            value={selectedField[key]}
+                            onChange={(event) =>
+                              updateSelectedField({
+                                [key]: Math.max(
+                                  index < 2 ? 0 : 8,
+                                  Number(event.target.value)
+                                )
+                              })
+                            }
+                          />
+                        </label>
+                      )
+                    )}
+                  </div>
+                  <label>
+                    {english ? 'Field content' : '控件内容'}
+                    <input
+                      className="ui-input"
+                      value={selectedField.value || ''}
+                      onChange={(event) =>
+                        updateSelectedField({ value: event.target.value })
+                      }
+                    />
+                  </label>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      handleRemoveField(selectedField.id);
+                      setSelectedId(null);
+                    }}
+                  >
+                    {english ? 'Remove field' : '移除控件'}
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </Paper>
       )}
 
-      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+        <Box
+          sx={{
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            flexWrap: 'wrap'
+          }}
+        >
           <Button variant="contained" component="label">
             {t('formBuilder.file.upload')}
             <input
@@ -310,13 +477,15 @@ export default function DragDropPdfEditor() {
             />
           </Button>
 
-          {file && <span style={{ paddingLeft: 3 }}>{file.name}</span>}
+          {file && (
+            <span style={{ overflowWrap: 'anywhere' }}>{file.name}</span>
+          )}
 
           <Button
             variant="contained"
             sx={{ ml: 2 }}
-            disabled={!fields.length}
-            onClick={generatePdf}
+            disabled={!fields.length || exporting}
+            onClick={exportPdf}
           >
             {t('formBuilder.file.export')}
           </Button>
@@ -332,14 +501,14 @@ export default function DragDropPdfEditor() {
         </Box>
 
         <Box
-          sx={{ flex: 1, overflow: 'auto' }}
+          sx={{ minWidth: 0, maxHeight: '75vh', overflow: 'auto' }}
           onMouseDown={() => setSelectedId(null)}
         >
           {file && (
             <Document
               file={file}
               onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-              loading="Loading PDF..."
+              loading={english ? 'Loading PDF…' : '正在加载 PDF…'}
             >
               {Array.from({ length: numPages }, (_, i) => {
                 const pageNo = i + 1;
@@ -468,6 +637,16 @@ export default function DragDropPdfEditor() {
                           ) : (
                             <input
                               type="text"
+                              value={f.value || ''}
+                              onChange={(event) =>
+                                setFields((current) =>
+                                  current.map((field) =>
+                                    field.id === f.id
+                                      ? { ...field, value: event.target.value }
+                                      : field
+                                  )
+                                )
+                              }
                               placeholder={
                                 f.type === 'textarea'
                                   ? t('formBuilder.toolbox.textarea')
@@ -488,7 +667,7 @@ export default function DragDropPdfEditor() {
                           {selectedId === f.id && (
                             <button
                               type="button"
-                              title={uiText("Remove")}
+                              title={uiText('Remove')}
                               onMouseDown={(e) => e.stopPropagation()}
                               onClick={(e) => {
                                 e.stopPropagation();

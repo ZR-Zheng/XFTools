@@ -74,7 +74,7 @@ const createToolFile = async (name, content) => {
 createToolFile(
   `index.tsx`,
   `
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';

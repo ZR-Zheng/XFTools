@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import ToolTextResult from '@components/result/ToolTextResult';

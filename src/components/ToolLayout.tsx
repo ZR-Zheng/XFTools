@@ -2,7 +2,7 @@ import { uiText } from 'i18n/uiText';
 import { useEffect, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import type { IconifyIcon } from '@iconify/react';
+import type { IconifyIcon } from '@tools/icon';
 import { tools, getToolsByCategory } from '@tools/index';
 import type { ToolCategory } from '@tools/defineTool';
 import { FullI18nKey, validNamespaces } from '../i18n';
@@ -12,6 +12,9 @@ import { recordTool, useToolHistory } from '../hooks/useToolHistory';
 import { toggleBookmarked } from '@utils/bookmark';
 import Glyph, { categoryGlyph } from './workbench/Glyph';
 import ToolTile from './workbench/ToolTile';
+import { ToolInteractionContext } from '../tools/interaction';
+import { ToolPageContext } from '../tools/page-context';
+import { defaultExperience, toolExperiences } from '../tools/experiences';
 export default function ToolLayout({
   children,
   type,
@@ -33,7 +36,7 @@ export default function ToolLayout({
   const { favorites } = useToolHistory();
   const tool = tools.find((tool) => tool.path === fullPath);
   const title = i18n ? t(i18n.name) : tool ? t(tool.name) : '';
-  const description = i18n ? t(i18n.description) : '';
+  const description = i18n ? t(i18n.shortDescription) : '';
   const category = getToolsByCategory([], t).find((c) => c.type === type);
   const related =
     category?.tools.filter((tool) => tool.path !== fullPath).slice(0, 6) || [];
@@ -72,7 +75,23 @@ export default function ToolLayout({
           <Glyph name="star" filled={favorite} />
         </button>
       </header>
-      <div className="tool-workspace">{children}</div>
+      <ToolInteractionContext.Provider value={tool?.interaction || 'text'}>
+        <ToolPageContext.Provider
+          value={{
+            path: fullPath,
+            title,
+            experience: toolExperiences[fullPath] || defaultExperience
+          }}
+        >
+          <div
+            className="tool-workspace"
+            data-interaction={tool?.interaction}
+            data-experience={toolExperiences[fullPath]?.layout}
+          >
+            {children}
+          </div>
+        </ToolPageContext.Provider>
+      </ToolInteractionContext.Provider>
       {related.length > 0 && (
         <section className="tool-related">
           <h2>{w('related')}</h2>

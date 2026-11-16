@@ -10,8 +10,8 @@ import { ToolComponentProps } from '@tools/defineTool';
 import ToolFileResult from '@components/result/ToolFileResult';
 import ToolMultiFileResult from '@components/result/ToolMultiFileResult';
 import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
-import { Box } from '@mui/material';
-import Typography from '@mui/material/Typography';
+import { Box } from '@components/ui';
+import { Typography } from '@components/ui';
 import { CustomSnackBarContext } from '../../../../../contexts/CustomSnackBarContext';
 import { updateNumberField } from '@utils/string';
 

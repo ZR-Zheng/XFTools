@@ -1,5 +1,5 @@
 import { uiText } from 'i18n/uiText';
-import { Box } from '@mui/material';
+import { Box } from '@components/ui';
 import React, { useState } from 'react';
 import ToolContent from '@components/ToolContent';
 import { ToolComponentProps } from '@tools/defineTool';
@@ -167,7 +167,7 @@ export default function TransposeCsv({
       inputComponent={
         <ToolTextInput title={uiText("Input CSV")} value={input} onChange={setInput} />
       }
-      resultComponent={<ToolTextResult title={uiText("Transposed CSV")} value={result} />}
+      resultComponent={<ToolTextResult extension="csv" title={uiText("Transposed CSV")} value={result} />}
       initialValues={initialValues}
       exampleCards={exampleCards}
       getGroups={getGroups}
