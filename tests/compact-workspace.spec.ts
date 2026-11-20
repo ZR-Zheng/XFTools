@@ -80,20 +80,19 @@ test('PDF header keeps file actions beside the title and the canvas fills the re
   expect(errors).toEqual([]);
 });
 
-test('Header actions preserve Formik context and advanced separator navigation', async ({
+test('Header actions load examples and reset text options', async ({
   page
 }) => {
-  await page.goto('/string/base64');
+  await page.goto('/string/split');
   const header = page.locator('.tool-page-header');
   await header.getByRole('button', { name: '载入示例', exact: true }).click();
-  await expect(page.getByTestId('text-input')).not.toHaveValue('');
-  await expect(page.getByTestId('text-result')).not.toHaveValue('');
-  await page.goto('/list/sort');
-  await header
-    .locator('.separator-quick-control select')
-    .selectOption('__custom');
-  await expect(page.locator('.advanced-tool-options[open]')).toBeVisible();
-  await page.getByTestId('text-input').fill('c\na\nb');
-  await expect(page.getByTestId('text-result')).toHaveValue('a\nb\nc');
-  await page.screenshot({ path: '.tmp/screenshots/compact-list.png' });
+  await expect(page.getByTestId('text-input')).toHaveValue(
+    /^1 - eins, 2 - zwei/
+  );
+  const result = page.getByTestId('text-result');
+  await expect(result).toHaveValue(/^1 - eins\n 2 - zwei/);
+  await page.getByTestId('text-input').fill('one two,three');
+  await expect(result).toHaveValue('one two\nthree');
+  await header.getByRole('button', { name: '重置参数', exact: true }).click();
+  await expect(result).toHaveValue('one\\ntwo,three');
 });

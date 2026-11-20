@@ -9,7 +9,6 @@ const zh = {
   searchHint: '试试搜索',
   tools: '个实用工具',
   groups: '个工具分类',
-  free: '免费使用',
   featured: '常用精选',
   browse: '浏览工具',
   results: '搜索结果',
@@ -38,7 +37,6 @@ const zh = {
   output: '处理结果',
   notFound: '这个页面走丢了',
   notFoundSub: '工具地址可能已更改，回到工作台继续查找。',
-  tip: '工作流小贴士',
   tipTitle: '常用工具，一键收藏',
   tipText: '为工具点亮星标，打造属于你的专属工具箱。',
   favoritesSub: '你的专属工具箱，常用的都在这里。',
@@ -52,18 +50,9 @@ const zh = {
   video: '视频处理',
   time: '日期与时间',
   audio: '音频处理',
-  json: 'JSON 工具',
-  list: '列表处理',
-  csv: 'CSV 表格',
-  number: '数字与计算',
   png: 'PNG 图像',
-  xml: 'XML 工具',
   gif: 'GIF 动图',
-  converters: '格式转换',
-  encoding: '编码与解码',
-  security: '密码与安全',
-  network: 'URL 与网络',
-  calculator: '科学与工程计算'
+  converters: '格式转换'
 };
 export type WorkbenchKey = keyof typeof zh;
 export function useWorkbenchText() {

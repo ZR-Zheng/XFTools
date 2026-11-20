@@ -26,10 +26,6 @@
       "description": "用于在不同格式之间转换数据的工具 — 转换图片、音频、视频、文本等。",
       "title": "转换工具"
     },
-    "csv": {
-      "description": "处理 CSV 文件的工具 - 将 CSV 转换为不同的格式、操作 CSV 数据、验证 CSV 结构以及有效地处理 CSV 文件。",
-      "title": "CSV 工具"
-    },
     "gif": {
       "description": "处理 GIF 动画的工具 - 创建透明 GIF、提取 GIF 帧、向 GIF 添加文本、裁剪、旋转、反转 GIF 等等。",
       "title": "GIF 工具"
@@ -37,18 +33,6 @@
     "image-generic": {
       "description": "处理图片的工具——压缩、调整大小、裁剪、转换为 JPG、旋转、删除背景等等。",
       "title": "图像工具"
-    },
-    "json": {
-      "description": "处理 JSON 数据结构的工具——美化和缩小 JSON 对象、展平 JSON 数组、字符串化 JSON 值、分析数据等等",
-      "title": "JSON 工具"
-    },
-    "list": {
-      "description": "处理列表的工具——排序、反转、随机化列表、查找唯一和重复的列表项、更改列表项分隔符等等。",
-      "title": "列表工具"
-    },
-    "number": {
-      "description": "处理数字的工具——生成数字序列、将数字转换为文字、将文字转换为数字、排序、舍入、因式分解等等。",
-      "title": "数字工具"
     },
     "pdf": {
       "description": "处理 PDF 文件的工具 - 从 PDF 中提取文本、将 PDF 转换为其他格式、操作 PDF 等等。",
@@ -71,45 +55,15 @@
     "video": {
       "description": "处理视频的工具——从视频中提取帧、从视频创建 GIF、将视频转换为不同的格式等等。",
       "title": "视频工具"
-    },
-    "xml": {
-      "description": "处理 XML 数据结构的工具 - 查看器、美化器、验证器等等",
-      "title": "XML 工具"
-    },
-    "encoding": {
-      "title": "编码与解码",
-      "description": "Base64、Unicode、URL、Morse 与二维码。"
-    },
-    "security": {
-      "title": "密码与安全",
-      "description": "生成密码、计算与验证 bcrypt 哈希。"
-    },
-    "network": {
-      "title": "URL 与网络",
-      "description": "编辑 URL、生成路径和网络端口。"
-    },
-    "calculator": {
-      "title": "科学与工程计算",
-      "description": "电学、几何与工程公式计算器。"
-    }
-  },
-  "csv": {
-    "findIncompleteCsvRecords": {
-      "description": "只需将您的 CSV 文件上传到下方表单，此工具就会自动检查所有行或列是否均缺失值。在工具选项中，您可以调整输入文件格式（指定分隔符、引号和注释符）。此外，您还可以启用空值检查、跳过空行，以及设置输出中错误消息的数量限制。",
-      "name": "查找不完整的 CSV 记录",
-      "shortDescription": "快速查找 CSV 中缺少值的行和列。"
     }
   },
   "hero": {
     "brand": "XFTools",
     "description": "处理图片、文档、文本和数据。",
     "examples": {
-      "calculateNumberSum": "计算数字和",
       "changeGifSpeed": "更改 GIF 速度",
       "compressPng": "压缩 PNG",
       "createTransparentImage": "创建透明图像",
-      "prettifyJson": "美化 JSON",
-      "sortList": "对列表进行排序",
       "splitPdf": "拆分 PDF",
       "splitText": "拆分文本",
       "trimVideo": "修剪视频"
@@ -124,38 +78,6 @@
     "clear": "清除",
     "copyToClipboard": "复制到剪贴板",
     "importFromFile": "从文件导入"
-  },
-  "list": {
-    "group": {
-      "description": "列表项分组工具。输入您的列表并指定分组条件，即可将项目按逻辑分组。非常适合分类数据、组织信息或创建结构化列表。支持自定义分隔符和各种分组选项。",
-      "name": "列表分组",
-      "shortDescription": "按共同属性对列表项进行分组"
-    },
-    "reverse": {
-      "description": "反向打印所有列表项。输入项可以用任意符号分隔，并且您还可以更改反向列表项的分隔符。",
-      "name": "反转列表",
-      "shortDescription": "快速反转列表"
-    },
-    "sort": {
-      "description": "可以对列表中的项目进行排序，并按升序或降序排列。您可以按字母顺序、数字或长度对项目进行排序。您还可以删除重复和空白的项目，以及修剪周围有空格的单个项目。您可以使用任何分隔符分隔输入列表项，也可以使用正则表达式分隔它们。此外，您还可以为排序后的输出列表创建新的分隔符。",
-      "name": "列表排序",
-      "shortDescription": "快速对列表进行排序"
-    }
-  },
-  "number": {
-    "generate": {
-      "description": "快速计算整数列表。要获取列表，只需指定第一个整数，并在下方选项中更改值和总数，此实用程序就会生成相应数量的整数。",
-      "name": "生成数字",
-      "shortDescription": "快速计算整数列表"
-    },
-    "sum": {
-      "description": "输入需要求和的数字，可使用任意分隔符，并设置结果的输出分隔方式。",
-      "name": "数字求和",
-      "shortDescription": "快速对数字列表求和"
-    }
-  },
-  "numericInputWithUnit": {
-    "unit": "单位"
   },
   "pdf": {
     "compressPdf": {
@@ -208,11 +130,6 @@
       "description": "文本反转工具。输入任意文本即可立即逐字符反转。非常适合创建镜像文本、分析回文或玩转文本模式。反转时保留空格和特殊字符。",
       "name": "反转文本",
       "shortDescription": "逐个字符地反转任何文本"
-    },
-    "toMorse": {
-      "description": "文本转摩尔斯电码工具。只需在左侧输入框中输入文本，即可立即在输出区域获得摩尔斯电码。功能强大、免费且快速。输入文本，即可获得摩尔斯电码。",
-      "name": "Morse 编码与解码",
-      "shortDescription": "快速将文本编码为摩尔斯电码"
     },
     "uppercase": {
       "description": "大写文本转换工具。只需输入文本，即可自动转换为全部大写字母。非常适合创建标题、强调文本或标准化文本格式。支持各种文本格式并保留特殊字符。",

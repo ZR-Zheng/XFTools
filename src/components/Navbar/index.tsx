@@ -12,6 +12,9 @@ export default function Navbar() {
   const { t } = useTranslation(validNamespaces);
   const { w } = useWorkbenchText();
   const { favorites } = useToolHistory();
+  const favoriteCount = tools.filter((tool) =>
+    favorites.includes(tool.path)
+  ).length;
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const menuButton = useRef<HTMLButtonElement>(null);
@@ -38,8 +41,8 @@ export default function Navbar() {
         <NavLink to="/favorites" className="nav-item">
           <Glyph name="star" />
           <span>{w('favorites')}</span>
-          {favorites.length > 0 && (
-            <span className="nav-count">{favorites.length}</span>
+          {favoriteCount > 0 && (
+            <span className="nav-count">{favoriteCount}</span>
           )}
         </NavLink>
         <NavLink to="/recent" className="nav-item">
@@ -80,13 +83,7 @@ export default function Navbar() {
         {w('skip')}
       </a>
       <aside className="sidebar">{sidebar}</aside>
-      <Drawer
-        open={open}
-        onClose={() => setOpen(false)}
-        slotProps={{
-          paper: { sx: { width: 264, background: '#161b25', color: '#fff' } }
-        }}
-      >
+      <Drawer open={open} onClose={() => setOpen(false)}>
         {open ? sidebar : null}
       </Drawer>
       <button

@@ -5,14 +5,10 @@ import { capitalizeFirstLetter } from '@utils/string';
 import { numberTools } from '../pages/tools/number';
 import { videoTools } from '../pages/tools/video';
 import { audioTools } from 'pages/tools/audio';
-import { listTools } from '../pages/tools/list';
 import { Entries } from 'type-fest';
-import { jsonTools } from '../pages/tools/json';
-import { csvTools } from '../pages/tools/csv';
 import { timeTools } from '../pages/tools/time';
 import { IconifyIcon } from '@tools/icon';
 import { pdfTools } from '../pages/tools/pdf';
-import { xmlTools } from '../pages/tools/xml';
 import { convertersTools } from '../pages/tools/converters';
 import { TFunction } from 'i18next';
 import { FullI18nKey, I18nNamespaces } from '../i18n';
@@ -24,31 +20,18 @@ const toolCategoriesOrder: ToolCategory[] = [
   'video',
   'time',
   'audio',
-  'json',
-  'list',
-  'csv',
-  'number',
   'png',
-  'xml',
   'gif',
-  'converters',
-  'encoding',
-  'security',
-  'network',
-  'calculator'
+  'converters'
 ];
 export const tools: DefinedTool[] = [
   ...imageTools,
   ...stringTools,
-  ...jsonTools,
   ...pdfTools,
-  ...listTools,
-  ...csvTools,
   ...videoTools,
   ...numberTools,
   ...timeTools,
   ...audioTools,
-  ...xmlTools,
   ...convertersTools
 ];
 const categoriesConfig: {
@@ -57,30 +40,6 @@ const categoriesConfig: {
   value: FullI18nKey;
   icon: IconifyIcon | string;
 }[] = [
-  {
-    type: 'encoding',
-    icon: 'code',
-    title: 'translation:categories.encoding.title',
-    value: 'translation:categories.encoding.description'
-  },
-  {
-    type: 'security',
-    icon: 'code',
-    title: 'translation:categories.security.title',
-    value: 'translation:categories.security.description'
-  },
-  {
-    type: 'network',
-    icon: 'code',
-    title: 'translation:categories.network.title',
-    value: 'translation:categories.network.description'
-  },
-  {
-    type: 'calculator',
-    icon: 'code',
-    title: 'translation:categories.calculator.title',
-    value: 'translation:categories.calculator.description'
-  },
   {
     type: 'string',
     icon: 'solar:text-bold-duotone',
@@ -94,34 +53,10 @@ const categoriesConfig: {
     title: 'translation:categories.png.title'
   },
   {
-    type: 'number',
-    icon: 'lsicon:number-filled',
-    value: 'translation:categories.number.description',
-    title: 'translation:categories.number.title'
-  },
-  {
     type: 'gif',
     icon: 'material-symbols-light:gif-rounded',
     value: 'translation:categories.gif.description',
     title: 'translation:categories.gif.title'
-  },
-  {
-    type: 'list',
-    icon: 'solar:list-bold-duotone',
-    value: 'translation:categories.list.description',
-    title: 'translation:categories.list.title'
-  },
-  {
-    type: 'json',
-    icon: 'lets-icons:json-light',
-    value: 'translation:categories.json.description',
-    title: 'translation:categories.json.title'
-  },
-  {
-    type: 'csv',
-    icon: 'material-symbols-light:csv-outline',
-    value: 'translation:categories.csv.description',
-    title: 'translation:categories.csv.title'
   },
   {
     type: 'video',
@@ -154,12 +89,6 @@ const categoriesConfig: {
     title: 'translation:categories.audio.title'
   },
   {
-    type: 'xml',
-    icon: 'mdi-light:xml',
-    value: 'translation:categories.xml.description',
-    title: 'translation:categories.xml.title'
-  },
-  {
     type: 'converters',
     icon: 'streamline-plump:convert-pdf-1',
     value: 'translation:categories.converters.description',
@@ -168,9 +97,6 @@ const categoriesConfig: {
 ];
 const CATEGORIES_USER_TYPES_MAPPINGS: Partial<Record<ToolCategory, UserType>> =
   {
-    xml: 'developers',
-    csv: 'developers',
-    json: 'developers',
     gif: 'generalUsers',
     png: 'generalUsers',
     'image-generic': 'generalUsers',

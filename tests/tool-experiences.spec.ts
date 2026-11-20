@@ -134,26 +134,6 @@ test('Resize preserves SVG vectors and keeps tiny percent outputs valid', async 
   expect(png.readUInt32BE(16)).toBe(1);
   expect(png.readUInt32BE(20)).toBe(1);
 });
-test('List tools accept one item per line and expose advanced separators', async ({
-  page
-}) => {
-  await page.goto('/list/sort');
-  await page.getByTestId('text-input').fill('banana\napple\ncherry');
-  await expect(page.getByTestId('text-result')).toHaveValue(
-    'apple\nbanana\ncherry'
-  );
-  await page.locator('.separator-quick-control select').selectOption(',');
-  await page.getByTestId('text-input').fill('banana,apple,cherry');
-  await expect(page.getByTestId('text-result')).toHaveValue(
-    'apple\nbanana\ncherry'
-  );
-  await page.locator('.advanced-tool-options > summary').click();
-  await expect(
-    page.locator('.advanced-tool-options .option-field').first()
-  ).toBeVisible();
-  await page.getByTestId('text-input').fill('');
-  await expect(page.getByTestId('text-result')).toHaveValue('');
-});
 test('Timestamp converts seconds, milliseconds and date fields without large text areas', async ({
   page
 }) => {
@@ -176,24 +156,6 @@ test('Timestamp converts seconds, milliseconds and date fields without large tex
   await page.getByLabel('Unix 时间戳', { exact: true }).fill('invalid');
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.locator('.timestamp-results')).toHaveCount(0);
-});
-test('bcrypt provides explicit hashing and password verification', async ({
-  page
-}) => {
-  await page.goto('/string/bcrypt');
-  await page.getByLabel('密码或文本', { exact: true }).fill('XFTools-example');
-  await page.getByLabel('成本系数', { exact: true }).fill('4');
-  await expect(page.getByLabel('生成的哈希')).toHaveCount(0);
-  await page.getByRole('button', { name: '生成哈希', exact: true }).click();
-  const hash = await page.getByLabel('生成的哈希').inputValue();
-  expect(hash).toMatch(/^\$2[aby]\$04\$/);
-  await page.getByRole('tab', { name: '验证密码', exact: true }).click();
-  await page.getByLabel('bcrypt 哈希', { exact: true }).fill(hash);
-  await page.getByRole('button', { name: '验证密码', exact: true }).click();
-  await expect(page.getByRole('status')).toHaveText('密码匹配');
-  await page.getByLabel('密码或文本', { exact: true }).fill('wrong');
-  await page.getByRole('button', { name: '验证密码', exact: true }).click();
-  await expect(page.getByRole('status')).toHaveText('密码不匹配');
 });
 test('PDF thumbnails select actual output pages and clear stale downloads', async ({
   page

@@ -4,17 +4,13 @@ export type PageLayout =
   | 'comparison'
   | 'form'
   | 'visual'
-  | 'generator'
-  | 'calculator'
   | 'custom';
 export interface ToolExperience {
   layout: PageLayout;
-  entry: 'text' | 'code' | 'list' | 'scalar' | 'cron' | 'file' | 'custom';
+  entry: 'text' | 'scalar' | 'cron' | 'file' | 'custom';
   rows: number;
   primaryGroups?: number[];
   placeholder?: [string, string];
-  separator?: { input: string; output?: string; operator?: string };
-  action?: [string, string];
   reference:
     | 'cyberchef'
     | 'it-tools'
@@ -26,8 +22,6 @@ export interface ToolExperience {
 }
 const profiles: Record<string, ToolExperience> = {
   text: { layout: 'editor', entry: 'text', rows: 8, reference: 'cyberchef' },
-  code: { layout: 'editor', entry: 'code', rows: 10, reference: 'it-tools' },
-  list: { layout: 'editor', entry: 'list', rows: 8, reference: 'it-tools' },
   scalar: {
     layout: 'form',
     entry: 'scalar',
@@ -49,18 +43,6 @@ const profiles: Record<string, ToolExperience> = {
     rows: 8,
     reference: 'it-tools'
   },
-  generator: {
-    layout: 'generator',
-    entry: 'custom',
-    rows: 3,
-    reference: 'it-tools'
-  },
-  calculator: {
-    layout: 'calculator',
-    entry: 'custom',
-    rows: 2,
-    reference: 'it-tools'
-  },
   custom: { layout: 'custom', entry: 'custom', rows: 6, reference: 'it-tools' }
 };
 const pages: Record<string, ToolExperience> = {};
@@ -71,7 +53,6 @@ function assign(profile: keyof typeof profiles, routes: string[]) {
   }
 }
 assign('text', [
-  'string/base64',
   'string/censor',
   'string/create-palindrome',
   'string/email-extractor',
@@ -81,63 +62,17 @@ assign('text', [
   'string/palindrome',
   'string/quote',
   'string/randomize-case',
-  'string/remove-duplicate-lines',
   'string/repeat',
   'string/reverse',
-  'string/rot13',
   'string/rotate',
-  'string/slug-generator',
   'string/split',
   'string/statistics',
-  'string/table-text-converter',
   'string/replacer',
-  'string/to-morse',
   'string/truncate',
-  'string/unicode',
-  'string/uppercase',
-  'string/url-decode-string',
-  'string/url-encode-string'
-]);
-assign('code', [
-  'json/escape-json',
-  'json/json-to-csv',
-  'json/json-to-xml',
-  'json/minify',
-  'json/prettify',
-  'json/sort',
-  'json/stringify',
-  'json/validateJson',
-  'xml/xml-beautifier',
-  'xml/xml-validator',
-  'csv/change-csv-separator',
-  'csv/csv-rows-to-columns',
-  'csv/csv-to-json',
-  'csv/csv-to-tsv',
-  'csv/csv-to-xml',
-  'csv/csv-to-yaml',
-  'csv/find-incomplete-csv-records',
-  'csv/insert-csv-columns',
-  'csv/swap-csv-columns',
-  'csv/transpose-csv',
-  'csv/tsv-to-json'
-]);
-assign('list', [
-  'list/duplicate',
-  'list/find-most-popular',
-  'list/find-unique',
-  'list/chunk',
-  'list/reverse',
-  'list/rotate',
-  'list/shuffle',
-  'list/sort',
-  'list/truncate',
-  'list/unwrap',
-  'list/wrap'
+  'string/uppercase'
 ]);
 assign('scalar', [
   'number/byte-converter',
-  'number/number-to-words',
-  'number/sum',
   'time/check-leap-years',
   'time/convert-days-to-hours',
   'time/convert-hours-to-days',
@@ -196,25 +131,8 @@ assign('media', [
   'converters/audio-converter',
   'converters/video-to-gif'
 ]);
-assign('comparison', ['string/text-compare', 'json/json-comparison']);
-assign('generator', [
-  'string/password-generator',
-  'number/random-number-generator',
-  'number/random-port-generator',
-  'number/generate',
-  'number/arithmetic-sequence',
-  'image-generic/qr-code'
-]);
-assign('calculator', [
-  'number/generic-calc/ohms-law',
-  'number/generic-calc/cable-voltage-drop',
-  'number/generic-calc/area-sphere',
-  'number/generic-calc/volume-sphere',
-  'number/generic-calc/slackline-tension'
-]);
+assign('comparison', ['string/text-compare']);
 assign('custom', [
-  'string/bcrypt',
-  'string/url-editor',
   'image-generic/editor',
   'image-generic/resize',
   'pdf/editor',
@@ -230,35 +148,12 @@ pages['time/crontab-guru'] = {
 };
 
 const primary: Record<string, number[]> = {
-  'string/base64': [0],
-  'string/unicode': [0],
   'string/join': [0],
   'string/repeat': [0],
   'string/split': [0],
   'string/truncate': [0, 1],
   'string/replacer': [0, 1],
-  'string/remove-duplicate-lines': [0],
   'string/statistics': [1],
-  'list/sort': [1],
-  'list/find-unique': [2],
-  'list/find-most-popular': [1],
-  'list/chunk': [1],
-  'list/duplicate': [1],
-  'list/reverse': [0],
-  'list/rotate': [1],
-  'list/shuffle': [1],
-  'list/truncate': [1],
-  'list/unwrap': [1],
-  'list/wrap': [1],
-  'csv/change-csv-separator': [1],
-  'csv/csv-to-json': [1],
-  'csv/csv-to-tsv': [1],
-  'csv/csv-to-xml': [1],
-  'csv/csv-to-yaml': [1],
-  'csv/tsv-to-json': [1],
-  'csv/insert-csv-columns': [0, 2],
-  'csv/swap-csv-columns': [0, 1],
-  'csv/find-incomplete-csv-records': [1],
   'image-generic/change-opacity': [0],
   'image-generic/compress': [0],
   'image-generic/image-to-text': [0],
@@ -267,63 +162,10 @@ const primary: Record<string, number[]> = {
   'png/compress-png': [0],
   'video/add-audio': [0, 1, 2],
   'video/crop-video': [1],
-  'video/resize': [0, 1, 2],
-  'number/random-number-generator': [0, 1],
-  'number/random-port-generator': [0, 1],
-  'number/arithmetic-sequence': [0],
-  'number/generate': [0]
+  'video/resize': [0, 1, 2]
 };
 for (const [route, primaryGroups] of Object.entries(primary))
   pages[route].primaryGroups = primaryGroups;
-for (const route of [
-  'list/duplicate',
-  'list/find-most-popular',
-  'list/find-unique',
-  'list/chunk',
-  'list/reverse',
-  'list/rotate',
-  'list/shuffle',
-  'list/sort',
-  'list/truncate',
-  'list/unwrap',
-  'list/wrap'
-]) {
-  pages[route].separator = {
-    input: 'splitSeparator',
-    operator: ['list/sort', 'list/find-most-popular'].includes(route)
-      ? 'splitSeparatorType'
-      : 'splitOperatorType'
-  };
-  pages[route].placeholder = [
-    '每行输入一项，或选择分隔方式',
-    'Enter one item per line, or choose a separator below'
-  ];
-}
-for (const route of [
-  'csv/change-csv-separator',
-  'csv/csv-to-json',
-  'csv/csv-to-tsv',
-  'csv/csv-to-xml',
-  'csv/csv-to-yaml',
-  'csv/tsv-to-json'
-]) {
-  pages[route].placeholder = [
-    'name,score\nAlice,10\nBob,20',
-    'name,score\nAlice,10\nBob,20'
-  ];
-}
-pages['string/password-generator'].action = ['生成密码', 'Generate password'];
-pages['number/random-number-generator'].action = [
-  '生成随机数',
-  'Generate numbers'
-];
-pages['number/random-port-generator'].action = ['生成端口', 'Generate ports'];
-pages['number/generate'].action = ['生成序列', 'Generate sequence'];
-pages['number/arithmetic-sequence'].action = [
-  '生成等差数列',
-  'Generate sequence'
-];
-pages['image-generic/qr-code'].action = ['生成二维码', 'Generate QR code'];
 pages['time/convert-time-to-seconds'].placeholder = [
   '例如：01:30:00，支持每行一个',
   'For example: 01:30:00, one time per line'

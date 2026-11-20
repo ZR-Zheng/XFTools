@@ -213,36 +213,41 @@ textarea.ui-input {
 }
 .ui-drawer {
   position: fixed;
-  inset: 0 auto 0 0;
+  inset: 8px auto 8px 8px;
   margin: 0;
   padding: 0;
   border: 0;
   background: transparent;
   color: inherit;
-  height: 100dvh;
-  max-height: 100dvh;
-  max-width: 100%;
+  height: calc(100dvh - 16px);
+  max-height: calc(100dvh - 16px);
+  max-width: calc(100% - 16px);
   width: 280px;
   overflow: visible;
 }
 .ui-drawer::backdrop {
-  background: #0008;
+  background: rgb(26 46 83 / 39%);
+  backdrop-filter: blur(4px);
 }
 .ui-drawer-panel {
   height: 100%;
-  background: var(--sidebar);
+  background: var(--glass-raised);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-line);
+  border-radius: 18px;
+  box-shadow: var(--glass-shadow-raised);
   position: relative;
 }
 .ui-drawer-close {
   position: absolute;
   right: 10px;
-  top: 8px;
+  top: 18px;
   width: 44px;
   height: 44px;
   border: 0;
   border-radius: 8px;
-  background: var(--sidebar);
-  color: white;
+  background: var(--surface-soft);
+  color: var(--action);
   font-size: 25px;
   z-index: 1;
 }

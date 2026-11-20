@@ -1,7 +1,8 @@
 .specialized-workbench {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  background: var(--glass-raised);
+  border: 1px solid var(--glass-line);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
   padding: 22px;
   max-width: 100%;
   min-width: 0;
@@ -120,19 +121,6 @@
 }
 .specialized-result > .secondary-button {
   margin-top: 12px;
-}
-.bcrypt-match {
-  padding: 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-.bcrypt-match.success {
-  background: var(--green-soft, #eaf8f4);
-  color: var(--green, #137e67);
-}
-.bcrypt-match.error {
-  background: var(--danger-soft);
-  color: var(--danger);
 }
 .timestamp-inputs {
   display: grid;

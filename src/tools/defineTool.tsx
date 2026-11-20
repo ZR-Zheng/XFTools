@@ -36,21 +36,14 @@ export type ToolCategory =
   | 'string'
   | 'image-generic'
   | 'png'
-  | 'number'
   | 'gif'
-  | 'list'
-  | 'json'
   | 'time'
-  | 'csv'
   | 'video'
   | 'pdf'
   | 'audio'
-  | 'xml'
-  | 'converters'
-  | 'encoding'
-  | 'security'
-  | 'network'
-  | 'calculator';
+  | 'converters';
+
+export type ToolRoutePrefix = ToolCategory | 'number';
 
 export interface DefinedTool {
   interaction: ToolInteraction;
@@ -72,7 +65,7 @@ export interface ToolComponentProps {
 }
 
 export const defineTool = (
-  basePath: ToolCategory,
+  basePath: ToolRoutePrefix,
   options: ToolMeta
 ): DefinedTool => {
   const { icon, path, keywords, component, i18n, alternativeCategories } =

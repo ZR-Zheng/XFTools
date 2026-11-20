@@ -33,28 +33,15 @@ describe('tool catalog', () => {
     }
   });
   it.each([
-    ['string/bcrypt', 'security'],
-    ['string/password-generator', 'security'],
-    ['string/base64', 'encoding'],
-    ['string/url-encode-string', 'encoding'],
-    ['string/url-decode-string', 'encoding'],
-    ['number/random-port-generator', 'network'],
-    ['string/url-editor', 'network'],
+    ['pdf/protect-pdf', 'pdf'],
     ['converters/convert-to-jpg', 'image-generic'],
     ['converters/audio-converter', 'audio'],
-    ['png/convert-jgp-to-png', 'image-generic']
+    ['png/convert-jgp-to-png', 'image-generic'],
+    ['number/byte-converter', 'converters']
   ])(
     'classifies %s by function while keeping its original URL',
     (route, category) => {
       expect(tools.find((tool) => tool.path === route)?.type).toBe(category);
     }
   );
-  it('includes source and destination categories for data conversions', () => {
-    expect(
-      getToolCategories(tools.find((tool) => tool.path === 'json/json-to-csv')!)
-    ).toEqual(expect.arrayContaining(['json', 'csv', 'converters']));
-    expect(
-      getToolCategories(tools.find((tool) => tool.path === 'csv/tsv-to-json')!)
-    ).toEqual(expect.arrayContaining(['csv', 'json', 'converters']));
-  });
 });

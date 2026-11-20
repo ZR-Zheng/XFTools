@@ -1,33 +1,10 @@
-import type { ToolCategory } from './defineTool';
+import type { ToolCategory, ToolRoutePrefix } from './defineTool';
 
 // URLs describe the original route; categories describe what a tool does.
 const assignments: Record<
   string,
   { primary: ToolCategory; also?: ToolCategory[] }
 > = {
-  'string/base64': { primary: 'encoding', also: ['converters'] },
-  'string/unicode': { primary: 'encoding', also: ['converters'] },
-  'string/rot13': { primary: 'encoding' },
-  'string/to-morse': { primary: 'encoding', also: ['converters'] },
-  'string/url-encode-string': {
-    primary: 'encoding',
-    also: ['network', 'converters']
-  },
-  'string/url-decode-string': {
-    primary: 'encoding',
-    also: ['network', 'converters']
-  },
-  'string/url-editor': { primary: 'network' },
-  'string/slug-generator': { primary: 'network', also: ['string'] },
-  'string/bcrypt': { primary: 'security' },
-  'string/password-generator': { primary: 'security' },
-  'string/table-text-converter': {
-    primary: 'csv',
-    also: ['string', 'converters']
-  },
-  'string/remove-duplicate-lines': { primary: 'list', also: ['string'] },
-  'number/random-port-generator': { primary: 'network' },
-  'number/byte-converter': { primary: 'converters', also: ['number'] },
   'converters/convert-to-jpg': {
     primary: 'image-generic',
     also: ['converters']
@@ -48,7 +25,6 @@ const assignments: Record<
     primary: 'image-generic',
     also: ['png']
   },
-  'image-generic/qr-code': { primary: 'encoding', also: ['image-generic'] },
   'image-generic/image-to-text': {
     primary: 'image-generic',
     also: ['string', 'converters']
@@ -65,27 +41,14 @@ const assignments: Record<
 };
 export function classifyTool(
   route: string,
-  original: ToolCategory,
+  original: ToolRoutePrefix,
   declared: ToolCategory[] = []
 ) {
   const assignment = assignments[route];
-  const primary: ToolCategory =
-    assignment?.primary ||
-    (route.startsWith('number/generic-calc/') ? 'calculator' : original);
+  const primary =
+    assignment?.primary ?? (original === 'number' ? 'converters' : original);
   const extra: ToolCategory[] = [...(assignment?.also || []), ...declared];
-  if (
-    /^(?:json|csv)\/(?:json|csv|tsv)-to-(?:json|csv|tsv|xml|yaml)$/.test(
-      route
-    ) ||
-    /^time\/convert-/.test(route) ||
-    route === 'number/number-to-words'
-  )
-    extra.push('converters');
-  if (route.startsWith('json/json-to-xml')) extra.push('xml');
-  if (route.startsWith('json/json-to-csv')) extra.push('csv');
-  if (route.startsWith('csv/') && route.endsWith('-to-json'))
-    extra.push('json');
-  if (route === 'csv/csv-to-xml') extra.push('xml');
+  if (route.startsWith('time/convert-')) extra.push('converters');
   return {
     primary,
     alternativeCategories: [...new Set(extra)].filter(
@@ -95,27 +58,16 @@ export function classifyTool(
 }
 export type ToolInteraction =
   | 'text'
-  | 'code'
   | 'compare'
   | 'image'
   | 'pdf'
   | 'media'
-  | 'calculator'
-  | 'generator'
-  | 'date'
-  | 'table';
+  | 'date';
 export function getToolInteraction(
   route: string,
   category: ToolCategory
 ): ToolInteraction {
   if (/compare|comparison/.test(route)) return 'compare';
-  if (
-    /password-generator|random-number-generator|random-port-generator|qr-code|number\/generate|arithmetic-sequence/.test(
-      route
-    )
-  )
-    return 'generator';
-  if (category === 'calculator') return 'calculator';
   if (/^time\//.test(route)) return 'date';
   if (category === 'pdf') return 'pdf';
   if (
@@ -128,7 +80,5 @@ export function getToolInteraction(
     /convert-to-(?:jpg|webp)/.test(route)
   )
     return 'image';
-  if (/^json\/|^xml\//.test(route)) return 'code';
-  if (/^csv\/|table-text/.test(route)) return 'table';
   return 'text';
 }

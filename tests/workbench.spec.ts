@@ -13,11 +13,13 @@ test('Chinese default, search, categories and no upstream embeds', async ({
   await expect(page.locator('iframe')).toHaveCount(0);
   await page
     .getByRole('searchbox', { name: '搜索工具', exact: true })
-    .fill('Base64');
+    .fill('合并 PDF');
   await expect(page.locator('.tool-grid .tool-tile').first()).toContainText(
-    /base64/i
+    '合并 PDF'
   );
-  await expect(page).toHaveURL(/q=Base64/);
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('q'))
+    .toBe('合并 PDF');
   await page.getByRole('button', { name: '清除搜索' }).click();
   await page.locator('.sidebar a[href="/categories/pdf"]').click();
   await expect(page.locator('.tool-grid .tool-tile').first()).toBeVisible();
@@ -116,23 +118,16 @@ test('XFTools branding, removed notices and one page heading', async ({
 test('Chinese tool descriptions, examples and source labels remain consistent', async ({
   page
 }) => {
-  await page.goto('/string/base64');
+  await page.goto('/string/uppercase');
   await page.locator('.tool-support-details > summary').click();
   await expect(
     page.getByRole('heading', {
-      name: '使用 Base64 编码 UTF-8 文本',
+      name: '将文本转为大写',
       exact: true
     })
   ).toBeVisible();
   await expect(
-    page.getByText('使用 Base64 对简单文本进行编码。', { exact: true })
-  ).toBeVisible();
-  await page.goto('/string/url-editor');
-  await expect(page.getByRole('heading', { level: 1 })).not.toContainText(
-    'URL Editor'
-  );
-  await expect(
-    page.getByText('解析网址', { exact: true }).first()
+    page.getByText('将文本中的字母统一转换为大写。', { exact: true })
   ).toBeVisible();
 });
 
@@ -156,14 +151,14 @@ test('Favorites update across navigation and can be removed', async ({
 test('Text tool still computes and appears in recent tools', async ({
   page
 }) => {
-  await page.goto('/string/base64');
+  await page.goto('/string/uppercase');
   await expect(page.getByTestId('text-input')).toBeVisible();
   await page.getByTestId('text-input').fill('hello');
-  await expect(page.getByTestId('text-result')).toHaveValue('aGVsbG8=');
+  await expect(page.getByTestId('text-result')).toHaveValue('HELLO');
   await page.screenshot({ path: '.tmp/screenshots/tool-zh.png' });
   await page.locator('.sidebar a[href="/recent"]').click();
   await expect(
-    page.locator('.tool-grid a[href="/string/base64"]')
+    page.locator('.tool-grid a[href="/string/uppercase"]')
   ).toBeVisible();
 });
 test('Image editor still loads after uploading an image', async ({ page }) => {
@@ -208,65 +203,98 @@ test('Image editor still loads after uploading an image', async ({ page }) => {
 test('Tool categories follow function and keep existing links', async ({
   page
 }) => {
-  await page.goto('/categories/security');
-  await expect(page.locator('.tool-grid .tool-tile')).toHaveCount(2);
+  await page.goto('/categories/pdf');
   await expect(
-    page.locator('.tool-grid a[href="/string/password-generator"]')
+    page.locator('.tool-grid a[href="/pdf/protect-pdf"]')
   ).toBeVisible();
+  await page.goto('/categories/converters');
   await expect(
-    page.locator('.tool-grid a[href="/string/bcrypt"]')
-  ).toBeVisible();
-  await page.goto('/categories/encoding');
-  await expect(
-    page.locator('.tool-grid a[href="/string/base64"]')
-  ).toBeVisible();
-  await expect(
-    page.locator('.tool-grid a[href="/string/url-encode-string"]')
-  ).toBeVisible();
-  await page.goto('/categories/network');
-  await expect(
-    page.locator('.tool-grid a[href="/number/random-port-generator"]')
+    page.locator('.tool-grid a[href="/number/byte-converter"]')
   ).toBeVisible();
 });
 
-test('Native code editors format JSON without an external editor request', async ({
+test('Removed categories and tools are absent from the workspace and old links', async ({
   page
 }) => {
-  const requests: string[] = [];
-  page.on('request', (request) => requests.push(request.url()));
-  await page.goto('/json/prettify');
-  await page
-    .locator('.flow-input textarea')
-    .fill('{"brand":"XFTools","value":1}');
-  await expect(page.locator('.flow-result textarea')).toHaveValue(
-    /\n\s+"brand": "XFTools"/
-  );
-  await expect(page.locator('.code-editor-meta').first()).toContainText('JSON');
-  expect(requests.some((url) => /monaco|vs\/loader|jsdelivr/.test(url))).toBe(
-    false
-  );
-  await page.goto('/json/validateJson');
-  await page.locator('.flow-input textarea').fill('{"a":1}');
-  await expect(page.locator('.validation-result')).toHaveClass(/success/);
-  await page.locator('.flow-input textarea').fill('{invalid}');
-  await expect(page.locator('.validation-result')).toHaveClass(/error/);
-  await page.locator('.flow-input textarea').fill('');
-  await expect(page.locator('.validation-result')).toHaveClass(/empty/);
+  await page.addInitScript(() => {
+    const history = ['csv/csv-to-json', 'string/bcrypt', 'pdf/merge-pdf'];
+    localStorage.setItem('bookmarkedTools', history.join(','));
+    localStorage.setItem(
+      'recentTools',
+      JSON.stringify(history)
+    );
+  });
+  await page.goto('/');
+  for (const category of [
+    'encoding',
+    'xml',
+    'json',
+    'calculator',
+    'network',
+    'list',
+    'number',
+    'csv',
+    'security'
+  ]) {
+    await expect(
+      page.locator(`a[href="/categories/${category}"]`)
+    ).toHaveCount(0);
+  }
+  const search = page.getByRole('searchbox', { name: '搜索工具', exact: true });
+  for (const query of ['Base64', 'CSV', 'bcrypt', '密码生成器']) {
+    await search.fill(query);
+    await expect(page.locator('.tool-grid .tile-link')).toHaveCount(0);
+    await expect(
+      page.getByRole('heading', { name: '还没有找到工具' })
+    ).toBeVisible();
+  }
+  for (const route of ['/favorites', '/recent']) {
+    await page.goto(route);
+    await expect(page.locator('.tool-grid .tile-link')).toHaveCount(1);
+    await expect(page.locator('.tool-grid .tile-link')).toHaveAttribute(
+      'href',
+      '/pdf/merge-pdf'
+    );
+  }
+  for (const category of ['encoding', 'csv', 'security']) {
+    await page.goto(`/categories/${category}`);
+    await expect(
+      page.getByRole('heading', { name: '没有找到这个分类' })
+    ).toBeVisible();
+  }
+  for (const route of [
+    '/string/base64',
+    '/image-generic/qr-code',
+    '/xml/xml-validator',
+    '/json/prettify',
+    '/number/generic-calc/ohms-law',
+    '/string/url-editor',
+    '/list/sort',
+    '/number/sum',
+    '/csv/csv-to-json',
+    '/csv/change-csv-separator',
+    '/string/table-text-converter',
+    '/string/bcrypt',
+    '/string/password-generator'
+  ]) {
+    await page.goto(route);
+    await expect(
+      page.getByRole('heading', { name: '这个页面走丢了' })
+    ).toBeVisible();
+  }
 });
 
-test('Native radio controls change the operation and generators can rerun', async ({
+test('Native radio controls change the text splitting operation', async ({
   page
 }) => {
-  await page.goto('/string/base64');
-  await page.getByTestId('text-input').fill('aGVsbG8=');
-  await page.getByRole('radio').nth(1).check();
-  await expect(page.getByTestId('text-result')).toHaveValue('hello');
-  await page.goto('/string/password-generator');
-  const result = page.getByTestId('text-result');
-  await expect(result).not.toHaveValue('');
-  const original = await result.inputValue();
-  await page.getByTestId('process-tool').click();
-  await expect(result).not.toHaveValue(original);
+  await page.goto('/string/split');
+  await page.getByTestId('text-input').fill('hello world');
+  const chunks = page.getByRole('radio', { name: '使用多个块', exact: true });
+  await chunks.check();
+  await expect(chunks).toBeChecked();
+  await expect(page.getByTestId('text-result')).toHaveValue(
+    'hel\\nlo \\nwor\\nld'
+  );
 });
 
 test('PDF processing waits for an explicit action and produces a download', async ({
@@ -307,24 +335,6 @@ test('PDF processing waits for an explicit action and produces a download', asyn
   expect(merged.getPage(0).getSize()).toEqual({ width: 200, height: 100 });
 });
 
-test('CSV results offer a table preview without changing the data', async ({
-  page
-}) => {
-  await page.goto('/csv/change-csv-separator');
-  await page.getByTestId('text-input').fill('name,score\nAlice,10\nBob,20');
-  const result = page.getByTestId('text-result');
-  await expect(result).toHaveValue(/Alice/);
-  const text = await result.inputValue();
-  await page.getByRole('button', { name: '表格预览', exact: true }).click();
-  await page
-    .getByLabel('预览分隔符')
-    .selectOption(text.includes(';') ? ';' : ',');
-  await expect(
-    page.getByRole('cell', { name: 'Alice', exact: true })
-  ).toBeVisible();
-  await page.getByRole('button', { name: '文本', exact: true }).click();
-  await expect(result).toHaveValue(text);
-});
 test('Media tools wait for all source files before processing', async ({
   page
 }) => {

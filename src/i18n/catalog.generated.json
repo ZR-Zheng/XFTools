@@ -52,68 +52,6 @@
         "title": "视频转 GIF"
       }
     },
-    "csv": {
-      "changeCsvSeparator": {
-        "description": "更改 CSV 文件中的分隔符。在不同的 CSV 格式（例如逗号、分号、制表符或自定义分隔符）之间进行转换。",
-        "shortDescription": "更改 CSV 文件分隔符",
-        "title": "更改 CSV 分隔符"
-      },
-      "csvRowsToColumns": {
-        "description": "此工具可将 CSV（逗号分隔值）文件的行转换为列。它会从输入的 CSV 文件中逐行提取水平线，将其旋转 90 度，然后将其输出为垂直列，并以逗号分隔。', longDescription: '此工具可将 CSV（逗号分隔值）文件的行转换为列。例如，如果输入的 CSV 数据有 6 行，则输出将有 6 列，并且行中的元素将按从上到下的顺序排列。在格式正确的 CSV 文件中，每行的值数量相同。但是，如果行中缺少字段，程序可以修复它们，您可以从可用选项中进行选择：用空元素填充缺失数据，或用自定义元素（例如“missing”、“?”或“x”）替换缺失数据。在转换过程中，该工具还会清除 CSV 文件中的不必要信息，例如空行（这些行没有可见的信息）和注释。为了帮助工具正确识别注释，您可以在选项中指定行首的注释符号。此符号通常是井号“#”或双斜杠“//”。CSV 真棒！",
-        "longDescription": "此工具可将 CSV（逗号分隔值）文件的行转换为列。例如，如果输入的 CSV 数据有 6 行，则输出将有 6 列，并且行中的元素将按从上到下的顺序排列。在格式正确的 CSV 文件中，每行的值数量相同。但是，如果行中缺少字段，程序可以修复它们，您可以从以下选项中进行选择：用空元素填充缺失数据，或用自定义元素替换缺失数据，例如",
-        "shortDescription": "将 CSV 行转换为列。",
-        "title": "将 CSV 行转换为列"
-      },
-      "csvToJson": {
-        "description": "将 CSV 文件转换为 JSON 格式，并可自定义分隔符、引号和输出格式。支持标题、注释和动态类型转换。",
-        "shortDescription": "将 CSV 数据转换为 JSON 格式。",
-        "title": "将 CSV 转换为 JSON"
-      },
-      "csvToTsv": {
-        "description": "使用下方表单上传您的 CSV 文件，它将自动转换为 TSV 文件。在工具选项中，您可以自定义输入的 CSV 格式——指定字段分隔符、引号和注释符号，以及跳过空的 CSV 行，并选择是否保留 CSV 列标题。",
-        "longDescription": "此工具将逗号分隔值 (CSV) 数据转换为制表符分隔值 (TSV)。CSV 和 TSV 都是用于存储表格数据的常用文件格式，但它们使用不同的分隔符来分隔值——CSV 使用逗号 (",
-        "shortDescription": "将 CSV 数据转换为 TSV 格式。",
-        "title": "将 CSV 转换为 TSV"
-      },
-      "csvToXml": {
-        "description": "使用可自定义的选项将 CSV 文件转换为 XML 格式。",
-        "shortDescription": "将 CSV 数据转换为 XML 格式。",
-        "title": "将 CSV 转换为 XML"
-      },
-      "csvToYaml": {
-        "description": "只需在下方表单中上传您的 CSV 文件，它就会自动转换为 YAML 文件。在工具选项中，您可以指定字段分隔符、字段引号和注释符，以使工具适应自定义 CSV 格式。此外，您还可以选择输出 YAML 格式：保留 CSV 标头或不包含 CSV 标头。",
-        "longDescription": "此工具可将 CSV（逗号分隔值）数据转换为 YAML（另一种标记语言）数据。CSV 是一种简单的表格格式，用于表示由行和列组成的矩阵式数据类型。而 YAML 是一种更高级的格式（实际上是 JSON 的超集），它能够创建更易于序列化的数据，并且支持列表、字典和嵌套对象。此程序支持多种 CSV 输入格式——输入数据可以使用逗号分隔（默认）、分号分隔、竖线分隔或使用其他完全不同的分隔符。您可以在选项中指定数据使用的确切分隔符。同样，您可以在选项中指定用于包装 CSV 字段的引号字符（默认为双引号）。您还可以通过在选项中指定注释符号来跳过以注释开头的行。这样可以通过跳过不必要的行来保持数据整洁。有两种方法可以将 CSV 转换为 YAML。第一种方法将每个 CSV 行转换为 YAML 列表。第二种方法从第一个 CSV 行中提取标题，并根据这些标题创建带有键的 YAML 对象。您还可以通过指定 YAML 结构缩进的空格数来自定义输出 YAML 格式。如果您需要执行反向转换，即将 YAML 转换为 CSV，可以使用我们的“将 YAML 转换为 CSV”工具。CSV 真棒！",
-        "shortDescription": "快速将 CSV 文件转换为 YAML 文件。",
-        "title": "将 CSV 转换为 YAML"
-      },
-      "findIncompleteCsvRecords": {
-        "description": "只需将您的 CSV 文件上传到下方表单，此工具就会自动检查所有行或列是否均缺失值。在工具选项中，您可以调整输入文件格式（指定分隔符、引号和注释符）。此外，您还可以启用空值检查、跳过空行，以及设置输出中错误消息的数量限制。",
-        "shortDescription": "快速查找 CSV 中缺少值的行和列。",
-        "title": "查找不完整的 CSV 记录"
-      },
-      "insertCsvColumns": {
-        "description": "在指定位置向 CSV 数据添加新列。",
-        "shortDescription": "在 CSV 文件中的任何位置快速插入一个或多个新列。",
-        "title": "插入 CSV 列"
-      },
-      "swapCsvColumns": {
-        "description": "只需在下方表单中上传您的 CSV 文件，指定要交换的列，该工具就会自动更改输出文件中指定列的位置。在工具选项中，您可以指定要交换的列位置或名称，还可以修复不完整的数据，并选择性地删除空记录和已注释掉的记录。",
-        "longDescription": "此工具通过交换列的位置来重新组织 CSV 数据。交换列可以将常用数据放在一起或放在最前面，以便于数据比较和编辑，从而提高 CSV 文件的可读性。例如，您可以将第一列与最后一列交换，或者将第二列与第三列交换。要根据列的位置交换列，请选择",
-        "shortDescription": "重新排序 CSV 列。",
-        "title": "交换 CSV 列"
-      },
-      "transposeCsv": {
-        "description": "只需使用下方表格上传您的 CSV 文件，此工具就会自动转置您的 CSV 文件。在工具选项中，您可以指定 CSV 文件中注释行的起始字符，以将其移除。此外，如果 CSV 文件不完整（缺少值），您可以使用空字符或自定义字符替换缺失值。",
-        "longDescription": "此工具用于转置逗号分隔值 (CSV)。它将 CSV 视为数据矩阵，并将所有元素沿主对角线翻转。输出包含与输入相同的 CSV 数据，但现在所有行都变成了列，所有列都变成了行。转置后，CSV 文件的尺寸将相反。例如，如果输入文件有 4 列 3 行，则输出文件将有 3 列 4 行。在转换过程中，程序还会清除数据中不必要的行，并更正不完整的数据。具体来说，该工具会自动删除所有以特定字符开头的空记录和注释，您可以在选项中设置这些字符。此外，如果 CSV 数据损坏或丢失，该实用程序会使用空字段或自定义字段（可在选项中指定）来填充文件。CSV 真是太棒了！",
-        "shortDescription": "快速转置 CSV 文件。",
-        "title": "转置 CSV"
-      },
-      "tsvToJson": {
-        "description": "将 TSV（制表符分隔值）数据转换为 JSON 格式。将表格数据转换为结构化的 JSON 对象。",
-        "shortDescription": "将 TSV 转换为 JSON 格式",
-        "title": "TSV 转 JSON"
-      }
-    },
     "image": {
       "changeColors": {
         "description": "快速准确地将图像中的选定颜色替换为新颜色。",
@@ -160,11 +98,6 @@
         "shortDescription": "使用 OCR 从图像中提取文本。",
         "title": "图像转文本 (OCR)"
       },
-      "qrCode": {
-        "description": "为不同数据类型生成二维码：URL、文本、电子邮件、电话、短信、WiFi、vCard 等。",
-        "shortDescription": "为各种数据格式创建定制的二维码。",
-        "title": "二维码生成器"
-      },
       "removeBackground": {
         "description": "自动移除图像背景，并保留主体为透明背景。",
         "shortDescription": "自动删除图像的背景",
@@ -191,178 +124,11 @@
         "title": "图片添加水印"
       }
     },
-    "json": {
-      "comparison": {
-        "description": "比较两个 JSON 对象以识别结构和值的差异。",
-        "shortDescription": "查找两个 JSON 对象之间的差异",
-        "title": "比较 JSON"
-      },
-      "escapeJson": {
-        "description": "转义 JSON 字符串中的特殊字符。将 JSON 数据转换为正确的转义格式，以便安全传输或存储。",
-        "shortDescription": "转义 JSON 中的特殊字符",
-        "title": "转义 JSON"
-      },
-      "jsonToCsv": {
-        "description": "将 JSON 转为 CSV，支持嵌套对象、数组、自动识别表头，以及自定义分隔符和引号，可用于 Excel、Google 表格等应用。",
-        "shortDescription": "将 JSON 数据转换为 CSV 表格",
-        "title": "JSON 转 CSV"
-      },
-      "jsonToXml": {
-        "description": "将 JSON 数据转换为 XML 格式。将结构化的 JSON 对象转换为格式良好的 XML 文档。",
-        "shortDescription": "将 JSON 转换为 XML 格式",
-        "title": "JSON 转 XML"
-      },
-      "minify": {
-        "description": "从 JSON 中删除所有不必要的空格。",
-        "shortDescription": "通过删除空格来缩小 JSON",
-        "title": "压缩 JSON"
-      },
-      "prettify": {
-        "description": "使用适当的缩进和间距来格式化 JSON。",
-        "shortDescription": "格式化并美化 JSON 代码",
-        "title": "格式化 JSON"
-      },
-      "sortJson": {
-        "description": "按选定键值升序或降序排列 JSON 对象数组，或按字母顺序排列对象键名。",
-        "longDescription": "以明确、可预测的方式整理 JSON 数据。可以按任意键值升序或降序排列对象数组，适合整理用户、商品或记录列表；也可以按字母顺序排列对象键名，提升可读性和一致性。支持常见 JSON 结构及多种排序方式。",
-        "shortDescription": "按值或对象键名对 JSON 数组排序",
-        "title": "JSON 排序"
-      },
-      "stringify": {
-        "description": "将 JavaScript 对象转换为 JSON 字符串格式。将数据结构序列化为 JSON 字符串以便存储或传输。",
-        "shortDescription": "将对象转换为 JSON 字符串",
-        "title": "字符串化 JSON"
-      },
-      "validateJson": {
-        "description": "检查 JSON 是否有效且格式正确。",
-        "shortDescription": "验证 JSON 代码是否存在错误",
-        "title": "验证 JSON"
-      }
-    },
-    "list": {
-      "chunk": {
-        "description": "将列表按固定大小依次分组。支持自定义输入分隔符、补齐最后一个不完整分组，以及设置输出分隔符和包裹字符。",
-        "shortDescription": "将列表分割为指定大小的分组",
-        "title": "列表分组"
-      },
-      "duplicate": {
-        "description": "列表项复制实用程序。输入您的列表并指定复制条件即可创建项目副本。非常适合数据扩展、测试或创建重复模式。",
-        "shortDescription": "按照指定条件复制列表项",
-        "title": "重复列表项"
-      },
-      "findMostPopular": {
-        "description": "实用程序，用于查找列表中最热门的项目。输入您的列表，即可立即获取出现频率最高的项目。非常适合数据分析、趋势识别或查找共同点。",
-        "shortDescription": "查找最常出现的项目",
-        "title": "查找高频列表项"
-      },
-      "findUnique": {
-        "description": "实用程序，用于在列表中查找唯一项。输入您的列表，即可立即获取所有唯一值（已删除重复项）。非常适合数据清理、重复数据删除或查找不同元素。",
-        "shortDescription": "在列表中查找唯一项",
-        "title": "列表去重"
-      },
-      "reverse": {
-        "description": "反向打印所有列表项。输入项可以用任意符号分隔，并且您还可以更改反向列表项的分隔符。",
-        "shortDescription": "快速反转列表",
-        "title": "反转列表"
-      },
-      "rotate": {
-        "description": "列表项旋转工具。输入您的列表并指定旋转量，即可将列表项移动指定的位置。非常适合数据操作、循环移动或列表重新排序。",
-        "shortDescription": "按指定位置旋转列表项",
-        "title": "循环移位列表"
-      },
-      "shuffle": {
-        "description": "列表项随机排序工具。输入您的列表，即可立即获得一个按随机顺序排列的列表项随机版本。非常适合创建多样性、测试随机性或混合有序数据。",
-        "shortDescription": "随机化列表项的顺序",
-        "title": "打乱列表"
-      },
-      "sort": {
-        "description": "列表项排序工具。输入您的列表并指定排序条件，即可按升序或降序排列项目。非常适合数据整理、文本处理或创建有序列表。",
-        "shortDescription": "按指定顺序对列表项进行排序",
-        "title": "列表排序"
-      },
-      "truncate": {
-        "description": "列表截断工具。输入您的列表并指定要保留的最大项目数。非常适合数据处理、列表管理或限制内容长度。",
-        "shortDescription": "将列表截断为指定数量的项目",
-        "title": "截取列表"
-      },
-      "unwrap": {
-        "description": "列表项展开工具。输入已展开的列表，并指定展开条件以展平有序的列表项。非常适合数据处理、文本操作或从结构化列表中提取内容。",
-        "shortDescription": "从结构化格式中解开列表项",
-        "title": "移除列表项包围字符"
-      },
-      "wrap": {
-        "description": "在每个列表项之前和之后添加文本。",
-        "shortDescription": "使用指定条件包装列表项",
-        "title": "添加列表项包围字符"
-      }
-    },
     "number": {
-      "arithmeticSequence": {
-        "description": "生成具有可定制参数的算术序列。",
-        "shortDescription": "生成等差序列",
-        "title": "等差序列"
-      },
       "byteConverter": {
         "description": "在不同字节单位之间换算，支持 SI 十进制和 IEC 二进制单位，也支持逐行批量转换。",
         "shortDescription": "在字节及其常用单位之间快速换算",
         "title": "字节单位换算"
-      },
-      "generate": {
-        "description": "生成具有可定制参数的数字序列。",
-        "shortDescription": "生成指定范围内的随机数",
-        "title": "生成数字序列"
-      },
-      "numberToWords": {
-        "description": "将数字转换为文字表达，输出语言自动匹配当前界面语言。",
-        "shortDescription": "将数字转换为文字表达",
-        "title": "数字转文字"
-      },
-      "ohmsLaw": {
-        "description": "计算电压、电流和电阻",
-        "longDescription": "此计算器应用欧姆定律 (V = I × R)，在已知其他两个电参数的情况下，确定任意三个电参数。欧姆定律是电气工程中的一个基本原理，描述了电压 (V)、电流 (I) 和电阻 (R) 之间的关系。对于电子爱好者、电气工程师和从事电路设计的学生来说，此工具必不可少，可以帮助他们快速求解电气设计中的未知值。",
-        "shortDescription": "使用欧姆定律计算电路中的电压、电流或电阻",
-        "title": "欧姆定律"
-      },
-      "randomNumberGenerator": {
-        "description": "使用可自定义的选项生成指定范围内的随机数。",
-        "longDescription": "生成指定范围内的随机数，可选择整数或小数，允许或禁止重复，并对结果进行排序。非常适合模拟、测试、游戏和统计分析。",
-        "shortDescription": "生成自定义范围内的随机数",
-        "title": "随机数生成器"
-      },
-      "randomPortGenerator": {
-        "description": "使用可定制的选项在指定范围内生成随机网络端口。",
-        "longDescription": "在指定范围内（知名、注册、动态或自定义）生成随机网络端口。非常适合开发、测试和网络配置。包含常用端口的端口服务识别。",
-        "shortDescription": "生成随机网络端口",
-        "title": "随机端口生成器"
-      },
-      "slackline": {
-        "description": "计算松弛线的张力",
-        "longDescription": "该计算器假设绳索中心有负载",
-        "shortDescription": "计算松弛绳或晾衣绳的大致张力。不要依赖它来确保安全。",
-        "title": "扁带张力计算"
-      },
-      "sphereArea": {
-        "description": "球体的面积",
-        "longDescription": "此计算器使用公式 A = 4πr² 计算球体的表面积。您可以输入半径来计算表面积，也可以直接输入表面积来计算所需的半径。此工具适用于学习几何的学生、处理球形物体的工程师以及任何需要进行球面计算的人。",
-        "shortDescription": "根据球体的半径计算其表面积",
-        "title": "球体表面积"
-      },
-      "sphereVolume": {
-        "description": "球体的体积",
-        "longDescription": "此计算器使用公式 V = (4/3)πr³ 计算球体的体积。您可以输入半径或直径来计算体积，也可以直接输入体积来确定所需的半径。对于在物理、工程和制造等领域处理球形物体的学生、工程师和专业人士来说，此工具非常有用。",
-        "shortDescription": "使用半径或直径计算球体的体积",
-        "title": "球体体积"
-      },
-      "sum": {
-        "description": "计算一串数字的总和。输入以逗号或换行符分隔的数字，即可计算出它们的总和。",
-        "shortDescription": "计算数字之和",
-        "title": "数字求和"
-      },
-      "voltageDropInWire": {
-        "description": "计算双芯电缆的往返电压和功率损耗",
-        "longDescription": "这款计算器可帮助计算双芯电缆的电压降和功率损耗。它考虑了电缆长度、线规（横截面积）、材料电阻率和电流。该工具可计算往返电压降、电缆总电阻以及以热量形式耗散的功率。这对于电气工程师、电工和业余爱好者在设计电气系统时尤其有用，可确保负载下的电压水平保持在可接受的范围内。",
-        "shortDescription": "根据长度、材料和电流计算电缆的电压降和功率损耗",
-        "title": "电缆往返电压降"
       }
     },
     "pdf": {
@@ -425,16 +191,6 @@
       }
     },
     "string": {
-      "base64": {
-        "description": "使用 Base64 编码对文本进行编码或解码。",
-        "shortDescription": "使用 Base64 对数据进行编码或解码。",
-        "title": "Base64 编码与解码"
-      },
-      "bcrypt": {
-        "description": "使用 Bcrypt 算法对字符串进行哈希处理。",
-        "shortDescription": "使用 Bcrypt 对字符串生成哈希",
-        "title": "bcrypt 哈希"
-      },
       "censor": {
         "description": "用于审查文本中单词的实用程序。在左侧的输入表单中加载您的文本，并在选项中指定所有脏话，您将立即在输出区域获得已审查的文本。\", longDescription: '使用此在线工具，您可以审查任何文本中的某些单词。您可以指定不想要的单词列表（例如脏话或秘密单词），程序会用替代单词替换它们，并创建可安全阅读的文本。您可以在选项中的多行文本字段中通过每行输入一个单词来指定这些单词。', keywords: ['text', 'censor', 'words', 'characters'], component: lazy(() => import('./index')), i18n: { name: 'string:censor.title', description: 'string:censor.description",
         "shortDescription": "快速掩盖脏话或用替代词代替。",
@@ -471,11 +227,6 @@
         "shortDescription": "检查文本正读和反读是否相同",
         "title": "回文检测"
       },
-      "passwordGenerator": {
-        "description": "生成安全的随机密码，可自定义长度和字符类型。密码类型包括小写字母、大写字母、数字和特殊字符。此外，还可选择避免使用模糊字符，以提高可读性。",
-        "shortDescription": "使用自定义选项生成安全的随机密码",
-        "title": "密码生成器"
-      },
       "quote": {
         "description": "使用可自定义的选项在文本周围添加引号。",
         "shortDescription": "使用各种样式在文本周围添加引号",
@@ -485,11 +236,6 @@
         "description": "文本大小写随机化工具。输入文本后，即可立即将其转换为随机的大小写字母。非常适合创建独特的文本效果、测试大小写敏感度或生成丰富的文本模式。",
         "shortDescription": "随机化文本中字母的大小写",
         "title": "随机转换大小写"
-      },
-      "removeDuplicateLines": {
-        "description": "在左侧的输入表单中加载文本，即可立即在输出区域获得无重复行的文本。功能强大、免费且快速。加载文本行 – 获取独特的文本行",
-        "shortDescription": "快速删除文本中所有重复的行",
-        "title": "删除重复的行"
       },
       "repeat": {
         "description": "使用可自定义的分隔符多次重复文本。",
@@ -501,21 +247,10 @@
         "shortDescription": "逐个字符地反转任何文本",
         "title": "反转文本"
       },
-      "rot13": {
-        "description": "使用 ROT13 密码对文本进行编码或解码。",
-        "shortDescription": "使用 ROT13 密码对文本进行编码或解码。",
-        "title": "ROT13 编码与解码"
-      },
       "rotate": {
         "description": "按指定位置旋转文本中的字符。",
         "shortDescription": "按位置移动文本中的字符。",
         "title": "循环移位文本"
-      },
-      "slugGenerator": {
-        "description": "将文本转换为适用于网址的路径片段。",
-        "longDescription": "将文本转换为整洁、适合网址使用的路径片段，支持空格、特殊字符、带重音的字母和逐行批量处理。适用于将文章标题、商品名称或页面标题转换为统一、易读的 URL 路径。",
-        "shortDescription": "将文本转换为适用于网址的路径片段。",
-        "title": "URL 路径生成器"
       },
       "split": {
         "description": "文本分割工具。输入文本并指定分隔符即可将其拆分为多个部分。非常适合数据处理、文本操作或从较大的文本块中提取特定内容。",
@@ -526,12 +261,6 @@
         "description": "分析文本并生成综合统计数据。",
         "shortDescription": "获取有关文本的统计数据",
         "title": "文本统计"
-      },
-      "tableTextConverter": {
-        "description": "在 Markdown、CSV、TSV、HTML、MySQL 查询结果和 JSON 之间转换表格文本。",
-        "longDescription": "在 Markdown 表格、CSV、TSV、HTML 表格、MySQL 或命令行查询结果，以及 JSON 数组之间转换。粘贴表格后选择输出格式，可自动识别输入格式。适用于把查询结果整理为文档中的表格、将 HTML 表格导入电子表格，或将 JSON 数据转换为易读表格。",
-        "shortDescription": "在 Markdown、CSV、HTML、MySQL 和 JSON 之间转换表格",
-        "title": "表格格式转换"
       },
       "textCompare": {
         "description": "对比两段文本，突出显示新增、删除及修改内容。",
@@ -544,49 +273,15 @@
         "shortDescription": "快速替换内容中的文本",
         "title": "文本替换器"
       },
-      "toMorse": {
-        "description": "将文本转换为摩尔斯电码。",
-        "shortDescription": "快速将文本编码为摩尔斯电码",
-        "title": "Morse 编码与解码"
-      },
       "truncate": {
         "description": "将文本缩短至指定长度。",
         "shortDescription": "将文本截断为指定长度",
         "title": "截断文本"
       },
-      "unicode": {
-        "description": "将文本转换为 Unicode 转义序列，或将其解码回可读文本。",
-        "shortDescription": "使用 Unicode 转义序列对文本进行编码或解码。",
-        "title": "Unicode 编码与解码"
-      },
       "uppercase": {
         "description": "将文本转换为大写字母。",
         "shortDescription": "将文本转换为大写",
         "title": "转换为大写"
-      },
-      "urlDecode": {
-        "toolInfo": {
-          "description": "加载您的字符串，它将自动获得 URL 非转义。",
-          "longDescription": "此工具用于对先前 URL 编码的字符串进行 URL 解码。URL 解码是 URL 编码的逆操作。所有百分号编码的字符都会被解码为您可以理解的字符。一些最常用的百分号编码值包括：%20 表示空格，%3a 表示冒号，%2f 表示斜杠，%3f 表示问号。百分号后面的两位数字是该字符的十六进制字符码值。",
-          "shortDescription": "快速对字符串进行 URL 转义。",
-          "title": "字符串 URL 解码器"
-        }
-      },
-      "urlEditor": {
-        "toolInfo": {
-          "description": "粘贴网址并点击“解析网址”，即可查看和编辑各个部分。",
-          "longDescription": "将网址解析为协议、主机、路径、片段标识和查询参数，并以可视化方式编辑。修改输入网址后，再次点击“解析网址”更新内容。可添加、移除或修改参数，并复制生成的网址，整个过程不向服务器发送请求。",
-          "shortDescription": "查看并编辑网址结构和查询参数。",
-          "title": "URL 编辑器"
-        }
-      },
-      "urlEncode": {
-        "toolInfo": {
-          "description": "加载您的字符串，它将自动进行 URL 转义。",
-          "longDescription": "此工具会对字符串进行 URL 编码。特殊 URL 字符会被转换为百分号编码。这种编码之所以称为百分号编码，是因为每个字符的数值都会被转换为百分号，后跟两位十六进制值。十六进制值根据字符的代码点值确定。例如，空格会被转义为 %20，冒号会被转义为 %3a，斜杠会被转义为 %2f。非特殊字符保持不变。如果您还需要将非特殊字符转换为百分号编码，我们还添加了一个额外的选项来实现此目的。选择“encode-non-special-chars”选项即可启用此行为。",
-          "shortDescription": "快速对字符串进行 URL 转义。",
-          "title": "字符串 URL 编码器"
-        }
       }
     },
     "time": {
@@ -720,18 +415,6 @@
         "description": "通过指定开始和结束时间来修剪视频文件。从视频的开头或结尾删除不需要的部分。",
         "shortDescription": "通过删除不需要的部分来修剪视频",
         "title": "修剪视频"
-      }
-    },
-    "xml": {
-      "xmlBeautifier": {
-        "description": "使用适当的缩进和间距来格式化 XML。",
-        "shortDescription": "格式化和美化 XML 代码",
-        "title": "格式化 XML"
-      },
-      "xmlValidator": {
-        "description": "验证 XML 语法和结构。",
-        "shortDescription": "验证 XML 代码是否存在错误",
-        "title": "验证 XML"
       }
     }
   }

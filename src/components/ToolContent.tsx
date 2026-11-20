@@ -24,7 +24,6 @@ import {
   ToolResultVisibleContext
 } from '../tools/page-context';
 import ToolTaskbar from './workbench/ToolTaskbar';
-import { replaceSpecialCharacters } from '../utils/string';
 
 const FormikListenerComponent = <T,>({
   input,
@@ -40,7 +39,7 @@ const FormikListenerComponent = <T,>({
   const { values, validateForm } = useFormikContext<T>();
   const interaction = useContext(ToolInteractionContext);
   const { english } = useWorkbenchText();
-  const { title, experience } = useContext(ToolPageContext);
+  const { title } = useContext(ToolPageContext);
   const manual = ['image', 'pdf', 'media'].includes(interaction);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -84,21 +83,6 @@ const FormikListenerComponent = <T,>({
         }
       }
       const computedValues = { ...values } as Record<string, unknown>;
-      if (experience.separator) {
-        const separator = experience.separator;
-        if (
-          typeof computedValues[separator.input] === 'string' &&
-          (!separator.operator ||
-            computedValues[separator.operator] !== 'regex')
-        )
-          computedValues[separator.input] = replaceSpecialCharacters(
-            computedValues[separator.input] as string
-          );
-        if (typeof computedValues.joinSeparator === 'string')
-          computedValues.joinSeparator = replaceSpecialCharacters(
-            computedValues.joinSeparator
-          );
-      }
       await computeRef.current(computedValues as T, input);
       if (
         active.current &&
@@ -139,12 +123,12 @@ const FormikListenerComponent = <T,>({
     (Array.isArray(input) ? input.length > 0 : Boolean(input));
   return (
     <div className="tool-run-bar">
-      {(manual || interaction === 'generator') && (
+      {manual && (
         <button
           type="button"
           data-testid="process-tool"
           className="primary-button"
-          disabled={busy || (manual && !hasInput)}
+          disabled={busy || !hasInput}
           onClick={() => {
             void run();
           }}
@@ -153,9 +137,7 @@ const FormikListenerComponent = <T,>({
             ? english
               ? 'Processing…'
               : '正在处理…'
-            : experience.action?.[english ? 1 : 0] ||
-              title ||
-              (english ? 'Apply' : '应用')}
+            : title || (english ? 'Apply' : '应用')}
         </button>
       )}
       <span className="tool-run-status" role="status">
@@ -228,14 +210,6 @@ export default function ToolContent<T extends FormikValues, I>({
   const interaction = useContext(ToolInteractionContext);
   const { experience } = useContext(ToolPageContext);
   const { english } = useWorkbenchText();
-  const preparedValues =
-    experience.separator && experience.separator.input in initialValues
-      ? {
-          ...initialValues,
-          [experience.separator.input]: '\\n',
-          ...('joinSeparator' in initialValues ? { joinSeparator: '\\n' } : {})
-        }
-      : initialValues;
   const fileTool = experience.entry === 'file';
   const [resultReady, setResultReady] = useState(false);
   const hasSource =
@@ -245,7 +219,7 @@ export default function ToolContent<T extends FormikValues, I>({
     <ToolSourceContext.Provider value={input}>
       <Box>
         <Formik
-          initialValues={preparedValues}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={() => {}}
         >

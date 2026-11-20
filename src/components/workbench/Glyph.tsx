@@ -43,16 +43,7 @@ export const categoryGlyph: Record<string, string> = {
   video: 'video',
   audio: 'audio',
   time: 'clock',
-  json: 'code',
-  xml: 'code',
-  list: 'list',
-  csv: 'table',
-  number: 'number',
-  converters: 'convert',
-  encoding: 'code',
-  security: 'shield',
-  network: 'globe',
-  calculator: 'number'
+  converters: 'convert'
 };
 export default function Glyph({
   name,

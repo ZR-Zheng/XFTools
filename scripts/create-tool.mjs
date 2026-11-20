@@ -142,13 +142,9 @@ const validNamespaces = [
   'string',
   'number',
   'video',
-  'list',
-  'json',
   'time',
-  'csv',
   'pdf',
   'audio',
-  'xml',
   'translation',
   'image'
 ];

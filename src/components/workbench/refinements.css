@@ -7,28 +7,6 @@
   --space-6: 24px;
   --space-8: 32px;
 }
-.welcome {
-  min-height: 235px;
-  gap: 32px;
-  margin-bottom: 28px;
-}
-.welcome h1 {
-  font-size: clamp(46px, 5vw, 76px);
-  font-weight: 750;
-  line-height: 1.1;
-  letter-spacing: -3px;
-  margin: 0 0 12px;
-}
-.welcome-tagline {
-  font-size: 21px;
-  line-height: 1.4;
-  font-weight: 550;
-  letter-spacing: -0.5px;
-}
-.welcome-meta {
-  font-size: 12px;
-  flex-wrap: wrap;
-}
 
 .nav-item {
   font-size: 14px;
@@ -52,7 +30,6 @@
 .side-nav {
   overflow: auto;
   scrollbar-width: thin;
-  scrollbar-color: #445066 transparent;
 }
 .section-heading h2 {
   font-size: 21px;
@@ -559,10 +536,6 @@ button[aria-pressed='true'].secondary-button {
   .tool-panel {
     padding: 16px;
   }
-  .workspace-art {
-    transform: scale(0.9);
-    transform-origin: right center;
-  }
 }
 @media (max-width: 767px) {
   .tool-flow,
@@ -579,16 +552,6 @@ button[aria-pressed='true'].secondary-button {
   }
   .tool-option-groups {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .welcome h1 {
-    font-size: 56px;
-  }
-  .welcome {
-    min-height: auto;
-    margin-bottom: 26px;
-  }
-  .welcome-tagline {
-    font-size: 19px;
   }
   .image-editor-controls {
     grid-template-columns: minmax(0, 1fr);
@@ -611,9 +574,6 @@ button[aria-pressed='true'].secondary-button {
   }
   .category-tabs {
     gap: 4px;
-  }
-  .workspace-art {
-    transform: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -716,45 +676,6 @@ button[aria-pressed='true'].secondary-button {
   line-height: 1.7;
   color: var(--muted);
   margin-top: 10px;
-}
-.result-view-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.table-delimiter {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  font-size: 13px;
-  margin-bottom: 12px;
-}
-.table-delimiter select {
-  width: auto;
-}
-.table-preview .ui-table {
-  font-size: 14px;
-}
-.table-preview th {
-  padding: 10px;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-  text-align: left;
-}
-.table-preview td {
-  max-width: 300px;
-  overflow-wrap: anywhere;
-}
-.table-preview .ui-helper {
-  margin-top: 12px;
-}
-.table-preview .ui-table-scroll {
-  max-height: 360px;
-}
-.table-preview thead {
-  position: sticky;
-  top: 0;
-  background: var(--surface-soft);
 }
 @media (max-width: 599px) {
   .file-list-actions {

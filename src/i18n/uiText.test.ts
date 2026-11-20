@@ -16,13 +16,9 @@ test('Chinese labels remain fixed and English is not an enabled interface', asyn
   expect(localStorage.getItem('lang')).toBeNull();
 });
 
-test('feedback preserves reported values and localizes CSV parser errors', () => {
-  expect(uiText('There are only 3 columns')).toBe('数据仅有 3 列');
+test('feedback preserves reported values', () => {
   expect(uiText('Invalid JSON at line 7: Unexpected token')).toBe(
     '第 7 行的 JSON 无效：Unexpected token'
-  );
-  expect(uiText('CSV record 2: Quoted field unterminated')).toBe(
-    'CSV 第 2 条记录：带引号的字段缺少结束引号'
   );
 });
 

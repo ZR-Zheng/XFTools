@@ -15,12 +15,12 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import Glyph from '../../components/workbench/Glyph';
 import ToolTile from '../../components/workbench/ToolTile';
 const featuredPaths = [
-  'json/prettify',
   'pdf/merge-pdf',
   'image-generic/resize',
-  'string/base64',
+  'string/text-compare',
   'png/compress-png',
-  'list/sort'
+  'video/trim',
+  'time/convert-unix-to-date'
 ];
 
 export default function Home() {
@@ -104,53 +104,19 @@ export default function Home() {
               <span>
                 <strong>{categories.length}</strong> {w('groups')}
               </span>
-              <i />
-              <span>
-                <Glyph name="check" size={15} />
-                {w('free')}
-              </span>
             </div>
           </div>
           <div className="workspace-art" aria-hidden="true">
-            <div className="art-grid" />
-            <div className="art-card art-one">
-              <span className="art-mini">
-                <Glyph name="image" size={23} />
-              </span>
-              <span>
-                {uiText('Image studio')}
-                <small>{uiText('CREATE SOMETHING NEW')}</small>
-              </span>
-              <Glyph name="arrow" size={18} />
-            </div>
-            <div className="art-card art-two">
-              <span className="art-mini">
-                <Glyph name="code" size={24} />
-              </span>
-              <span>
-                {'{'} JSON {'}'}
-              </span>
-              <span className="art-code-line" />
-            </div>
-            <div className="art-card art-three">
-              <span className="art-mini">
-                <Glyph name="file" size={24} />
-              </span>
-              <span>
-                {uiText('PDF workspace')}
-                <small>{uiText('LESS WORK. MORE FLOW.')}</small>
-              </span>
-              <span className="art-check">
-                <Glyph name="check" size={15} />
-              </span>
-            </div>
-            <span className="art-spark">
-              <Glyph name="sparkle" size={30} />
+            <span className="art-orbit" />
+            <span className="art-card art-document">
+              <Glyph name="file" size={35} />
             </span>
-            <div className="art-caption">
-              <span className="status-dot" />
-              {uiText('READY WHEN YOU ARE')}
-            </div>
+            <span className="art-card art-media">
+              <Glyph name="video" size={30} />
+            </span>
+            <span className="art-card art-image">
+              <Glyph name="image" size={44} />
+            </span>
           </div>
         </section>
       ) : (
@@ -195,7 +161,7 @@ export default function Home() {
         {isHome && !query && (
           <div className="search-suggestions">
             <span>{w('searchHint')}</span>
-            {['JSON', 'PDF', 'Base64'].map((word) => (
+            {['图片', 'PDF', '视频'].map((word) => (
               <button key={word} onClick={() => setQuery(word)}>
                 {word}
                 <Glyph name="arrow" size={12} />
@@ -327,7 +293,6 @@ export default function Home() {
             <Glyph name="star" size={25} />
           </span>
           <div>
-            <span className="eyebrow">{w('tip')}</span>
             <h2>{w('tipTitle')}</h2>
             <p>{w('tipText')}</p>
           </div>

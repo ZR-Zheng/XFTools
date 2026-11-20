@@ -1,18 +1,4 @@
 {
-  "base64": {
-    "decode": "Base64 Decode",
-    "description": "Encode or decode text using Base64 encoding.",
-    "encode": "Base64 Encode",
-    "inputTitle": "Input Data",
-    "optionsTitle": "Base64 Options",
-    "resultTitle": "Result",
-    "shortDescription": "Encode or decode data using Base64.",
-    "title": "Base64 Encoder/Decoder",
-    "toolInfo": {
-      "description": "Base64 is an encoding scheme that represents data in an ASCII string format by translating it into a radix-64 representation. Although it can be used to encode strings, it is commonly used to encode binary data for transmission over media that are designed to deal with textual data.",
-      "title": "What is Base64?"
-    }
-  },
   "censor": {
     "description": "utility for censoring words in text. Load your text in the input form on the left, specify all the bad words in the options, and you'll instantly get censored text in the output area.\", longDescription: 'With this online tool, you can censor certain words in any text. You can specify a list of unwanted words (such as swear words or secret words) and the program will replace them with alternative words and create a safe-to-read text. The words can be specified in a multi-line text field in the options by entering one word per line.', keywords: ['text', 'censor', 'words', 'characters'], component: lazy(() => import('./index')), i18n: { name: 'string:censor.title', description: 'string:censor.description",
     "shortDescription": "Quickly mask bad words or replace them with alternative words.",
@@ -87,24 +73,6 @@
     "shortDescription": "Check if text reads the same forward and backward",
     "title": "Palindrome"
   },
-  "passwordGenerator": {
-    "avoidAmbiguous": "Avoid ambiguous characters (i, I, l, 0, O)",
-    "description": "Generate secure random passwords with customizable length and character types. Choose from lowercase, uppercase, numbers, and special characters. Option to avoid ambiguous characters for better readability.",
-    "includeLowercase": "Include lowercase letters (a-z)",
-    "includeNumbers": "Include numbers (0-9)",
-    "includeSymbols": "Include special characters",
-    "includeUppercase": "Include uppercase letters (A-Z)",
-    "lengthDesc": "Length of the password (>3 & <257)",
-    "lengthPlaceholder": "e.g. 12",
-    "optionsTitle": "Password Options",
-    "resultTitle": "Generated Password",
-    "shortDescription": "Generate secure random passwords with custom options",
-    "title": "Password Generator",
-    "toolInfo": {
-      "description": "This tool generates secure random passwords based on your selected criteria. You can customize the length, include or exclude different character types, and avoid ambiguous characters for better readability. Perfect for creating strong passwords for accounts, applications, or any security needs.",
-      "title": "About Password Generator"
-    }
-  },
   "quote": {
     "allowDoubleQuotation": "Allow double quotation",
     "description": "Add quotes around text with customizable options.",
@@ -126,11 +94,6 @@
     "description": "World's simplest browser-based utility for randomizing text case. Input your text and instantly transform it with random upper and lower case letters. Perfect for creating unique text effects, testing case sensitivity, or generating varied text patterns.",
     "shortDescription": "Randomize the case of letters in text",
     "title": "Randomize case"
-  },
-  "removeDuplicateLines": {
-    "description": "Load your text in the input form on the left and you'll instantly get text with no duplicate lines in the output area. Powerful, free, and fast. Load text lines – get unique text lines",
-    "shortDescription": "Quickly delete all repeated lines from text",
-    "title": "Remove duplicate lines"
   },
   "repeat": {
     "delimiterDescription": "Delimiter for output copies.",
@@ -163,17 +126,6 @@
     "trimWhitespace": "Trim whitespace",
     "trimWhitespaceDescription": "Remove leading and trailing whitespace from each line"
   },
-  "rot13": {
-    "description": "Encode or decode text using ROT13 cipher.",
-    "inputTitle": "Input Text",
-    "resultTitle": "ROT13 Result",
-    "shortDescription": "Encode or decode text using ROT13 cipher.",
-    "title": "ROT13 Encoder/Decoder",
-    "toolInfo": {
-      "description": "ROT13 (rotate by 13 places) is a simple letter substitution cipher that replaces a letter with the 13th letter after it in the alphabet. ROT13 is a special case of the Caesar cipher which was developed in ancient Rome. Because there are 26 letters in the English alphabet, ROT13 is its own inverse; that is, to undo ROT13, the same algorithm is applied, so the same action can be used for encoding and decoding.",
-      "title": "What Is ROT13?"
-    }
-  },
   "rotate": {
     "description": "Rotate characters in text by specified positions.",
     "inputTitle": "Input Text",
@@ -189,19 +141,6 @@
       "description": "This tool allows you to rotate characters in a string by a specified number of positions. You can rotate to the left or right, and process multi-line text by rotating each line separately. String rotation is useful for simple text transformations, creating patterns, or implementing basic encryption techniques.",
       "title": "String Rotation"
     }
-  },
-  "slugGenerator": {
-    "description": "Convert any text into a URL-friendly slug.",
-    "inputTitle": "Input Text",
-    "longDescription": "Convert any text into clean, SEO-friendly slugs for use in URLs. The tool handles spaces, special characters, accented letters, and multiple lines at once — making it easy to batch-process blog post titles, product names, or page headings into consistent, readable URL segments.",
-    "options": {
-      "caseDescription": "Preserve the original casing of the input instead of converting to lowercase",
-      "caseLabel": "Case Sensitive",
-      "title": "Slug Options"
-    },
-    "resultTitle": "URL Slugs",
-    "shortDescription": "Generate URL-friendly slugs from text.",
-    "title": "Slug Generator"
   },
   "split": {
     "charAfterChunkDescription": "Character after each chunk",
@@ -245,19 +184,6 @@
     "wordFrequencyAnalysis": "Word Frequency Analysis",
     "wordFrequencyAnalysisDescription": "Count how often each word appears in the text"
   },
-  "tableTextConverter": {
-    "title": "Table Text Converter",
-    "description": "Convert tabular text between Markdown, CSV, TSV, HTML, MySQL query output, and JSON formats.",
-    "shortDescription": "Convert tables between Markdown, CSV, HTML, MySQL, and JSON",
-    "longDescription": "This tool converts tabular text between multiple formats, including Markdown tables, CSV, TSV, HTML tables, MySQL/CLI query result output, and JSON arrays. Paste your table in any supported format, choose the output format (or let the tool auto-detect the input format), and get the converted table instantly. Useful for turning a MySQL query result into a Markdown table for documentation, converting an HTML table into CSV for spreadsheets, or transforming JSON data into a readable table.",
-    "inputTitle": "Input table",
-    "resultTitle": "Converted table",
-    "options": "Conversion Options",
-    "inputFormat": "Input format",
-    "outputFormat": "Output format",
-    "autoDetect": "Auto-detect Input format (recommanded)",
-    "error": "Error"
-  },
   "textCompare": {
     "description": "Analyze two text blocks to highlight differences, including additions, deletions, and changes.",
     "inputTitle": "Input Text",
@@ -293,16 +219,6 @@
       "title": "Text Replacer"
     }
   },
-  "toMorse": {
-    "dashSymbolDescription": "Symbol that will correspond to the dash in Morse code.",
-    "description": "Convert text to Morse code.",
-    "dotSymbolDescription": "Symbol that will correspond to the dot in Morse code.",
-    "longSignal": "Long Signal",
-    "resultTitle": "Morse code",
-    "shortDescription": "Quickly encode text to morse",
-    "shortSignal": "Short Signal",
-    "title": "String To morse"
-  },
   "truncate": {
     "addTruncationIndicator": "Add Truncation Indicator",
     "charactersPlaceholder": "Characters",
@@ -328,98 +244,11 @@
     },
     "truncationSide": "Truncation Side"
   },
-  "unicode": {
-    "caseOptionsTitle": "Case Options",
-    "decode": "Decode",
-    "description": "Convert text to Unicode escape sequences or decode them back to readable text.",
-    "encode": "Encode",
-    "inputTitle": "Input",
-    "optionsTitle": "Mode",
-    "resultTitle": "Processed Output",
-    "shortDescription": "Encode or decode text using Unicode escape sequences.",
-    "title": "Unicode Encoder / Decoder",
-    "toolInfo": {
-      "description": "This tool lets you convert plain text into Unicode escape sequences (e.g., \\uXXXX) and decode Unicode escape sequences back into standard text. You can also choose whether the hexadecimal output is formatted in uppercase or lowercase when encoding.",
-      "title": "Unicode Encoder / Decoder"
-    },
-    "uppercase": "Uppercase Hex"
-  },
   "uppercase": {
     "description": "Convert text to uppercase letters.",
     "inputTitle": "Input text",
     "resultTitle": "Uppercase text",
     "shortDescription": "Convert text to uppercase",
     "title": "Convert to Uppercase"
-  },
-  "urlDecode": {
-    "inputTitle": "Input String(URL-escaped)",
-    "resultTitle": "Output string",
-    "toolInfo": {
-      "description": "Load your string and it will automatically get URL-unescaped.",
-      "longDescription": "This tool URL-decodes a previously URL-encoded string. URL-decoding is the inverse operation of URL-encoding. All percent-encoded characters get decoded to characters that you can understand. Some of the most well known percent-encoded values are %20 for a space, %3a for a colon, %2f for a slash, and %3f for a question mark. The two digits following the percent sign are character's char code values in hex.",
-      "shortDescription": "Quickly URL-unescape a string.",
-      "title": "String URL decoder"
-    }
-  },
-  "urlEditor": {
-    "addParameter": "Add Parameter",
-    "credentialsNotSupported": "URLs with username or password are not supported.",
-    "delete": "Delete",
-    "deleteParamAriaLabel": "Delete parameter row {{row}}",
-    "generatedUrl": "Generated URL",
-    "hash": "Fragment",
-    "hashPlaceholder": "section",
-    "host": "Host",
-    "hostPlaceholder": "example.com",
-    "inputTitle": "Enter URL",
-    "invalidUrl": "Invalid URL",
-    "key": "Key",
-    "noParameters": "No query parameters",
-    "paramKeyAriaLabel": "Parameter key, row {{row}}",
-    "paramValueAriaLabel": "Parameter value, row {{row}}",
-    "parseButton": "Parse URL",
-    "path": "Path",
-    "pathPlaceholder": "search",
-    "protocol": "Protocol",
-    "queryParameters": "Query Parameters",
-    "toolInfo": {
-      "description": "Paste a URL and click \"Parse URL\" to inspect and edit its components.",
-      "longDescription": "This tool parses a URL into its components and lets you edit the protocol, host, path, fragment, and query parameters visually. After changing the input URL, click \"Parse URL\" again to refresh the parsed details. You can add, remove, or modify any part and copy the generated URL. No server requests.",
-      "shortDescription": "Inspect and edit URL components and query parameters.",
-      "title": "URL Editor"
-    },
-    "urlDetails": "URL Details",
-    "value": "Value"
-  },
-  "urlEncode": {
-    "encodingOption": {
-      "nonSpecialCharDescription": "If selected, then all characters in the input string will be converted to URL-encoding (not just special).",
-      "nonSpecialCharPlaceholder": "Encode non-special characters",
-      "title": "Encoding Options"
-    },
-    "inputTitle": "Input String(URL-escaped)",
-    "resultTitle": "Output string",
-    "toolInfo": {
-      "description": "Load your string and it will automatically get URL-escaped.",
-      "longDescription": "This tool URL-encodes a string. Special URL characters get converted to percent-sign encoding. This encoding is called percent-encoding because each character's numeric value gets converted to a percent sign followed by a two-digit hexadecimal value. The hex values are determined based on the character's codepoint value. For example, a space gets escaped to %20, a colon to %3a, a slash to %2f. Characters that are not special stay unchanged. In case you also need to convert non-special characters to percent-encoding, then we've also added an extra option that lets you do that. Select the encode-non-special-chars option to enable this behavior.",
-      "shortDescription": "Quickly URL-escape a string.",
-      "title": "String URL encoder"
-    }
-  },
-  "bcrypt": {
-    "title": "Bcrypt",
-    "inputTitle": "Input String",
-    "resultTitle": "Hashed String",
-    "shortDescription": "Hash strings with Bcrypt",
-    "description": "Securely hash a string using the Bcrypt algorithm.",
-    "options": {
-      "title": "Options",
-      "saltTitle": "Salt Rounds",
-      "saltDesc": "Set the number of salt rounds used for hashing."
-    },
-    "toolInfo": {
-      "title": "What is Bcrypt?",
-      "longDescription": "Bcrypt is a password hashing algorithm designed to securely hash passwords and other sensitive strings. The number of salt rounds controls the computational cost of the hashing process."
-    }
   }
 }

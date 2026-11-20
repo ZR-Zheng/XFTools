@@ -18,9 +18,6 @@
   > .option-check {
   align-self: center;
 }
-.experience-generator .flow-result .compact-result textarea {
-  min-height: 74px;
-}
 .tool-page {
   padding-top: 16px;
 }
@@ -131,20 +128,6 @@
   font-size: 12px;
   min-height: 40px;
   padding: 8px;
-}
-.separator-quick-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  color: var(--muted);
-}
-.separator-quick-control select {
-  min-height: 36px;
-  padding: 6px 10px;
-  width: auto;
-  font-size: 13px;
 }
 .tool-support-details {
   border: 1px solid var(--line);
@@ -271,18 +254,6 @@
 .experience-form .tool-option-groups {
   grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
 }
-.experience-generator:not(.no-settings) {
-  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.15fr);
-  grid-template-areas: 'settings result' 'action result';
-}
-.experience-generator .flow-result textarea {
-  min-height: 150px;
-  font-family: Consolas, monospace;
-  font-size: 17px;
-}
-.experience-generator .tool-option-groups {
-  grid-template-columns: minmax(0, 1fr);
-}
 .experience-comparison .flow-input,
 .experience-comparison .flow-result {
   width: 100%;
@@ -406,7 +377,6 @@
 }
 @media (max-width: 767px) {
   .taskbar-actions button,
-  .separator-quick-control select,
   .advanced-tool-options > summary {
     min-height: 44px;
   }
@@ -461,17 +431,11 @@
     margin-bottom: 12px;
     padding-bottom: 10px;
   }
-  .separator-quick-control {
-    gap: 6px;
-  }
   .taskbar-actions button {
     padding-inline: 6px;
   }
   .tool-header-actions .taskbar-actions {
     gap: 4px;
-  }
-  .tool-header-actions .separator-quick-control select {
-    max-width: 126px;
   }
   .tool-header-actions .tool-taskbar {
     gap: 6px;
@@ -488,10 +452,6 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'settings' 'input' 'result' 'action';
   }
-  .experience-generator:not(.no-settings) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'settings' 'action' 'result';
-  }
   .tool-heading-icon {
     width: 44px;
     height: 44px;
@@ -505,12 +465,6 @@
   }
   .tool-option-group > h3 {
     margin-bottom: 10px;
-  }
-  .separator-quick-control {
-    font-size: 12px;
-  }
-  .separator-quick-control select {
-    font-size: 14px;
   }
   .tool-panel .ui-input {
     font-size: 16px;

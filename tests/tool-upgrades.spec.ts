@@ -109,64 +109,6 @@ test('PDF workspace previews and exports interleaved pages with undo and output 
   expect(errors).toEqual([]);
 });
 
-test('Calculators solve either direction, convert units and keep material presets', async ({
-  page
-}) => {
-  const errors: string[] = [],
-    requests: string[] = [];
-  page.on('pageerror', (error) => errors.push(error.message));
-  page.on('request', (request) => requests.push(request.url()));
-  await page.goto('/number/generic-calc/ohms-law');
-  const result = page.getByTestId('calculation-result');
-  await expect(result).toHaveText('5');
-  await page.locator('#calc-V').fill('12');
-  await page.locator('#calc-I').fill('2');
-  await expect(result).toHaveText('6');
-  await page
-    .locator('.formula-variable')
-    .filter({ has: page.locator('#calc-I') })
-    .getByRole('combobox')
-    .selectOption('mA');
-  await expect(page.locator('#calc-I')).toHaveValue('2000');
-  await expect(result).toHaveText('6');
-  await page
-    .getByRole('combobox', { name: '求解目标', exact: true })
-    .selectOption('V');
-  await expect(result).toHaveText('12');
-  await page
-    .getByRole('combobox', { name: '结果单位', exact: true })
-    .selectOption('mV');
-  await expect(result).toHaveText('12000');
-  await page.locator('#calc-I').fill('');
-  await expect(result).toHaveText('—');
-  await expect(page.locator('.formula-error')).toContainText('请填写');
-  await page.goto('/number/generic-calc/volume-sphere');
-  await page.getByLabel('或输入直径').fill('10');
-  await expect(page.locator('#calc-r')).toHaveValue('5');
-  await expect(result).toHaveText('523.598775598');
-  await page.goto('/number/generic-calc/cable-voltage-drop');
-  await expect(result).not.toHaveText('—');
-  await page.locator('#calc-L').fill('10');
-  await page.locator('#calc-I').fill('4');
-  await expect(result).not.toHaveText('—');
-  await page.evaluate(() => {
-    (document.activeElement as HTMLElement)?.blur();
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  });
-  await page.screenshot({
-    path: '.tmp/screenshots/calculator-wire.png',
-    fullPage: true
-  });
-  await page.setViewportSize({ width: 375, height: 812 });
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth
-    )
-  ).toBe(true);
-  expect(requests.some((url) => /nerdamer/.test(url))).toBe(false);
-  expect(errors).toEqual([]);
-});
-
 test('Transparent PNG exports true alpha and explicit background replacement invalidates downloads', async ({
   page
 }) => {
@@ -271,23 +213,6 @@ test('PDF workspace preserves same-name sources, explains failed imports, and re
   await expect(
     page.getByRole('button', { name: '撤销', exact: true })
   ).toBeDisabled();
-});
-
-test('CSV conversions preserve multiline fields, identifiers and clear results on invalid input', async ({
-  page
-}) => {
-  await page.goto('/csv/csv-to-json');
-  await page
-    .getByTestId('text-input')
-    .fill('id,note,id\n001,"line one\nline two",9007199254740993');
-  const result = page.getByTestId('text-result');
-  await expect(result).toHaveValue(/line one/);
-  expect(JSON.parse(await result.inputValue())).toEqual([
-    { id: '001', note: 'line one\nline two', id_2: '9007199254740993' }
-  ]);
-  await page.getByTestId('text-input').fill('id,note\n1,"unterminated');
-  await expect(page.getByRole('alert')).toContainText(/第 2 条记录/);
-  await expect(result).toHaveValue('');
 });
 
 test('Chinese PDF workspace fits the simplified tablet layout', async ({

@@ -17,9 +17,6 @@ const feedbackPatterns = Object.entries(copy)
 /** Localize interface labels and examples; never apply to user input or tool output. */
 export function uiText<T>(value: T): T {
   if (typeof value !== 'string') return value;
-  const csvError = value.match(/^CSV record (\d+): (.*)$/s);
-  if (csvError)
-    return `CSV 第 ${csvError[1]} 条记录：${uiText(csvError[2])}` as T;
   const translation = copy[value] || copy[value.replace(/\s+/g, ' ').trim()];
   if (translation) return translation as T;
   {
@@ -51,11 +48,7 @@ export function uiText<T>(value: T): T {
           'video',
           'audio',
           'pdf',
-          'json',
-          'csv',
-          'list',
           'time',
-          'xml',
           'converters'
         ]) {
       const resolved: unknown = i18n.getResource('zh', namespace, key);
