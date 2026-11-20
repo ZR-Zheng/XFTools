@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getBookmarkedToolPaths } from '@utils/bookmark';
+import { canonicalToolPath } from '@tools/tool-aliases';
 const event = 'xftools:history';
 export function getRecentTools(): string[] {
   try {
@@ -7,9 +8,13 @@ export function getRecentTools(): string[] {
       localStorage.getItem('recentTools') || '[]'
     );
     return Array.isArray(value)
-      ? value
-          .filter((item): item is string => typeof item === 'string')
-          .slice(0, 24)
+      ? [
+          ...new Set(
+            value
+              .filter((item): item is string => typeof item === 'string')
+              .map(canonicalToolPath)
+          )
+        ].slice(0, 24)
       : [];
   } catch {
     return [];

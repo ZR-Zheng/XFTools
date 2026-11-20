@@ -12,6 +12,6 @@ export const tool = defineTool('image-generic', {
   path: 'compress',
   icon: 'material-symbols-light:compress-rounded',
 
-  keywords: ['image', 'compress', 'reduce', 'quality'],
+  keywords: ['image', 'compress', 'reduce', 'quality', 'png', '压缩 PNG', '图片压缩', '减小体积'],
   component: lazy(() => import('./index'))
 });

@@ -18,7 +18,7 @@ const featuredPaths = [
   'pdf/merge-pdf',
   'image-generic/resize',
   'string/text-compare',
-  'png/compress-png',
+  'image-generic/convert',
   'video/trim',
   'time/convert-unix-to-date'
 ];

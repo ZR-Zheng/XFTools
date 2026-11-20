@@ -1,0 +1,341 @@
+.image-batch-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 332px);
+  align-items: start;
+  gap: 18px;
+}
+
+.image-batch-main,
+.image-batch-controls {
+  min-width: 0;
+  border: 1px solid var(--glass-line);
+  border-radius: 18px;
+  background: var(--glass-raised);
+  box-shadow: var(--glass-shadow);
+}
+
+.image-batch-main {
+  overflow: hidden;
+}
+
+.image-batch-toolbar,
+.image-batch-caption,
+.image-batch-color {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.image-batch-toolbar {
+  min-height: 61px;
+  padding: 10px 16px;
+}
+
+.image-batch-workbench h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.image-batch-switch {
+  display: flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.image-batch-switch button {
+  min-height: 36px;
+  min-width: 52px;
+  padding-inline: 9px;
+  border: 0;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.image-batch-switch button[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--action);
+  font-weight: 650;
+  box-shadow: 0 1px 4px rgb(35 69 124 / 12%);
+}
+
+.image-batch-stage {
+  display: grid;
+  place-items: center;
+  min-height: 290px;
+  padding: 18px;
+  border-block: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+
+.image-batch-stage.is-dragging {
+  background: var(--blue-soft);
+}
+
+.image-batch-stage:has(> img) {
+  height: clamp(240px, 34vw, 470px);
+  background-image: repeating-conic-gradient(
+    rgb(70 102 154 / 8%) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 20px 20px;
+}
+
+.image-batch-stage > img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.image-batch-upload {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 250px;
+  padding: 20px;
+  border: 1px dashed var(--control-border);
+  border-radius: 14px;
+  background: var(--glass);
+  text-align: center;
+}
+
+.image-batch-upload:hover {
+  background: var(--glass-raised);
+  border-color: var(--action);
+}
+
+.image-batch-upload-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 4px;
+  border-radius: 16px;
+  color: var(--action);
+  background: var(--blue-soft);
+}
+
+.image-batch-upload > span:last-child,
+.image-batch-caption small,
+.image-batch-file small,
+.image-batch-field small,
+.image-batch-choice small,
+.image-batch-message {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.image-batch-caption {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.image-batch-caption > div,
+.image-batch-file span {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.image-batch-caption strong,
+.image-batch-file strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-batch-caption [role='alert'],
+.image-batch-main > [role='alert'] {
+  color: var(--danger);
+  overflow-wrap: anywhere;
+}
+
+.image-batch-caption .secondary-button {
+  flex-shrink: 0;
+  padding-inline: 10px;
+  white-space: nowrap;
+}
+
+.image-batch-main > .image-batch-message {
+  padding: 12px 16px;
+}
+
+.image-batch-queue {
+  display: grid;
+  gap: 5px;
+  max-height: 214px;
+  margin: 0;
+  padding: 9px 12px;
+  overflow: auto;
+  list-style: none;
+}
+
+.image-batch-queue > li,
+.image-batch-file {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 6px;
+}
+
+.image-batch-file {
+  flex: 1;
+  gap: 9px;
+  min-height: 47px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  text-align: left;
+}
+
+.image-batch-file[aria-pressed='true'] {
+  border-color: var(--glass-line);
+  background: var(--blue-soft);
+}
+
+.image-batch-file img {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 6px;
+  background: var(--glass-raised);
+}
+
+.image-batch-controls {
+  display: grid;
+  gap: 16px;
+  padding: 19px;
+}
+
+.image-batch-options,
+.image-batch-choices {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.image-batch-choices > legend {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.image-batch-choice-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+
+.image-batch-choice {
+  position: relative;
+  display: grid;
+  place-content: center;
+  min-height: 59px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.image-batch-choice:has(:checked) {
+  border-color: var(--action);
+  background: var(--blue-soft);
+  color: var(--action-hover);
+}
+
+.image-batch-choice input[type='radio'] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.image-batch-choice:has(:focus-visible) {
+  outline: 2px solid var(--action);
+  outline-offset: 2px;
+}
+
+.image-batch-field {
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.image-batch-field > span:first-child,
+.image-batch-color > span {
+  font-weight: 600;
+}
+
+.image-batch-field input[type='range'] {
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  accent-color: var(--action);
+}
+
+.image-batch-color input[type='color'] {
+  width: 54px;
+  min-height: 44px;
+  padding: 5px;
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.image-batch-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  font-size: 13px;
+}
+
+.image-batch-actions {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.image-batch-actions progress {
+  width: 100%;
+  accent-color: var(--action);
+}
+
+@media (max-width: 767px) {
+  .image-batch-workbench {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .image-batch-stage {
+    min-height: 182px;
+    padding: 12px;
+  }
+
+  .image-batch-upload {
+    min-height: 170px;
+  }
+}

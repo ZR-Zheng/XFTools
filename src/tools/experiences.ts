@@ -74,11 +74,6 @@ assign('text', [
 assign('scalar', [
   'number/byte-converter',
   'time/check-leap-years',
-  'time/convert-days-to-hours',
-  'time/convert-hours-to-days',
-  'time/convert-seconds-to-time',
-  'time/convert-time-to-decimal',
-  'time/convert-time-to-seconds',
   'time/truncate-clock-time'
 ]);
 assign('date', ['time/convert-unix-to-date', 'time/discord-timestamp']);
@@ -86,26 +81,20 @@ assign('form', ['time/date-weekday-calculator', 'time/time-between-dates']);
 assign('image', [
   'image-generic/change-colors',
   'image-generic/change-opacity',
-  'image-generic/compress',
   'image-generic/create-transparent',
   'image-generic/crop',
   'image-generic/image-to-text',
   'image-generic/remove-background',
   'image-generic/rotate',
   'image-generic/split-to-pages',
-  'image-generic/watermark',
-  'png/compress-png',
-  'png/convert-jgp-to-png',
-  'converters/convert-to-jpg',
-  'converters/convert-to-webp'
+  'image-generic/watermark'
 ]);
 assign('pdf', [
   'pdf/compress-pdf',
   'pdf/convert-to-pdf',
   'pdf/extract-image-from-pdf',
   'pdf/merge-pdf',
-  'pdf/pdf-to-epub',
-  'pdf/pdf-to-png',
+  'pdf/export',
   'pdf/protect-pdf',
   'pdf/rotate-pdf',
   'pdf/split-pdf'
@@ -133,6 +122,9 @@ assign('media', [
 ]);
 assign('comparison', ['string/text-compare']);
 assign('custom', [
+  'image-generic/convert',
+  'image-generic/compress',
+  'time/convert-duration',
   'image-generic/editor',
   'image-generic/resize',
   'pdf/editor',
@@ -155,29 +147,15 @@ const primary: Record<string, number[]> = {
   'string/replacer': [0, 1],
   'string/statistics': [1],
   'image-generic/change-opacity': [0],
-  'image-generic/compress': [0],
   'image-generic/image-to-text': [0],
   'image-generic/watermark': [0, 1],
   'image-generic/split-to-pages': [0, 1],
-  'png/compress-png': [0],
   'video/add-audio': [0, 1, 2],
   'video/crop-video': [1],
   'video/resize': [0, 1, 2]
 };
 for (const [route, primaryGroups] of Object.entries(primary))
   pages[route].primaryGroups = primaryGroups;
-pages['time/convert-time-to-seconds'].placeholder = [
-  '例如：01:30:00，支持每行一个',
-  'For example: 01:30:00, one time per line'
-];
-pages['time/convert-seconds-to-time'].placeholder = [
-  '例如：5400，支持每行一个',
-  'For example: 5400, one value per line'
-];
-pages['time/convert-time-to-decimal'].placeholder = [
-  '例如：01:30:00',
-  'For example: 01:30:00'
-];
 pages['time/truncate-clock-time'].placeholder = [
   '例如：12:34:56',
   'For example: 12:34:56'

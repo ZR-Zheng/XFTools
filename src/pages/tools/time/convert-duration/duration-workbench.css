@@ -1,0 +1,133 @@
+.duration-workbench {
+  display: grid;
+  gap: 16px;
+}
+
+.duration-settings {
+  display: flex;
+  align-items: end;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.duration-field {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.duration-settings > .duration-field:first-child {
+  flex: 1 1 210px;
+}
+
+.duration-precision {
+  width: 105px;
+}
+
+.duration-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  font-size: 13px;
+}
+
+.duration-mode {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.duration-mode button {
+  min-height: 38px;
+  min-width: 58px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.duration-mode button[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--action-hover);
+  font-weight: 650;
+  box-shadow: 0 1px 4px rgb(35 69 124 / 12%);
+}
+
+.duration-panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.duration-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-bottom: 10px;
+}
+
+.duration-panel-heading h2 {
+  font-size: 16px;
+}
+
+.duration-text-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border: 0;
+  color: var(--action);
+  font-size: 13px;
+}
+
+.duration-input .duration-field > .ui-input {
+  min-height: 58px;
+  font-size: 20px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.duration-result {
+  background: linear-gradient(145deg, var(--glass-raised), var(--blue-soft));
+}
+
+.duration-value {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.duration-value span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.duration-value output {
+  color: var(--action-hover);
+  font-size: clamp(28px, 5vw, 47px);
+  line-height: 1.25;
+  font-weight: 680;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.duration-error {
+  margin-top: 12px;
+  color: var(--danger);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 599px) {
+  .duration-panes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}

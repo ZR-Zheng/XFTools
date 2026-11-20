@@ -9,34 +9,6 @@
     "shortDescription": "Convert audio files to various formats.",
     "title": "Audio Converter"
   },
-  "convertToJPG": {
-    "description": "Convert various image formats to JPG with customizable quality and background color settings.",
-    "failedToConvert": "Conversion of image(s) to JPG failed. Please try again.",
-    "inputTitle": "Input Images",
-    "options": {
-      "colorDescription": "Background color (for transparent images)",
-      "quality": "Conversion Quality:",
-      "qualityDescription": "Higher values = better quality, larger file size",
-      "title": "Conversion Settings"
-    },
-    "resultTitle": "JPG Images",
-    "shortDescription": "Convert images to JPG Format with quality control",
-    "title": "Convert Images to JPG"
-  },
-  "convertToWebp": {
-    "description": "Convert various image formats to WebP format with customizable quality and background color settings.",
-    "failedToConvert": "Conversion of image(s) to WebP failed. Please try again.",
-    "inputTitle": "Input Images",
-    "options": {
-      "colorDescription": "Background color (for transparent images)",
-      "quality": "Conversion Quality:",
-      "qualityDescription": "Higher values = better quality, larger file size",
-      "title": "Conversion Settings"
-    },
-    "resultTitle": "WEBP Images",
-    "shortDescription": "Convert Images to WebP Format with quality control.",
-    "title": "Convert Images to WebP"
-  },
   "videoToGif": {
     "description": "Convert video files to animated GIF format. Extract specific time ranges and create shareable animated images.",
     "inputTitle": "Input Video",

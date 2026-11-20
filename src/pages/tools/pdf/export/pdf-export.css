@@ -1,0 +1,83 @@
+.pdf-export-workbench {
+  display: grid;
+  gap: 18px;
+}
+
+.pdf-export-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 332px);
+  align-items: start;
+  gap: 18px;
+}
+
+.pdf-export-controls {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+
+.pdf-export-controls h2,
+.pdf-export-result h2 {
+  font-size: 16px;
+}
+
+.pdf-export-note {
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.pdf-export-result-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pdf-export-result-header p {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pdf-export-pages {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(150px, 100%), 1fr));
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdf-export-pages li {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+}
+
+.pdf-export-pages img {
+  width: 100%;
+  height: 140px;
+  object-fit: contain;
+}
+
+.pdf-export-pages button {
+  padding-inline: 8px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  .pdf-export-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}

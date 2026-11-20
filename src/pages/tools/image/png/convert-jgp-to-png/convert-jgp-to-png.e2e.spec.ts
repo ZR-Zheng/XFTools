@@ -47,7 +47,7 @@ test.describe('Convert JPG to PNG tool', () => {
 
     // Enable transparency on color 0x808080
     await page
-      .getByRole('checkbox', { name: '启用 PNG 透明度', exact: true })
+      .getByRole('checkbox', { name: '将指定颜色设为透明', exact: true })
       .check();
     await page.getByTestId('color-input').fill('#808080');
     await page.getByTestId('process-tool').click();

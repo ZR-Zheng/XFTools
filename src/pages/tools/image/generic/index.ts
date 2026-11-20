@@ -1,6 +1,7 @@
 import { tool as splitImage } from './split/meta';
 import { tool as resizeImage } from './resize/meta';
 import { tool as compressImage } from './compress/meta';
+import { tool as convertImage } from './convert/meta';
 import { tool as changeColors } from './change-colors/meta';
 import { tool as removeBackground } from './remove-background/meta';
 import { tool as cropImage } from './crop/meta';
@@ -15,6 +16,7 @@ export const imageGenericTools = [
   imageEditor,
   resizeImage,
   compressImage,
+  convertImage,
   removeBackground,
   cropImage,
   changeOpacity,

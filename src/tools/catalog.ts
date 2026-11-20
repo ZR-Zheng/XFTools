@@ -5,22 +5,14 @@ const assignments: Record<
   string,
   { primary: ToolCategory; also?: ToolCategory[] }
 > = {
-  'converters/convert-to-jpg': {
+  'image-generic/convert': {
     primary: 'image-generic',
-    also: ['converters']
-  },
-  'converters/convert-to-webp': {
-    primary: 'image-generic',
-    also: ['converters']
+    also: ['png', 'converters']
   },
   'converters/audio-converter': { primary: 'audio', also: ['converters'] },
   'converters/video-to-gif': { primary: 'gif', also: ['video', 'converters'] },
   'audio/extract-audio': { primary: 'audio', also: ['video', 'converters'] },
-  'png/compress-png': { primary: 'image-generic', also: ['png'] },
-  'png/convert-jgp-to-png': {
-    primary: 'image-generic',
-    also: ['png', 'converters']
-  },
+  'image-generic/compress': { primary: 'image-generic', also: ['png'] },
   'image-generic/create-transparent': {
     primary: 'image-generic',
     also: ['png']
@@ -29,11 +21,10 @@ const assignments: Record<
     primary: 'image-generic',
     also: ['string', 'converters']
   },
-  'pdf/pdf-to-png': {
+  'pdf/export': {
     primary: 'pdf',
     also: ['image-generic', 'png', 'converters']
   },
-  'pdf/pdf-to-epub': { primary: 'pdf', also: ['converters'] },
   'pdf/convert-to-pdf': {
     primary: 'pdf',
     also: ['image-generic', 'converters']
@@ -75,10 +66,6 @@ export function getToolInteraction(
     /audio-converter|video-to-gif|^gif\//.test(route)
   )
     return 'media';
-  if (
-    /^(?:image-generic|png)\//.test(route) ||
-    /convert-to-(?:jpg|webp)/.test(route)
-  )
-    return 'image';
+  if (/^(?:image-generic|png)\//.test(route)) return 'image';
   return 'text';
 }

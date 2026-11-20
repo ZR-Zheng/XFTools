@@ -1,3 +1,5 @@
+import { canonicalToolPath } from '@tools/tool-aliases';
+
 export function getBookmarkedToolPaths(): string[] {
   try {
     return [
@@ -5,6 +7,7 @@ export function getBookmarkedToolPaths(): string[] {
         (localStorage.getItem('bookmarkedTools') || '')
           .split(',')
           .filter(Boolean)
+          .map(canonicalToolPath)
       )
     ];
   } catch {

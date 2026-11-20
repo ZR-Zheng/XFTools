@@ -6,13 +6,15 @@
  */
 export function canvasToBlob(
   canvas: HTMLCanvasElement,
-  type = 'image/png'
+  type = 'image/png',
+  quality?: number
 ): Promise<Blob> {
   return new Promise((resolve, reject) =>
     canvas.toBlob(
       (blob) =>
         blob ? resolve(blob) : reject(new Error('Image export failed')),
-      type
+      type,
+      quality
     )
   );
 }

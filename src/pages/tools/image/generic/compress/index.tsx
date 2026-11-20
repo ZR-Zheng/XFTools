@@ -1,156 +1,190 @@
-import React, { useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { InitialValuesType } from './types';
-import { compressImages } from './service';
-import ToolContent from '@components/ToolContent';
-import ToolMultipleImageInput, {
-  MultiImageInput
-} from '@components/input/ToolMultipleImageInput';
-import { ToolComponentProps } from '@tools/defineTool';
-import ToolFileResult from '@components/result/ToolFileResult';
-import ToolMultiFileResult from '@components/result/ToolMultiFileResult';
-import TextFieldWithDesc from '@components/options/TextFieldWithDesc';
-import { Box } from '@components/ui';
-import { Typography } from '@components/ui';
-import { CustomSnackBarContext } from '../../../../../contexts/CustomSnackBarContext';
-import { updateNumberField } from '@utils/string';
+import { useCallback, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import ImageBatchWorkbench from '@components/workbench/ImageBatchWorkbench';
+import { getImageDimensions } from '@utils/image';
+import { compressImage } from './service';
 
-const initialValues: InitialValuesType = {
-  maxFileSizeInMB: 1.0,
-  quality: 80
-};
+const modes = [
+  { value: 'standard', label: '通用', detail: '控制体积' },
+  { value: 'png', label: 'PNG 专用', detail: '保留尺寸' }
+] as const;
 
-export default function CompressImage({ title }: ToolComponentProps) {
-  const { t } = useTranslation('image');
-  const [input, setInput] = useState<MultiImageInput[]>([]);
-  const [results, setResults] = useState<File[]>([]);
-  const [zipFile, setZipFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [originalSize, setOriginalSize] = useState<number | null>(null); // Store original file size
-  const [compressedSize, setCompressedSize] = useState<number | null>(null); // Store compressed file size
-  const { showSnackBar } = useContext(CustomSnackBarContext);
+export default function ImageCompressor() {
+  const [params, setParams] = useSearchParams();
+  const png = params.get('mode') === 'png';
+  const [standardQuality, setStandardQuality] = useState(80);
+  const [pngQuality, setPngQuality] = useState('60');
+  const [maxMB, setMaxMB] = useState('1');
+  const [maxKB, setMaxKB] = useState('0');
+  const [dithering, setDithering] = useState(false);
 
-  const compute = async (
-    values: InitialValuesType,
-    input: MultiImageInput[]
-  ) => {
-    if (!input.length) return;
+  const ready = png
+    ? maxKB !== '' &&
+      Number.isFinite(Number(maxKB)) &&
+      Number(maxKB) >= 0 &&
+      Number.isInteger(Number(pngQuality)) &&
+      Number(pngQuality) >= 1 &&
+      Number(pngQuality) <= 100
+    : Number.isFinite(Number(maxMB)) && Number(maxMB) >= 0.1;
 
-    setOriginalSize(input.reduce((acc, img) => acc + img.file.size, 0));
-
-    try {
-      setIsProcessing(true);
-
-      const output = await compressImages(
-        input.map((img) => img.file),
-        values
-      );
-
-      if (!output) {
-        showSnackBar(t('compress.failedToCompress'), 'error');
-        return;
+  const process = useCallback(
+    async (source: File) => {
+      if (png) {
+        if (
+          source.type !== 'image/png' &&
+          (source.type || !/\.png$/i.test(source.name))
+        ) {
+          throw new Error('PNG 专用模式只处理 PNG 图片。');
+        }
+        const { compressPng } = await import('../../png/compress-png/service');
+        const result = await compressPng(source, {
+          quality: Number(pngQuality),
+          dithering,
+          maxOutputSizeInKB: Number(maxKB)
+        });
+        const detail = result.keptOriginal
+          ? '已保留更小的原图'
+          : result.colors + ' 色调色板';
+        return {
+          file: result.file,
+          detail: result.targetReached ? detail : detail + ' · 未达到目标体积'
+        };
       }
 
-      if (output.results.length < input.length) {
-        showSnackBar(t('compress.failedToCompress'), 'error');
-      }
-
-      setResults(output.results);
-      setZipFile(output.zipFile);
-      setCompressedSize(output.results.reduce((acc, f) => acc + f.size, 0));
-    } catch (err) {
-      console.error('Error in compression:', err);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+      const file = await compressImage(source, {
+        maxFileSizeInMB: Number(maxMB),
+        quality: standardQuality
+      });
+      const percent = source.size
+        ? ((1 - file.size / source.size) * 100).toFixed(1)
+        : '0';
+      const detail =
+        file === source ? '已保留更小的原图' : '节省 ' + percent + '%';
+      return {
+        file,
+        dimensions:
+          file === source ? undefined : await getImageDimensions(file),
+        detail:
+          file.size <= Number(maxMB) * 1024 * 1024
+            ? detail
+            : detail + ' · 未达到目标体积'
+      };
+    },
+    [png, pngQuality, dithering, maxKB, maxMB, standardQuality]
+  );
 
   return (
-    <ToolContent
-      title={title}
-      input={input}
-      inputComponent={
-        <ToolMultipleImageInput
-          value={input}
-          type={'image'}
-          onChange={setInput}
-          accept={['image/*']}
-          title={t('compress.inputTitle')}
-        />
+    <ImageBatchWorkbench
+      settingsTitle="压缩设置"
+      importHint={
+        png ? '可批量导入 PNG 图片' : '可批量导入 JPG、PNG、WebP 等图片'
       }
-      resultComponent={
-        zipFile ? (
-          <ToolMultiFileResult
-            title={t('compress.resultTitle')}
-            value={results}
-            zipFile={zipFile}
-            loading={isProcessing}
-          />
-        ) : (
-          <ToolFileResult
-            title={t('compress.resultTitle')}
-            value={results[0] ?? null}
-            extension={results[0]?.name.split('.').pop() || 'png'}
-          />
-        )
+      action="压缩"
+      archiveName={png ? 'compressed-pngs.zip' : 'compressed-images.zip'}
+      processImage={process}
+      ready={ready}
+      settings={
+        <>
+          <fieldset className="image-batch-choices">
+            <legend>压缩方式</legend>
+            <div className="image-batch-choice-row">
+              {modes.map((mode) => (
+                <label className="image-batch-choice" key={mode.value}>
+                  <input
+                    type="radio"
+                    name="compression-mode"
+                    checked={png === (mode.value === 'png')}
+                    aria-label={mode.label}
+                    onChange={() =>
+                      setParams({ mode: mode.value }, { replace: true })
+                    }
+                  />
+                  <strong>{mode.label}</strong>
+                  <small>{mode.detail}</small>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          {png ? (
+            <>
+              <label className="image-batch-field">
+                <span>保色程度（1–100）</span>
+                <input
+                  className="ui-input"
+                  type="number"
+                  name="quality"
+                  min={1}
+                  max={100}
+                  step={1}
+                  value={pngQuality}
+                  onChange={(event) => setPngQuality(event.target.value)}
+                />
+                <small>降低数值可减少 PNG 色板的颜色数。</small>
+              </label>
+              <label className="image-batch-field">
+                <span>目标体积（KB）</span>
+                <input
+                  className="ui-input"
+                  type="number"
+                  name="maxOutputSizeInKB"
+                  min={0}
+                  step="any"
+                  value={maxKB}
+                  onChange={(event) => setMaxKB(event.target.value)}
+                />
+                <small>设为 0 时按保色程度压缩。输出保持原图尺寸。</small>
+              </label>
+              <label className="image-batch-toggle">
+                <input
+                  className="ui-check"
+                  type="checkbox"
+                  checked={dithering}
+                  onChange={(event) => setDithering(event.target.checked)}
+                />
+                使用抖动改善渐变
+              </label>
+            </>
+          ) : (
+            <>
+              <label className="image-batch-field">
+                <span>目标体积（MB）</span>
+                <input
+                  className="ui-input"
+                  type="number"
+                  min={0.1}
+                  step="any"
+                  value={maxMB}
+                  onChange={(event) => setMaxMB(event.target.value)}
+                />
+                <small>针对每张图片。较大图片的最长边最多 1920 px。</small>
+              </label>
+              <label className="image-batch-field">
+                <span>
+                  起始画质 <span aria-hidden="true">{standardQuality}%</span>
+                </span>
+                <input
+                  type="range"
+                  aria-label="起始画质"
+                  aria-valuetext={standardQuality + '%'}
+                  min={10}
+                  max={100}
+                  value={standardQuality}
+                  onChange={(event) =>
+                    setStandardQuality(Number(event.target.value))
+                  }
+                />
+              </label>
+            </>
+          )}
+          {!ready && (
+            <p className="tool-inline-error" role="alert">
+              {png
+                ? '保色程度须为 1 至 100 的整数，目标体积须大于或等于 0。'
+                : '目标体积须大于或等于 0.1 MB。'}
+            </p>
+          )}
+        </>
       }
-      initialValues={initialValues}
-      getGroups={({ values, updateField }) => [
-        {
-          title: t('compress.compressionOptions'),
-          component: (
-            <Box>
-              <TextFieldWithDesc
-                name="maxFileSizeInMB"
-                type="number"
-                description={t('compress.maxFileSizeDescription')}
-                onOwnChange={(value) =>
-                  updateNumberField(value, 'maxFileSizeInMB', updateField)
-                }
-                value={values.maxFileSizeInMB}
-                slotProps={{
-                  htmlInput: { min: 0.1, step: 0.1 }
-                }}
-              />
-              <TextFieldWithDesc
-                name="quality"
-                type="number"
-                description={t('compress.qualityDescription')}
-                onOwnChange={(value) =>
-                  updateNumberField(value, 'quality', updateField)
-                }
-                value={values.quality}
-                slotProps={{
-                  htmlInput: { min: 10, max: 100, step: 1 }
-                }}
-              />
-            </Box>
-          )
-        },
-        {
-          title: t('compress.fileSizes'),
-          component: (
-            <Box>
-              <Box>
-                {originalSize !== null && (
-                  <Typography>
-                    {t('compress.originalSize')}:{' '}
-                    {(originalSize / 1024).toFixed(2)} KB
-                  </Typography>
-                )}
-                {compressedSize !== null && (
-                  <Typography>
-                    {t('compress.compressedSize')}:{' '}
-                    {(compressedSize / 1024).toFixed(2)} KB
-                  </Typography>
-                )}
-              </Box>
-            </Box>
-          )
-        }
-      ]}
-      compute={compute}
-      setInput={setInput}
     />
   );
 }

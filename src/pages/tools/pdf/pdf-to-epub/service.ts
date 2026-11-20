@@ -5,12 +5,23 @@ import JSZip from 'jszip';
 // Set worker source for PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
+function escapeXml(value: string): string {
+  const entities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&apos;'
+  };
+  return value.replace(/[&<>"']/g, (character) => entities[character]);
+}
+
 function formatTextToParagraphs(raw: string): string {
   return raw
     .split(/\n{2,}|\r{2,}/g) // Split on double line breaks
     .map((p) => p.trim())
     .filter((p) => p.length > 0)
-    .map((p) => `<p>${p.replace(/\n/g, ' ')}</p>`)
+    .map((p) => `<p>${escapeXml(p.replace(/\n/g, ' '))}</p>`)
     .join('\n');
 }
 
@@ -18,18 +29,21 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
   const arrayBuffer = await pdfFile.arrayBuffer();
 
   const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-  const pdfDoc = await loadingTask.promise;
-  const numPages = pdfDoc.numPages;
-
-  // Extracting text
   const pages: string[] = [];
-  for (let i = 1; i <= numPages; i++) {
-    const page = await pdfDoc.getPage(i);
-    const textContent = await page.getTextContent();
-
-    const pageText = textContent.items.map((item: any) => item.str).join('\n'); // Preserve line breaks better
-
-    pages.push(pageText);
+  try {
+    const pdfDoc = await loadingTask.promise;
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+      const page = await pdfDoc.getPage(i);
+      const textContent = await page.getTextContent();
+      pages.push(
+        textContent.items
+          .map((item) => ('str' in item ? item.str : ''))
+          .join('\n')
+      );
+      page.cleanup();
+    }
+  } finally {
+    await loadingTask.destroy();
   }
 
   const zip = new JSZip();
@@ -48,7 +62,8 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
   );
 
   const oebps = zip.folder('OEBPS');
-  const bookTitle = pdfFile.name.replace(/\.pdf$/i, '');
+  const bookName = pdfFile.name.replace(/\.pdf$/i, '');
+  const bookTitle = escapeXml(bookName);
 
   const contentOpf = `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0">
@@ -138,7 +153,7 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
 
   const epubBuffer = await zip.generateAsync({ type: 'arraybuffer' });
 
-  return new File([epubBuffer], pdfFile.name.replace(/\.pdf$/i, '.epub'), {
+  return new File([epubBuffer], bookName + '.epub', {
     type: 'application/epub+zip'
   });
 }

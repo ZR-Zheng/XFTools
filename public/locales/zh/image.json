@@ -54,7 +54,7 @@
   "compress": {
     "compressedSize": "压缩尺寸",
     "compressionOptions": "压缩选项",
-    "description": "在保持质量的同时减小图像文件大小。",
+    "description": "按目标体积批量压缩图片，或用 PNG 专用模式减少色板颜色并保留原始像素尺寸。",
     "failedToCompress": "压缩图片失败，请重试。",
     "fileSizes": "文件大小",
     "inputTitle": "输入图像",
@@ -62,41 +62,10 @@
     "originalSize": "原始尺寸",
     "qualityDescription": "图像质量百分比（越低表示文件大小越小）",
     "resultTitle": "压缩图像",
-    "shortDescription": "压缩图像以减小文件大小，同时保持合理的质量。",
+    "shortDescription": "批量压缩图片，支持通用和 PNG 专用模式",
     "title": "压缩图像",
     "compressing": "正在压缩图片…",
     "someFailedToCompress": "部分图片压缩失败，已跳过。"
-  },
-  "compressPng": {
-    "description": "这是一个压缩 PNG 图片的程序。只要您将 PNG 图片粘贴到输入区域，程序就会对其进行压缩，并在输出区域显示结果。在选项中，您可以调整压缩级别，以及查看新旧图片文件的大小。",
-    "shortDescription": "快速压缩 PNG",
-    "title": "压缩 PNG",
-    "compressionOptions": "压缩选项",
-    "fileSizes": "文件大小",
-    "alreadyOptimized": "该 PNG 已比可生成的压缩结果更小，因此保留原文件。",
-    "alreadyOptimizedFiles": "以下文件已更小，保留原文件：{{files}}",
-    "colors": "调色板颜色数量",
-    "compressedSize": "压缩后大小",
-    "compressing": "正在压缩 PNG…",
-    "dimensions": "图片尺寸",
-    "dimensionsUnchanged": "（保持不变）",
-    "dithering": "颜色抖动",
-    "ditheringDescription": "将颜色误差分散到相邻像素以减少渐变色带，但文件可能变大",
-    "failed": "PNG 压缩失败，请重试。",
-    "inputTitle": "输入 PNG 图片",
-    "maxOutputSizeDescription": "输出文件大小上限，单位为 KB。程序会减少调色板颜色，直到满足限制；设为 0 表示不限制",
-    "noStatsYet": "上传 PNG 图片后查看压缩节省的空间",
-    "originalSize": "原始大小",
-    "qualityDescription": "质量百分比（1–100），数值越低，保留的颜色越少，文件也越小",
-    "resultTitle": "压缩后的 PNG",
-    "someFailed": "以下文件压缩失败：{{files}}",
-    "targetNotReached": "即使使用最小调色板也无法达到大小限制，已尽可能压缩图片。",
-    "targetNotReachedFiles": "以下文件无法达到大小限制，已尽可能压缩：{{files}}"
-  },
-  "convertJgpToPng": {
-    "description": "快速将您的 JPG 图像转换为 PNG。只需在左侧的编辑器中导入您的 PNG 图像即可",
-    "shortDescription": "快速将您的 JPG 图像转换为 PNG",
-    "title": "JPG 转 PNG"
   },
   "createTransparent": {
     "description": "通过移除所选颜色，使图像背景变为透明。",
@@ -238,5 +207,10 @@
     "description": "使用文件名或自定义文字，为一张或多张图片添加文字水印。",
     "failedToProcess": "部分图片添加水印失败，请重试。",
     "outputTitle": "添加水印后的图片"
+  },
+  "convert": {
+    "title": "图片格式转换",
+    "description": "批量将图片转换为 JPG、WebP 或 PNG。可设置画质和透明区域的处理方式，逐张预览并下载单张或 ZIP。",
+    "shortDescription": "在一个工作台批量转换 JPG、WebP 和 PNG"
   }
 }

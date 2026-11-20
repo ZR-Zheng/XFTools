@@ -34,9 +34,11 @@ describe('tool catalog', () => {
   });
   it.each([
     ['pdf/protect-pdf', 'pdf'],
-    ['converters/convert-to-jpg', 'image-generic'],
+    ['pdf/export', 'pdf'],
+    ['image-generic/convert', 'image-generic'],
     ['converters/audio-converter', 'audio'],
-    ['png/convert-jgp-to-png', 'image-generic'],
+    ['image-generic/compress', 'image-generic'],
+    ['time/convert-duration', 'time'],
     ['number/byte-converter', 'converters']
   ])(
     'classifies %s by function while keeping its original URL',

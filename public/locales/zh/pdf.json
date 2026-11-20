@@ -71,17 +71,6 @@
       "title": "合并PDF文件"
     }
   },
-  "pdfToEpub": {
-    "description": "将 PDF 文档转换为 EPUB 文件，以实现更好的电子阅读器兼容性。",
-    "shortDescription": "将 PDF 文件转换为 EPUB 格式",
-    "title": "PDF 转 EPUB"
-  },
-  "pdfToPng": {
-    "description": "将 PDF 文档转换为 PNG 面板。",
-    "longDescription": "上传 PDF 后，将每个页面转换为高质量的 PNG 图像。此工具非常适合提取视觉内容或分享单个页面。",
-    "shortDescription": "将 PDF 转换为 PNG 图像",
-    "title": "PDF 转 PNG"
-  },
   "protectPdf": {
     "description": "安全地为 PDF 文件添加密码保护",
     "shortDescription": "使用密码安全地保护 PDF 文件",
@@ -155,5 +144,10 @@
     "description": "以原始质量提取 PDF 中所有内嵌图片。",
     "longDescription": "上传 PDF 后自动提取内嵌图片，尽量保留原始质量，支持 JPG、PNG 等常见格式。适合从文档中提取插图、照片、扫描页或其他图片素材。",
     "resultTitle": "提取的图片"
+  },
+  "exportPdf": {
+    "title": "PDF 格式导出",
+    "description": "选择 PDF 页面和渲染倍率，导出 PNG 图片；也可将整份文档的可选文字导出为 EPUB 电子书。",
+    "shortDescription": "选页导出 PNG，或提取文字生成 EPUB 电子书"
   }
 }
