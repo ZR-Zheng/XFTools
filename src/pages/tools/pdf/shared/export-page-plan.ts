@@ -1,4 +1,12 @@
-import { PDFDocument, PDFHexString, PDFName, PDFPage, degrees } from 'pdf-lib';
+import {
+  PDFDict,
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  PDFPage,
+  PDFRef,
+  degrees
+} from 'pdf-lib';
 import type { PdfAsset, PdfPageInstance } from './page-plan';
 
 function fileBookmarks(
@@ -26,6 +34,38 @@ function fileBookmarks(
   document.catalog.set(PDFName.of('Outlines'), outlineRef);
 }
 
+function detachPageAnnotations(page: PDFPage) {
+  const annotations = page.node.Annots();
+  if (!annotations) return;
+  const context = page.doc.context;
+  const replacements = new Map<PDFRef, PDFRef>();
+  const copies: PDFDict[] = [];
+  const list = context.obj([]);
+  for (let index = 0; index < annotations.size(); index++) {
+    const value = annotations.get(index);
+    const dictionary = context.lookup(value);
+    if (!(dictionary instanceof PDFDict)) continue;
+    const copy = dictionary.clone(context);
+    copy.set(PDFName.of('P'), page.ref);
+    if (copy.has(PDFName.of('NM')))
+      copy.set(PDFName.of('NM'), PDFHexString.fromText(crypto.randomUUID()));
+    const reference = context.register(copy);
+    if (value instanceof PDFRef) replacements.set(value, reference);
+    list.push(reference);
+    copies.push(copy);
+  }
+  for (const copy of copies) {
+    for (const name of ['Popup', 'Parent', 'IRT']) {
+      const key = PDFName.of(name);
+      const old = copy.get(key);
+      const replacement =
+        old instanceof PDFRef ? replacements.get(old) : undefined;
+      if (replacement) copy.set(key, replacement);
+    }
+  }
+  page.node.set(PDFName.of('Annots'), list);
+}
+
 export async function exportPagePlan(
   sources: readonly PdfAsset[],
   pages: readonly PdfPageInstance[],
@@ -34,6 +74,7 @@ export async function exportPagePlan(
     bookmarks?: boolean;
     signal?: AbortSignal;
     onProgress?: (done: number, total: number) => void;
+    prepare?: (output: PDFDocument) => Promise<void>;
   } = {}
 ): Promise<File> {
   if (!pages.length) throw new Error('Select at least one page.');
@@ -88,6 +129,7 @@ export async function exportPagePlan(
           if (used.has(instance.pageIndex)) {
             const node = copy.node.clone(output.context);
             copy = PDFPage.of(node, output.context.register(node), output);
+            detachPageAnnotations(copy);
           }
           used.add(instance.pageIndex);
           copies.set(instance.id, copy);
@@ -107,11 +149,22 @@ export async function exportPagePlan(
   }
   check();
   if (options.bookmarks) fileBookmarks(output, bookmarks);
-  const bytes = await output.save();
+  await options.prepare?.(output);
   check();
-  const name =
-    (options.filename?.trim() || 'merged.pdf')
-      .replace(/[<>:"/\\|?*]/g, '_')
-      .replace(/\.pdf$/i, '') + '.pdf';
-  return new File([bytes as BlobPart], name, { type: 'application/pdf' });
+  const bytes = await output.save({ updateFieldAppearances: false });
+  check();
+  return new File(
+    [bytes as BlobPart],
+    pdfFilename(options.filename?.trim() || 'merged.pdf'),
+    {
+      type: 'application/pdf'
+    }
+  );
+}
+
+export function pdfFilename(filename?: string) {
+  const name = (filename?.trim() || '')
+    .replace(/[<>:"/\\|?*]/g, '_')
+    .replace(/\.(pdf|zip)$/i, '');
+  return `${name || 'document'}.pdf`;
 }

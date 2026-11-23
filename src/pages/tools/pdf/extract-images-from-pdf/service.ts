@@ -1,130 +1,151 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorker from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
+import {
+  getDocument,
+  GlobalWorkerOptions,
+  ImageKind,
+  OPS,
+  type PDFPageProxy
+} from 'pdfjs-dist';
+import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import JSZip from 'jszip';
-import { PreProcessImageObject, PdfImageObject } from './types';
+import { canvasToBlob } from '@utils/image';
+import type { PdfJob } from '../shared/task';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+GlobalWorkerOptions.workerSrc = workerUrl;
 
-const RESOLVE_TIMEOUT_MS = 3000;
+type ImageObject = {
+  width: number;
+  height: number;
+  bitmap?: ImageBitmap;
+  data?: Uint8Array | Uint8ClampedArray;
+  kind?: number;
+};
 
-export async function processPDF(
-  input: File
-): Promise<{ extractedImages: File[]; zipFile: File | null } | null> {
-  const url = URL.createObjectURL(input);
-  const seenImages = new Set<string>();
-
-  try {
-    const pdf = await pdfjsLib.getDocument({ url }).promise;
-    const extractedImages: File[] = [];
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const ops = await page.getOperatorList();
-      let imageNum = 1;
-
-      for (let i = 0; i < ops.fnArray.length; i++) {
-        const fn = ops.fnArray[i];
-
-        try {
-          let img: PdfImageObject | null = null;
-
-          if (fn === pdfjsLib.OPS.paintImageXObject) {
-            const imgName = ops.argsArray[i][0];
-            if (seenImages.has(imgName)) continue;
-            seenImages.add(imgName);
-
-            img = (await Promise.race([
-              new Promise((resolve) => page.objs.get(imgName, resolve)),
-              new Promise((_, reject) =>
-                setTimeout(
-                  () =>
-                    reject(new Error(`Timeout resolving image: ${imgName}`)),
-                  RESOLVE_TIMEOUT_MS
-                )
-              )
-            ])) as PdfImageObject;
-          } else if (fn === pdfjsLib.OPS.paintInlineImageXObject) {
-            img = ops.argsArray[i][0];
-            if (!img) continue;
-
-            const key = `${img.width}-${img.height}-${img.data?.length || 0}`;
-            if (seenImages.has(key)) continue;
-            seenImages.add(key);
-          } else {
-            continue;
-          }
-
-          if (!img || !img.width || !img.height) continue;
-
-          const file = await processImage({ img, pageNum, imageNum });
-          if (file) {
-            extractedImages.push(file);
-            imageNum++;
-          }
-        } catch {
-          // skip failed images silently
-        }
-      }
+function imageObject(page: PDFPageProxy, id: string, signal?: AbortSignal) {
+  return new Promise<ImageObject | undefined>((resolve) => {
+    const finish = (image?: ImageObject) => {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', cancel);
+      resolve(image);
+    };
+    const cancel = () => finish();
+    const timer = setTimeout(cancel, 3000);
+    signal?.addEventListener('abort', cancel, { once: true });
+    try {
+      const objects = id.startsWith('g_') ? page.commonObjs : page.objs;
+      objects.get(id, finish);
+    } catch {
+      finish();
     }
-
-    if (extractedImages.length === 0) return null;
-    return await bundleResult(extractedImages);
-  } catch {
-    return null;
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
-
-async function bundleResult(
-  extractedImages: File[]
-): Promise<{ extractedImages: File[]; zipFile: File | null }> {
-  if (extractedImages.length === 1) return { extractedImages, zipFile: null };
-
-  const zip = new JSZip();
-  extractedImages.forEach((file) => zip.file(file.name, file));
-  const zipBlob = await zip.generateAsync({ type: 'blob' });
-  const zipFile = new File([zipBlob], 'images.zip', {
-    type: 'application/zip'
   });
-
-  return { extractedImages, zipFile };
 }
 
-async function processImage(
-  preProcessImage: PreProcessImageObject
-): Promise<File | null> {
-  const { img, pageNum, imageNum } = preProcessImage;
-
+async function imageBlob(image: ImageObject) {
+  const { width, height, data, kind, bitmap } = image;
+  if (
+    width < 1 ||
+    height < 1 ||
+    Math.max(width, height) > 4096 ||
+    width * height > 16_000_000
+  )
+    return;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+  if (!context) return;
   try {
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-
-    if (img.bitmap) {
-      ctx.drawImage(img.bitmap, 0, 0);
-    } else if (img.data) {
-      const imageData = ctx.createImageData(img.width, img.height);
-      imageData.data.set(img.data);
-      ctx.putImageData(imageData, 0, 0);
-    } else {
-      return null;
-    }
-
-    const blob: Blob = await new Promise((resolve, reject) => {
-      canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))),
-        'image/png'
-      );
-    });
-
-    return new File([blob], `page_${pageNum}_img_${imageNum}.png`, {
-      type: 'image/png'
-    });
-  } catch {
-    return null;
+    if (bitmap) context.drawImage(bitmap, 0, 0);
+    else if (data) {
+      const rgba = context.createImageData(width, height);
+      const pixels = rgba.data;
+      if (
+        kind === ImageKind.RGBA_32BPP ||
+        (!kind && data.length === pixels.length)
+      )
+        pixels.set(data);
+      else if (kind === ImageKind.RGB_24BPP) {
+        for (let i = 0, j = 0; i < pixels.length; i += 4, j += 3) {
+          pixels[i] = data[j];
+          pixels[i + 1] = data[j + 1];
+          pixels[i + 2] = data[j + 2];
+          pixels[i + 3] = 255;
+        }
+      } else if (kind === ImageKind.GRAYSCALE_1BPP) {
+        const stride = Math.ceil(width / 8);
+        for (let y = 0; y < height; y++)
+          for (let x = 0; x < width; x++) {
+            const i = (y * width + x) * 4;
+            const shade =
+              data[y * stride + (x >> 3)] & (128 >> (x & 7)) ? 255 : 0;
+            pixels[i] = pixels[i + 1] = pixels[i + 2] = shade;
+            pixels[i + 3] = 255;
+          }
+      } else return;
+      context.putImageData(rgba, 0, 0);
+    } else return;
+    return await canvasToBlob(canvas);
+  } finally {
+    canvas.width = canvas.height = 0;
   }
+}
+
+export async function processPDF(input: File, job: PdfJob = {}) {
+  const data = await input.arrayBuffer();
+  job.signal?.throwIfAborted();
+  const loading = getDocument({ data, isOffscreenCanvasSupported: false });
+  const seen = new Set<string>();
+  const extractedImages: File[] = [];
+  try {
+    const pdf = await loading.promise;
+    for (let number = 1; number <= pdf.numPages; number++) {
+      job.signal?.throwIfAborted();
+      const page = await pdf.getPage(number);
+      const { fnArray, argsArray } = await page.getOperatorList();
+      let count = 0;
+      for (const [index, operation] of fnArray.entries()) {
+        job.signal?.throwIfAborted();
+        let image: ImageObject | undefined;
+        if (
+          operation === OPS.paintImageXObject ||
+          operation === OPS.paintImageXObjectRepeat
+        ) {
+          const id = argsArray[index][0] as string;
+          if (seen.has(id)) continue;
+          seen.add(id);
+          image = await imageObject(page, id, job.signal);
+        } else if (operation === OPS.paintInlineImageXObject)
+          image = argsArray[index][0];
+        if (!image) continue;
+        const blob = await imageBlob(image);
+        if (blob)
+          extractedImages.push(
+            new File([blob], `page_${number}_img_${++count}.png`, {
+              type: 'image/png'
+            })
+          );
+      }
+      page.cleanup();
+      job.onProgress?.(number, pdf.numPages);
+    }
+  } finally {
+    await loading.destroy();
+  }
+  job.signal?.throwIfAborted();
+  if (!extractedImages.length) return null;
+  if (extractedImages.length === 1) return { extractedImages, zipFile: null };
+  const zip = new JSZip();
+  for (const file of extractedImages) {
+    job.signal?.throwIfAborted();
+    zip.file(file.name, await file.arrayBuffer());
+  }
+  const bytes = await zip.generateAsync({ type: 'arraybuffer' });
+  job.signal?.throwIfAborted();
+  return {
+    extractedImages,
+    zipFile: new File(
+      [bytes],
+      `${input.name.replace(/\.pdf$/i, '')}-images.zip`,
+      { type: 'application/zip' }
+    )
+  };
 }

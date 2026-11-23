@@ -11,7 +11,7 @@ import {
   duplicatePages,
   groupBySources,
   movePages,
-  movePagesBefore,
+  movePagesRelative,
   rotatePages,
   sourcePages
 } from './page-plan';
@@ -58,9 +58,14 @@ describe('PDF page plan', () => {
     expect(movePages([], ids, -1)).toEqual([]);
     expect(movePages([pages[0]], ids, 1)).toEqual([pages[0]]);
     expect(
-      movePagesBefore(pages, ids, pages[4].id).map((p) => p.pageIndex)
+      movePagesRelative(pages, ids, pages[4].id).map((p) => p.pageIndex)
     ).toEqual([0, 3, 1, 2, 4]);
-    expect(movePagesBefore(pages, ids, pages[1].id)).toBe(pages);
+    expect(movePagesRelative(pages, ids, pages[1].id)).toBe(pages);
+    expect(
+      movePagesRelative(pages, ids, pages[4].id, 'after').map(
+        (p) => p.pageIndex
+      )
+    ).toEqual([0, 3, 4, 1, 2]);
   });
   it('rotates and duplicates immutable instances, and groups sources stably', () => {
     const pages = [...sourcePages('a', 2), ...sourcePages('b', 1)];

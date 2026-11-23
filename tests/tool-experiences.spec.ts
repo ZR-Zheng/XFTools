@@ -165,17 +165,24 @@ test('PDF thumbnails select actual output pages and clear stale downloads', asyn
   pdf.addPage([200, 100]);
   pdf.addPage([300, 100]);
   await page.goto('/pdf/split-pdf');
-  await expect(page.locator('.flow-result')).not.toBeVisible();
+  await expect(page).toHaveURL(/\/pdf\/workspace\?mode=split$/);
+  await expect(page.getByTestId('process-tool')).toBeDisabled();
   await page.locator('input[type=file]').setInputFiles({
     name: 'three.pdf',
     mimeType: 'application/pdf',
     buffer: Buffer.from(await pdf.save())
   });
-  await expect(
-    page.getByRole('button', { name: '第 3 页', exact: true })
-  ).toBeVisible();
-  await page.getByRole('button', { name: '第 1 页', exact: true }).click();
-  await page.getByRole('button', { name: '第 3 页', exact: true }).click();
+  const first = page.getByRole('checkbox', {
+    name: '选择第 1 页',
+    exact: true
+  });
+  const third = page.getByRole('checkbox', {
+    name: '选择第 3 页',
+    exact: true
+  });
+  await expect(third).toBeChecked();
+  await first.uncheck();
+  await third.uncheck();
   await page.getByTestId('process-tool').click();
   const download = page.waitForEvent('download');
   const save = page
@@ -188,7 +195,7 @@ test('PDF thumbnails select actual output pages and clear stale downloads', asyn
   );
   expect(output.getPageCount()).toBe(1);
   expect(output.getPage(0).getWidth()).toBe(200);
-  await page.getByRole('button', { name: '第 1 页', exact: true }).click();
+  await first.check();
   await expect(save).toBeDisabled();
   await page.screenshot({
     path: '.tmp/screenshots/pdf-selection.png',

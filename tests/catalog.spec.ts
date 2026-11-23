@@ -40,21 +40,27 @@ test('Every registered tool opens at desktop and mobile widths', async ({
         await expect(
           toolPage.getByRole('heading', { name: '你可能还需要', exact: true })
         ).toHaveCount(0);
-        const header = await toolPage
-          .locator('.tool-page-header')
-          .boundingBox();
+        const header = toolPage.locator('.tool-page-header');
+        const standalone = await toolPage
+          .locator('.tool-page-standalone')
+          .count();
+        if (standalone) await expect(header).toHaveCount(0);
+        else await expect(header).toBeVisible();
+        const headerHeight = standalone
+          ? 0
+          : (await header.boundingBox())!.height;
         const workspace = await toolPage
           .locator('.tool-workspace')
           .boundingBox();
         headerMetrics.push({
           route: current,
-          height: header!.height,
+          height: headerHeight,
           workspaceTop: workspace!.y
         });
-        if (header!.height > 120 || workspace!.y > 155)
+        if (headerHeight > 120 || workspace!.y > 155)
           issues.push({
             route: current,
-            message: `Header ${header!.height}px; workspace starts at ${workspace!.y}px`
+            message: `Header ${headerHeight}px; workspace starts at ${workspace!.y}px`
           });
         await expect(toolPage.locator('.topbar')).toHaveCount(0);
         await expect(toolPage.getByRole('main')).not.toContainText(

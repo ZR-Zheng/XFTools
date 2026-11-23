@@ -20,6 +20,9 @@
     "test:workbench": "playwright test --config playwright.workbench.config.ts"
   },
   "dependencies": {
+    "@embedpdf/engines": "2.15.1",
+    "@embedpdf/models": "2.15.1",
+    "@embedpdf/pdfium": "2.15.1",
     "@embedpdf/react-pdf-viewer": "^2.15.1",
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",

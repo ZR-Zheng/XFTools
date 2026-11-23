@@ -79,7 +79,8 @@ export default function PdfCanvas({
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    if (!visible || !canvas.current) return;
+    const element = canvas.current;
+    if (!visible || !element) return;
     let active = true;
     let render: RenderTask | undefined;
     setReady(false);
@@ -88,15 +89,20 @@ export default function PdfCanvas({
       .then(async (document) => {
         const page = await document.getPage(pageIndex + 1);
         if (!active || !canvas.current) return;
-        const scale = width / page.getViewport({ scale: 1 }).width;
+        const angle = (page.rotate + rotation) % 360;
+        const base = page.getViewport({ scale: 1, rotation: angle });
         const viewport = page.getViewport({
-          scale,
-          rotation: (page.rotate + rotation) % 360
+          scale: width / base.width,
+          rotation: angle
         });
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        const element = canvas.current;
-        element.width = Math.ceil(viewport.width * ratio);
-        element.height = Math.ceil(viewport.height * ratio);
+        const ratio = Math.min(
+          window.devicePixelRatio || 1,
+          2,
+          Math.sqrt(4_194_304 / (viewport.width * viewport.height)),
+          4096 / Math.max(viewport.width, viewport.height)
+        );
+        element.width = Math.max(1, Math.floor(viewport.width * ratio));
+        element.height = Math.max(1, Math.floor(viewport.height * ratio));
         render = page.render({
           canvas: element,
           viewport,
@@ -112,6 +118,7 @@ export default function PdfCanvas({
     return () => {
       active = false;
       render?.cancel();
+      element.width = element.height = 0;
     };
   }, [source, pageIndex, rotation, width, visible]);
   return (

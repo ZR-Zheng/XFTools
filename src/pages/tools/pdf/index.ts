@@ -1,24 +1,3 @@
-import { tool as pdfExport } from './export/meta';
-import { tool as pdfRotatePdf } from './rotate-pdf/meta';
-import { meta as splitPdfMeta } from './split-pdf/meta';
-import { meta as mergePdf } from './merge-pdf/meta';
-import { DefinedTool } from '@tools/defineTool';
-import { tool as compressPdfTool } from './compress-pdf/meta';
-import { tool as protectPdfTool } from './protect-pdf/meta';
-import { tool as pdfEditor } from './editor/meta';
-import { tool as formPdfEditor } from './form-pdf/meta';
-import { tool as convertToPdf } from './convert-to-pdf/meta';
-import { meta as extractImageFromPdf } from './extract-images-from-pdf/meta';
+import { pdfWorkspace } from './workspace/meta';
 
-export const pdfTools: DefinedTool[] = [
-  pdfEditor,
-  splitPdfMeta,
-  pdfRotatePdf,
-  compressPdfTool,
-  protectPdfTool,
-  mergePdf,
-  pdfExport,
-  formPdfEditor,
-  convertToPdf,
-  extractImageFromPdf
-];
+export const pdfTools = [pdfWorkspace];

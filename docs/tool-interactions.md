@@ -10,11 +10,17 @@
 | [Squoosh](https://squoosh.app/)、[项目说明](https://github.com/GoogleChromeLabs/squoosh) | 文件导入、图像预览、参数调整和结果对照 | 上传前采用紧凑空状态；缩放后可切换原图与结果；显示文件大小；处理后再出现下载操作 |
 | [CyberChef](https://gchq.github.io/CyberChef/) | 输入输出并排、及时反馈、处理参数靠近任务 | 文本、代码和结构化数据工具以双栏为主；常用选项在编辑区上方；说明与示例默认折叠 |
 | [IT Tools](https://github.com/CorentinTh/it-tools) | 按工具用途使用表单 | 短数值使用两行输入 |
-| [PDF24 Merge](https://tools.pdf24.org/en/merge-pdf)、[PDF24 Split](https://tools.pdf24.org/en/split-pdf) | 文件排序、页面选择、处理与导出 | 合并保留可通过键盘操作的排序按钮；拆分与旋转支持缩略图选页，页码文本同步；每次最多渲染 24 张缩略图 |
+| [PDF24 Merge](https://tools.pdf24.org/en/merge-pdf)、[PDF24 Split](https://tools.pdf24.org/en/split-pdf) | 文件排序、页面选择、处理与导出 | 同一个 PDF 工作台支持连续预览、文件和页面排序、缩略图选页和按范围拆分；主预览按视口渲染，侧栏每组最多显示 24 张页面缩略图 |
 | [AudioMass](https://github.com/pkalogiros/AudioMass) | 波形预览、范围选择、播放选区 | 音频输入提供本地波形；音视频裁剪保留原生播放控制，并提供秒数输入、范围滑块、时长和播放选区按钮 |
 | [EpochConverter](https://www.epochconverter.com/) | 时间戳和日期双向转换、秒与毫秒区分 | Unix 工具提供日期时间选择器、单位与时区选择、当前时间快捷操作和可复制的多格式结果；原批量功能保留在折叠区 |
 
 这里参考的是交互方式，未引入这些项目的 UI 框架或外部处理服务。继续使用 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) 的渐进展示、可见标签和拖动替代操作建议，沿用已有 `design-system/xftools/MASTER.md`。
+
+### PDF 保存验证
+
+工作台用页面实例绑定批注与新建字段。导出写入原生 PDF 便签、区域高亮、手绘、文本批注和 AcroForm。复制页使用独立的批注字典和编号。单一来源整份导出可保留原始字段，跨文档拼接和提取会固定来源表单的外观，工作台新建字段继续可编辑。已有批注与表单可在高级编辑器中打开并应用到工作台。
+
+格式转换、压缩和加密使用当前页序与编辑结果。压缩重打包 PDF 对象并重编码兼容的 RGB JPEG。文件无法进一步缩小时，提供同等大小的副本。密码保护使用本地 PDFium WASM，通过单独的 Worker 处理，并在等待超时或取消后释放资源。加密文档可用有编辑权限的密码重新导入。EPUB 取自可选文字，扫描件需要先做 OCR。
 
 ## 页面行为
 

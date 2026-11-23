@@ -5,6 +5,7 @@ import { createElement, Suspense, useEffect } from 'react';
 import Loading from './Loading';
 import { CustomSnackBarProvider } from '../contexts/CustomSnackBarContext';
 import { tools } from '../tools';
+import { canonicalToolPath } from '../tools/tool-aliases';
 import './index.css';
 import './workbench/refinements.css';
 import './workbench/task-pages.css';
@@ -26,17 +27,30 @@ function AppRoutes() {
 function Workspace() {
   const { w } = useWorkbenchText();
   const { pathname } = useLocation();
+  const toolPath = canonicalToolPath(pathname.replace(/^\/+|\/+$/g, ''));
+  const standalone = tools.some(
+    (tool) => tool.path === toolPath && tool.standalone
+  );
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
+  const routes = (
+    <Suspense fallback={<Loading />}>
+      <AppRoutes />
+    </Suspense>
+  );
+  if (standalone)
+    return (
+      <main id="main-content" className="standalone-tool-shell" tabIndex={-1}>
+        {routes}
+      </main>
+    );
   return (
     <div className="app-shell">
       <Navbar />
       <div className="main-shell">
         <main id="main-content" tabIndex={-1}>
-          <Suspense fallback={<Loading />}>
-            <AppRoutes />
-          </Suspense>
+          {routes}
         </main>
         <footer className="app-footer">
           <span>

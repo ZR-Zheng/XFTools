@@ -15,7 +15,7 @@ import { usePageTitle } from '../../hooks/usePageTitle';
 import Glyph from '../../components/workbench/Glyph';
 import ToolTile from '../../components/workbench/ToolTile';
 const featuredPaths = [
-  'pdf/merge-pdf',
+  'pdf/workspace',
   'image-generic/resize',
   'string/text-compare',
   'image-generic/convert',

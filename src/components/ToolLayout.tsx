@@ -47,36 +47,44 @@ export default function ToolLayout({
     recordTool(fullPath);
   }, [fullPath]);
   return (
-    <div className="tool-page">
-      <header className="tool-page-header">
-        <nav className="tool-breadcrumb" aria-label={uiText('Breadcrumb')}>
-          <Link to="/">{w('all')}</Link>
-          <Glyph name="chevron" size={12} />
-          <Link to={`/categories/${type}`}>{uiText(category?.rawTitle)}</Link>
-        </nav>
-        <div className="tool-heading">
-          <span className="tool-heading-icon">
-            <Glyph name={categoryGlyph[type]} size={20} />
-          </span>
-          <div className="tool-heading-copy">
-            <h1>{uiText(title)}</h1>
-            {description && (
-              <p title={uiText(description)}>{uiText(description)}</p>
-            )}
+    <div
+      className={
+        tool?.standalone ? 'tool-page tool-page-standalone' : 'tool-page'
+      }
+    >
+      {tool?.standalone ? (
+        <h1 className="sr-only">{uiText(title)}</h1>
+      ) : (
+        <header className="tool-page-header">
+          <nav className="tool-breadcrumb" aria-label={uiText('Breadcrumb')}>
+            <Link to="/">{w('all')}</Link>
+            <Glyph name="chevron" size={12} />
+            <Link to={`/categories/${type}`}>{uiText(category?.rawTitle)}</Link>
+          </nav>
+          <div className="tool-heading">
+            <span className="tool-heading-icon">
+              <Glyph name={categoryGlyph[type]} size={20} />
+            </span>
+            <div className="tool-heading-copy">
+              <h1>{uiText(title)}</h1>
+              {description && (
+                <p title={uiText(description)}>{uiText(description)}</p>
+              )}
+            </div>
+            <div className="tool-heading-controls">
+              <div className="tool-header-actions" ref={setHeaderActions} />
+              <button
+                className={`favorite-button ${favorite ? 'is-favorite' : ''}`}
+                aria-label={w(favorite ? 'removeFavorite' : 'addFavorite')}
+                aria-pressed={favorite}
+                onClick={() => toggleBookmarked(fullPath)}
+              >
+                <Glyph name="star" filled={favorite} />
+              </button>
+            </div>
           </div>
-          <div className="tool-heading-controls">
-            <div className="tool-header-actions" ref={setHeaderActions} />
-            <button
-              className={`favorite-button ${favorite ? 'is-favorite' : ''}`}
-              aria-label={w(favorite ? 'removeFavorite' : 'addFavorite')}
-              aria-pressed={favorite}
-              onClick={() => toggleBookmarked(fullPath)}
-            >
-              <Glyph name="star" filled={favorite} />
-            </button>
-          </div>
-        </div>
-      </header>
+        </header>
+      )}
       <ToolInteractionContext.Provider value={tool?.interaction || 'text'}>
         <ToolPageContext.Provider
           value={{

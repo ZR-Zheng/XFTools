@@ -1,0 +1,57 @@
+import { defineTool } from '@tools/defineTool';
+import { lazy } from 'react';
+
+export const pdfWorkspace = defineTool('pdf', {
+  path: 'workspace',
+  standalone: true,
+  alternativeCategories: ['image-generic', 'png', 'converters'],
+  icon: 'mdi:file-document-edit',
+  component: lazy(() => import('./index')),
+  keywords: [
+    'PDF 预览',
+    'PDF 阅读器',
+    '合并 PDF',
+    '拆分 PDF',
+    '旋转 PDF',
+    'PDF 合并',
+    'PDF 拆分',
+    'PDF 旋转',
+    '删除页面',
+    '重排页面',
+    'preview',
+    'viewer',
+    'merge',
+    'combine',
+    'split',
+    'extract pages',
+    'rotate',
+    'reorder',
+    'delete pages',
+    '编辑 PDF',
+    'PDF 批注',
+    'PDF 表单',
+    '表单设计',
+    'PDF 转 PNG',
+    'PDF 转 EPUB',
+    '提取 PDF 图片',
+    '图片转 PDF',
+    '压缩 PDF',
+    '保护 PDF',
+    'PDF 加密',
+    'annotate',
+    'highlight',
+    'form builder',
+    'pdf to png',
+    'pdf to epub',
+    'extract images',
+    'images to pdf',
+    'compress pdf',
+    'encrypt pdf'
+  ],
+  i18n: {
+    name: 'pdf:workspace.title',
+    description: 'pdf:workspace.description',
+    shortDescription: 'pdf:workspace.shortDescription',
+    userTypes: ['generalUsers']
+  }
+});

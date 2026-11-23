@@ -19,6 +19,7 @@ export type UserType = 'generalUsers' | 'developers';
 
 export interface ToolMeta {
   path: string;
+  standalone?: boolean;
   component: LazyExoticComponent<JSXElementConstructor<ToolComponentProps>>;
   keywords: string[];
   icon: IconifyIcon | string;
@@ -50,6 +51,7 @@ export interface DefinedTool {
   type: ToolCategory;
   alternativeCategories?: ToolCategory[];
   path: string;
+  standalone?: boolean;
   name: FullI18nKey;
   description: FullI18nKey;
   shortDescription: FullI18nKey;
@@ -68,8 +70,15 @@ export const defineTool = (
   basePath: ToolRoutePrefix,
   options: ToolMeta
 ): DefinedTool => {
-  const { icon, path, keywords, component, i18n, alternativeCategories } =
-    options;
+  const {
+    icon,
+    path,
+    standalone,
+    keywords,
+    component,
+    i18n,
+    alternativeCategories
+  } = options;
   const Component = component;
   const fullPath = `${basePath}/${path}`;
   const classification = classifyTool(
@@ -82,6 +91,7 @@ export const defineTool = (
     alternativeCategories: classification.alternativeCategories,
     interaction: getToolInteraction(fullPath, classification.primary),
     path: `${basePath}/${path}`,
+    standalone,
     name: i18n.name,
     icon,
     description: i18n.description,

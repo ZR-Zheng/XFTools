@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "PDF 工作台",
+    "description": "预览、合并、拆分、批注、表单、压缩、加密与转换 PDF。",
+    "shortDescription": "预览、整理、编辑与转换 PDF。"
+  },
   "compressPdf": {
     "compressedFileSize": "压缩文件大小",
     "compressingPdf": "正在压缩 PDF...",

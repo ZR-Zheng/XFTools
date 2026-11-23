@@ -1,6 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import JSZip from 'jszip';
+import type { PdfJob } from '../shared/task';
 
 // Set worker source for PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
@@ -25,14 +26,19 @@ function formatTextToParagraphs(raw: string): string {
     .join('\n');
 }
 
-export async function convertPdfToEpub(pdfFile: File): Promise<File> {
+export async function convertPdfToEpub(
+  pdfFile: File,
+  job: PdfJob = {}
+): Promise<File> {
   const arrayBuffer = await pdfFile.arrayBuffer();
+  job.signal?.throwIfAborted();
 
   const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
   const pages: string[] = [];
   try {
     const pdfDoc = await loadingTask.promise;
     for (let i = 1; i <= pdfDoc.numPages; i++) {
+      job.signal?.throwIfAborted();
       const page = await pdfDoc.getPage(i);
       const textContent = await page.getTextContent();
       pages.push(
@@ -41,10 +47,14 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
           .join('\n')
       );
       page.cleanup();
+      job.onProgress?.(i, pdfDoc.numPages);
     }
   } finally {
     await loadingTask.destroy();
   }
+  job.signal?.throwIfAborted();
+  if (!pages.some((text) => text.trim()))
+    throw new Error('文档中没有可提取的文字。扫描件需要先进行 OCR。');
 
   const zip = new JSZip();
 
@@ -64,13 +74,14 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
   const oebps = zip.folder('OEBPS');
   const bookName = pdfFile.name.replace(/\.pdf$/i, '');
   const bookTitle = escapeXml(bookName);
+  const bookId = `urn:uuid:${crypto.randomUUID()}`;
 
   const contentOpf = `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:title>${bookTitle}</dc:title>
     <dc:creator>Converted by xftools</dc:creator>
-    <dc:identifier id="bookid">${Date.now()}</dc:identifier>
+    <dc:identifier id="bookid">${bookId}</dc:identifier>
     <dc:language>en</dc:language>
   </metadata>
   <manifest>
@@ -96,7 +107,7 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
   const tocNcx = `<?xml version="1.0" encoding="UTF-8"?>
 <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
   <head>
-    <meta name="dtb:uid" content="${Date.now()}"/>
+    <meta name="dtb:uid" content="${bookId}"/>
     <meta name="dtb:depth" content="1"/>
     <meta name="dtb:totalPageCount" content="0"/>
     <meta name="dtb:maxPageNumber" content="0"/>
@@ -152,6 +163,7 @@ export async function convertPdfToEpub(pdfFile: File): Promise<File> {
   });
 
   const epubBuffer = await zip.generateAsync({ type: 'arraybuffer' });
+  job.signal?.throwIfAborted();
 
   return new File([epubBuffer], bookName + '.epub', {
     type: 'application/epub+zip'

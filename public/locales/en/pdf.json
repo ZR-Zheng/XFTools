@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "PDF Workspace",
+    "description": "Preview, merge, split, annotate, compress, protect, and convert PDFs.",
+    "shortDescription": "Preview, organize, edit, and convert PDFs."
+  },
   "compressPdf": {
     "compressedFileSize": "Compressed File Size",
     "compressingPdf": "Compressing PDF...",

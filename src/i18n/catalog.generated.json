@@ -117,56 +117,10 @@
       }
     },
     "pdf": {
-      "compressPdf": {
-        "description": "使用 Ghostscript 减小 PDF 文件大小同时保持质量",
-        "shortDescription": "安全地压缩 PDF 文件",
-        "title": "压缩 PDF"
-      },
-      "convertToPdf": {
-        "description": "将各种图像格式（PNG, GIF, JPG, TIF, PSD, SVG, WEBP, HEIC, RAW）转换为 PDF，并可调整图像大小和页面方向。",
-        "shortDescription": "将图像转换为 PDF，可调整大小和方向",
-        "title": "将图像转换为 PDF"
-      },
-      "editor": {
-        "description": "高级 PDF 编辑器，具备注释、表单填写、高亮显示和导出功能。您可以使用专业级工具（包括文本插入、绘图、高亮显示、签名和表单填写）编辑 PDF。",
-        "shortDescription": "使用高级注释、签名和编辑工具编辑 PDF",
-        "title": "PDF 编辑器"
-      },
-      "exportPdf": {
-        "description": "选择 PDF 页面和渲染倍率，导出 PNG 图片；也可将整份文档的可选文字导出为 EPUB 电子书。",
-        "shortDescription": "选页导出 PNG，或提取文字生成 EPUB 电子书",
-        "title": "PDF 格式导出"
-      },
-      "extractImagesFromPdf": {
-        "description": "以原始质量提取 PDF 中所有内嵌图片。",
-        "shortDescription": "从 PDF 文档中提取内嵌图片。",
-        "title": "提取 PDF 图片"
-      },
-      "formBuilder": {
-        "description": "创建和自定义交互式 PDF 表单。支持添加文本框、复选框、单选框、标签等控件，并通过拖放布局、调整样式和导出文件。",
-        "shortDescription": "通过拖放控件设计交互式 PDF 表单",
-        "title": "PDF 表单设计"
-      },
-      "mergePdf": {
-        "description": "合并多个 PDF 文件为一个文档。",
-        "shortDescription": "将多个 PDF 文件合并为一个文档",
-        "title": "合并 PDF"
-      },
-      "protectPdf": {
-        "description": "安全地为 PDF 文件添加密码保护",
-        "shortDescription": "使用密码安全地保护 PDF 文件",
-        "title": "保护 PDF"
-      },
-      "rotatePdf": {
-        "description": "旋转 PDF 文档中的页面。",
-        "longDescription": "通过将 PDF 页面旋转 90 度、180 度或 270 度来更改其方向。这对于修复扫描错误的文档或准备打印 PDF 非常有用。",
-        "shortDescription": "旋转 PDF 文档中的页面",
-        "title": "旋转 PDF"
-      },
-      "splitPdf": {
-        "description": "从 PDF 文档中提取特定页面。",
-        "shortDescription": "从 PDF 文件中提取特定页面",
-        "title": "拆分 PDF"
+      "workspace": {
+        "description": "预览、合并、拆分、批注、表单、压缩、加密与转换 PDF。",
+        "shortDescription": "预览、整理、编辑与转换 PDF。",
+        "title": "PDF 工作台"
       }
     },
     "string": {

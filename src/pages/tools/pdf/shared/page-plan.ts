@@ -1,5 +1,6 @@
 import type { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import type { PageEdit } from './page-edits';
 
 export interface PdfAsset {
   id: string;
@@ -18,6 +19,7 @@ export interface PdfPageInstance {
   pageIndex: number;
   rotation: 0 | 90 | 180 | 270;
   blankSize?: { width: number; height: number };
+  edits?: readonly PageEdit[];
 }
 export interface PdfWorkspace {
   sources: PdfAsset[];
@@ -72,17 +74,24 @@ export function movePages(
   }
   return next;
 }
-export function movePagesBefore(
+export function movePagesRelative(
   pages: PdfPageInstance[],
   ids: ReadonlySet<string>,
-  targetId: string
+  targetId: string,
+  side: 'before' | 'after' = 'before'
 ): PdfPageInstance[] {
-  if (ids.has(targetId)) return pages;
+  if (!ids.size || ids.has(targetId)) return pages;
   const moved = pages.filter((page) => ids.has(page.id)),
     remaining = pages.filter((page) => !ids.has(page.id));
   const index = remaining.findIndex((page) => page.id === targetId);
   if (index < 0) return pages;
-  return [...remaining.slice(0, index), ...moved, ...remaining.slice(index)];
+  const insertion = side === 'after' ? index + 1 : index;
+  const next = [
+    ...remaining.slice(0, insertion),
+    ...moved,
+    ...remaining.slice(insertion)
+  ];
+  return next.every((page, index) => page === pages[index]) ? pages : next;
 }
 export function groupBySources(
   pages: PdfPageInstance[],

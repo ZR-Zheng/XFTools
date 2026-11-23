@@ -1,11 +1,30 @@
 const imageConverter = 'image-generic/convert';
 const imageCompressor = 'image-generic/compress';
 const durationConverter = 'time/convert-duration';
-const pdfExporter = 'pdf/export';
+const pdfWorkspace = 'pdf/workspace';
 
 export const toolAliases = {
-  'pdf/pdf-to-png': { path: pdfExporter, query: 'format=png' },
-  'pdf/pdf-to-epub': { path: pdfExporter, query: 'format=epub' },
+  'pdf/merge-pdf': { path: pdfWorkspace, query: 'mode=merge' },
+  'pdf/split-pdf': { path: pdfWorkspace, query: 'mode=split' },
+  'pdf/rotate-pdf': { path: pdfWorkspace, query: 'mode=rotate' },
+  'pdf/editor': { path: pdfWorkspace, query: 'mode=editor' },
+  'pdf/form-pdf': { path: pdfWorkspace, query: 'mode=form' },
+  'pdf/convert-to-pdf': { path: pdfWorkspace, query: 'mode=images' },
+  'pdf/compress-pdf': {
+    path: pdfWorkspace,
+    query: 'mode=export&format=compress'
+  },
+  'pdf/protect-pdf': {
+    path: pdfWorkspace,
+    query: 'mode=export&format=protect'
+  },
+  'pdf/extract-image-from-pdf': {
+    path: pdfWorkspace,
+    query: 'mode=export&format=extract'
+  },
+  'pdf/export': { path: pdfWorkspace, query: 'mode=export' },
+  'pdf/pdf-to-png': { path: pdfWorkspace, query: 'mode=export&format=png' },
+  'pdf/pdf-to-epub': { path: pdfWorkspace, query: 'mode=export&format=epub' },
   'converters/convert-to-jpg': { path: imageConverter, query: 'format=jpg' },
   'converters/convert-to-webp': { path: imageConverter, query: 'format=webp' },
   'png/convert-jgp-to-png': { path: imageConverter, query: 'format=png' },

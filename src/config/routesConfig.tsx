@@ -1,8 +1,21 @@
-import { Navigate, type RouteObject } from 'react-router-dom';
+import { Navigate, useLocation, type RouteObject } from 'react-router-dom';
 import { lazy } from 'react';
 import { toolAliases } from '@tools/tool-aliases';
 const Home = lazy(() => import('../pages/home'));
 const NotFound = lazy(() => import('../pages/not-found'));
+
+function ToolAlias({ path, query }: { path: string; query: string }) {
+  const { search, hash } = useLocation();
+  const params = new URLSearchParams(search);
+  for (const [key, value] of new URLSearchParams(query)) params.set(key, value);
+  return (
+    <Navigate
+      replace
+      to={{ pathname: `/${path}`, search: params.toString(), hash }}
+    />
+  );
+}
+
 const routes: RouteObject[] = [
   { path: '/', element: <Home /> },
   { path: '/favorites', element: <Home /> },
@@ -10,7 +23,7 @@ const routes: RouteObject[] = [
   { path: '/categories/:categoryName', element: <Home /> },
   ...Object.entries(toolAliases).map(([path, target]) => ({
     path: '/' + path,
-    element: <Navigate replace to={`/${target.path}?${target.query}`} />
+    element: <ToolAlias {...target} />
   })),
   { path: '*', element: <NotFound /> }
 ];

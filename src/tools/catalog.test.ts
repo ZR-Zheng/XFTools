@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { tools, getToolCategories, getToolsByCategory } from './index';
 import i18n from '../i18n';
 import { toolExperiences } from './experiences';
+import { canonicalToolPath } from './tool-aliases';
 
 describe('tool catalog', () => {
   it('assigns an explicit interaction page to every tool without dangling routes', () => {
@@ -43,7 +44,9 @@ describe('tool catalog', () => {
   ])(
     'classifies %s by function while keeping its original URL',
     (route, category) => {
-      expect(tools.find((tool) => tool.path === route)?.type).toBe(category);
+      expect(
+        tools.find((tool) => tool.path === canonicalToolPath(route))?.type
+      ).toBe(category);
     }
   );
 });

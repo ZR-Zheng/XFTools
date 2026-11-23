@@ -20,14 +20,6 @@ const assignments: Record<
   'image-generic/image-to-text': {
     primary: 'image-generic',
     also: ['string', 'converters']
-  },
-  'pdf/export': {
-    primary: 'pdf',
-    also: ['image-generic', 'png', 'converters']
-  },
-  'pdf/convert-to-pdf': {
-    primary: 'pdf',
-    also: ['image-generic', 'converters']
   }
 };
 export function classifyTool(
@@ -48,12 +40,7 @@ export function classifyTool(
   };
 }
 export type ToolInteraction =
-  | 'text'
-  | 'compare'
-  | 'image'
-  | 'pdf'
-  | 'media'
-  | 'date';
+  'text' | 'compare' | 'image' | 'pdf' | 'media' | 'date';
 export function getToolInteraction(
   route: string,
   category: ToolCategory

@@ -24,7 +24,7 @@
 
 ## 保留的功能模块
 
-PDF.js、React-PDF、pdf-lib 与 PDF 编辑 SDK 用于不同 PDF 工具；FFmpeg 用于音视频处理；Tesseract 与背景移除运行时用于 OCR 和去背景。这些较重模块按工具路由或首次需要解码时加载。大型 WASM、OCR、模型处理仍可能需要下载资源。
+PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 EmbedPDF 高级编辑器与同源 PDFium WASM。FFmpeg 用于音视频处理，Tesseract 与背景移除运行时用于 OCR 和去背景。大型 WASM、OCR、模型处理仍可能需要下载资源。
 
 图片编辑器提供旋转、翻转、百分比裁剪、亮度、对比度、饱和度、文字标注、撤销与 PNG/JPEG/WebP 导出；不再加载旧编辑 SDK。React-PDF 继续从自身对应的 PDF.js 版本加载 worker，避免版本不一致。
 

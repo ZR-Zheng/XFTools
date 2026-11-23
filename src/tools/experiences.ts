@@ -1,10 +1,5 @@
 /** Explicit page decisions. Adding a tool requires assigning its interaction here. */
-export type PageLayout =
-  | 'editor'
-  | 'comparison'
-  | 'form'
-  | 'visual'
-  | 'custom';
+export type PageLayout = 'editor' | 'comparison' | 'form' | 'visual' | 'custom';
 export interface ToolExperience {
   layout: PageLayout;
   entry: 'text' | 'scalar' | 'cron' | 'file' | 'custom';
@@ -35,7 +30,6 @@ const profiles: Record<string, ToolExperience> = {
   date: { layout: 'form', entry: 'scalar', rows: 2, reference: 'epoch' },
   form: { layout: 'form', entry: 'custom', rows: 2, reference: 'it-tools' },
   image: { layout: 'visual', entry: 'file', rows: 6, reference: 'squoosh' },
-  pdf: { layout: 'visual', entry: 'file', rows: 6, reference: 'pdf24' },
   media: { layout: 'visual', entry: 'file', rows: 6, reference: 'audiomass' },
   comparison: {
     layout: 'comparison',
@@ -89,16 +83,6 @@ assign('image', [
   'image-generic/split-to-pages',
   'image-generic/watermark'
 ]);
-assign('pdf', [
-  'pdf/compress-pdf',
-  'pdf/convert-to-pdf',
-  'pdf/extract-image-from-pdf',
-  'pdf/merge-pdf',
-  'pdf/export',
-  'pdf/protect-pdf',
-  'pdf/rotate-pdf',
-  'pdf/split-pdf'
-]);
 assign('media', [
   'audio/change-speed',
   'audio/extract-audio',
@@ -127,8 +111,7 @@ assign('custom', [
   'time/convert-duration',
   'image-generic/editor',
   'image-generic/resize',
-  'pdf/editor',
-  'pdf/form-pdf'
+  'pdf/workspace'
 ]);
 pages['image-generic/resize'].reference = 'iloveimg';
 pages['time/crontab-guru'] = {

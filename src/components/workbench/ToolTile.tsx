@@ -16,13 +16,22 @@ export default function ToolTile({
   compact?: boolean;
 }) {
   const { t } = useTranslation(validNamespaces);
-  const { w } = useWorkbenchText();
+  const { english, w } = useWorkbenchText();
+  const opensInNewTab = english ? 'opens in a new tab' : '在新标签页打开';
   return (
     <article
       className={`tool-tile ${compact ? 'tool-tile-compact' : ''}`}
       data-category={tool.type}
     >
-      <Link className="tile-link" to={`/${tool.path}`}>
+      <Link
+        className="tile-link"
+        to={`/${tool.path}`}
+        target={tool.standalone ? '_blank' : undefined}
+        rel={tool.standalone ? 'noopener' : undefined}
+        aria-label={
+          tool.standalone ? `${t(tool.name)} · ${opensInNewTab}` : undefined
+        }
+      >
         <span className="tile-icon">
           <Glyph name={categoryGlyph[tool.type]} size={compact ? 22 : 25} />
         </span>
@@ -31,7 +40,7 @@ export default function ToolTile({
           {!compact && <p>{t(tool.shortDescription)}</p>}
         </div>
         {compact ? (
-          <Glyph name="chevron" size={17} />
+          <Glyph name={tool.standalone ? 'external' : 'chevron'} size={17} />
         ) : (
           <span className="tile-bottom">
             <span>
@@ -41,7 +50,7 @@ export default function ToolTile({
                   : tool.type) as WorkbenchKey
               )}
             </span>
-            <Glyph name="arrow" size={17} />
+            <Glyph name={tool.standalone ? 'external' : 'arrow'} size={17} />
           </span>
         )}
       </Link>

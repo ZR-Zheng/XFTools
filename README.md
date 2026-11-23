@@ -19,7 +19,7 @@
 
 界面使用 React + 原生 HTML/CSS/SVG，图片编辑使用 Canvas；已移除 Material UI、Emotion、Monaco、Tailwind 和 Filerobot。工具选项、示例及详细说明按分类延迟加载，首页仅加载检索所需的元数据。具体说明见 [依赖与构建](docs/dependencies.md) 和 [界面设计规范](docs/design-system.md)。
 
-PDF 合并支持文件与页面两种整理方式、预览、重排、批量旋转／复制／删除及撤销。缩放使用按需加载的 pica。功能边界、体积变化与验证见[调研方案落地记录](docs/research/implementation-2026-11-16.md)。
+PDF 工作台从站内入口在新标签页打开，也可直达 `/pdf/workspace`。它支持连续预览、合并拆分、页面编排、批注、表单、压缩、密码保护、PNG／EPUB 导出、提取内嵌图片和图片转 PDF。各旧地址会打开对应模式。图像缩放使用按需加载的 pica。 [PDF 操作与保存说明](docs/tool-interactions.md)
 
 工作台已移除顶部栏、语言切换和主题切换；侧栏底部同行展示处理状态与版本号，页内不重复展示处理状态及许可标识。详见[界面简化与问题修复](docs/interface-simplification.md)。
 

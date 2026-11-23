@@ -133,12 +133,15 @@ test('PDF export keeps the original document while switching from selected PNG p
   pdf.addPage([160, 180]).drawText('First page');
   pdf.addPage([220, 240]).drawText('A & B');
   await page.goto('/pdf/pdf-to-png');
-  await expect(page).toHaveURL(/\/pdf\/export\?format=png$/);
+  await expect(page).toHaveURL(/\/pdf\/workspace\?mode=export&format=png$/);
+  await page.goto('/pdf/workspace');
   await page.locator('input[type=file]').setInputFiles({
     name: 'report.pdf',
     mimeType: 'application/pdf',
     buffer: Buffer.from(await pdf.save())
   });
+  await page.getByRole('button', { name: 'PDF 转图片', exact: true }).click();
+  await expect(page.getByLabel('输出格式与操作')).toHaveValue('png');
   await page.getByLabel('导出页码').fill('2');
   await page.getByLabel('渲染倍率').selectOption('1');
   await page.getByTestId('process-tool').click();
@@ -147,15 +150,13 @@ test('PDF export keeps the original document while switching from selected PNG p
   expect([pngBytes.readUInt32BE(16), pngBytes.readUInt32BE(20)]).toEqual([
     220, 240
   ]);
-  await expect(page.locator('.pdf-export-pages li')).toHaveCount(1);
+  await expect(page.locator('.pdf-output-items li')).toHaveCount(1);
 
-  const epubMode = page.getByRole('radio', { name: 'EPUB', exact: true });
-  await epubMode.click();
-  await expect(epubMode).toBeChecked();
-  await expect(
-    page.getByRole('button', { name: '下载全部为 ZIP' })
-  ).toHaveCount(0);
-  await expect(page.getByText('report.pdf', { exact: true })).toBeVisible();
+  const formats = page.getByLabel('输出格式与操作');
+  await formats.selectOption('epub');
+  await expect(formats).toHaveValue('epub');
+  await expect(page.locator('.pdf-output-items li')).toHaveCount(0);
+  await expect(page.locator('.pdf-document-label')).toContainText('report.pdf');
   await page.getByTestId('process-tool').click();
   const epub = await download(page, '下载 EPUB');
   expect(epub.suggestedFilename()).toBe('report.epub');

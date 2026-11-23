@@ -15,7 +15,7 @@ test('Chinese default, search, categories and no upstream embeds', async ({
     .getByRole('searchbox', { name: '搜索工具', exact: true })
     .fill('合并 PDF');
   await expect(page.locator('.tool-grid .tool-tile').first()).toContainText(
-    '合并 PDF'
+    'PDF 工作台'
   );
   await expect
     .poll(() => new URL(page.url()).searchParams.get('q'))
@@ -204,9 +204,12 @@ test('Tool categories follow function and keep existing links', async ({
   page
 }) => {
   await page.goto('/categories/pdf');
+  await expect(page.locator('.tool-grid a')).toHaveCount(1);
   await expect(
-    page.locator('.tool-grid a[href="/pdf/protect-pdf"]')
+    page.locator('.tool-grid a[href="/pdf/workspace"]')
   ).toBeVisible();
+  await page.goto('/pdf/protect-pdf');
+  await expect(page.getByLabel('输出格式与操作')).toHaveValue('protect');
   await page.goto('/categories/converters');
   await expect(
     page.locator('.tool-grid a[href="/number/byte-converter"]')
@@ -219,10 +222,7 @@ test('Removed categories and tools are absent from the workspace and old links',
   await page.addInitScript(() => {
     const history = ['csv/csv-to-json', 'string/bcrypt', 'pdf/merge-pdf'];
     localStorage.setItem('bookmarkedTools', history.join(','));
-    localStorage.setItem(
-      'recentTools',
-      JSON.stringify(history)
-    );
+    localStorage.setItem('recentTools', JSON.stringify(history));
   });
   await page.goto('/');
   for (const category of [
@@ -236,9 +236,9 @@ test('Removed categories and tools are absent from the workspace and old links',
     'csv',
     'security'
   ]) {
-    await expect(
-      page.locator(`a[href="/categories/${category}"]`)
-    ).toHaveCount(0);
+    await expect(page.locator(`a[href="/categories/${category}"]`)).toHaveCount(
+      0
+    );
   }
   const search = page.getByRole('searchbox', { name: '搜索工具', exact: true });
   for (const query of ['Base64', 'CSV', 'bcrypt', '密码生成器']) {
@@ -253,7 +253,7 @@ test('Removed categories and tools are absent from the workspace and old links',
     await expect(page.locator('.tool-grid .tile-link')).toHaveCount(1);
     await expect(page.locator('.tool-grid .tile-link')).toHaveAttribute(
       'href',
-      '/pdf/merge-pdf'
+      '/pdf/workspace'
     );
   }
   for (const category of ['encoding', 'csv', 'security']) {
@@ -361,9 +361,7 @@ test('Media tools wait for all source files before processing', async ({
   await expect(process).toBeEnabled();
 });
 
-test('PDF worker matches the viewer and renders an uploaded PDF', async ({
-  page
-}) => {
+test('PDF form entry saves an editable field', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   const pdf = await PDFDocument.create();
@@ -374,13 +372,20 @@ test('PDF worker matches the viewer and renders an uploaded PDF', async ({
     mimeType: 'application/pdf',
     buffer: Buffer.from(await pdf.save())
   });
-  await expect(page.locator('.react-pdf__Page canvas').first()).toBeVisible({
+  await expect(page.locator('.pdf-reader-sheet canvas').first()).toBeVisible({
     timeout: 20000
   });
-  await page.getByRole('button', { name: '文本', exact: true }).click();
-  await page.getByLabel('控件内容', { exact: true }).fill('XFTools');
+  await page.getByRole('button', { name: '文本框', exact: true }).click();
+  await page
+    .locator('.pdf-place-target')
+    .first()
+    .click({ position: { x: 25, y: 25 } });
+  await page.getByLabel('默认值', { exact: true }).fill('XFTools');
+  await page.getByRole('button', { name: '保存属性', exact: true }).click();
+  await page.getByRole('button', { name: '导出设置' }).click();
+  await page.getByTestId('process-tool').click();
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: '导出并下载', exact: true }).click();
+  await page.getByRole('button', { name: '下载 PDF', exact: true }).click();
   const resultPath = await (await download).path();
   const { readFile } = await import('node:fs/promises');
   const saved = await PDFDocument.load(await readFile(resultPath!));
