@@ -94,10 +94,14 @@
   grid-area: file;
 }
 .pdf-tools-toolbar {
+  position: relative;
   display: flex;
   justify-content: space-between;
   gap: 8px;
   background: var(--surface-soft);
+}
+.pdf-tools-modes {
+  gap: 7px;
 }
 .pdf-back-link {
   display: grid;
@@ -143,34 +147,54 @@
   grid-area: export;
   justify-self: end;
 }
-.pdf-workbench .pdf-mode-action,
 .pdf-workbench .pdf-export-toggle {
   display: inline-flex;
   align-items: center;
   gap: 7px;
 }
-.pdf-workbench .pdf-mode-action {
+.pdf-workbench button.pdf-thumbnails-toggle {
+  color: var(--muted);
   border-color: transparent;
-  background: transparent;
 }
-.pdf-workbench
-  .pdf-mode-action:is([aria-expanded='true'], [aria-pressed='true']) {
+.pdf-workbench button.pdf-thumbnails-toggle[aria-expanded='true'] {
   color: var(--blue);
   background: var(--blue-soft);
+}
+.pdf-workbench .pdf-tool-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.pdf-workbench .pdf-tool-category > svg {
+  color: var(--blue);
+  flex: none;
+}
+.pdf-workbench .pdf-tool-category:is([aria-expanded='true'], [data-current]) {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+.pdf-tool-caret {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  margin-left: 2px;
 }
 .pdf-tool-short {
   display: none;
 }
-.pdf-more {
+.pdf-tool-group {
   position: relative;
 }
-.pdf-more-tools {
+.pdf-tool-dropdown {
   position: absolute;
   z-index: 5;
   top: calc(100% + 7px);
-  right: 0;
+  left: 0;
   display: grid;
-  min-width: max-content;
+  width: 272px;
+  max-height: min(65dvh, 420px);
+  overflow: auto;
   gap: 2px;
   padding: 5px;
   background: var(--surface);
@@ -178,15 +202,36 @@
   border-radius: 10px;
   box-shadow: 0 8px 24px rgb(21 41 37 / 15%);
 }
-.pdf-workbench .pdf-more-tools button {
+.pdf-tool-utilities .pdf-tool-dropdown {
+  right: 0;
+  left: auto;
+  width: 158px;
+}
+.pdf-workbench .pdf-tool-entry {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-height: 40px;
+  min-height: 42px;
   border-color: transparent;
   text-align: start;
 }
-.pdf-workbench .pdf-more-tools button:last-child {
+.pdf-tool-entry > svg {
+  flex: none;
+}
+.pdf-tool-entry > span {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+.pdf-tool-entry small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.pdf-tool-entry[aria-current='true'] {
+  color: var(--blue);
+}
+.pdf-workbench .pdf-tool-utilities .pdf-danger {
   margin-top: 2px;
   border-top-color: var(--line);
 }
@@ -657,7 +702,7 @@
   white-space: nowrap;
 }
 .pdf-document-toolbar button,
-.pdf-tools-toolbar button {
+.pdf-tools-toolbar .pdf-tool-category {
   min-height: 36px;
 }
 .pdf-tools-toolbar .pdf-icon-button {
@@ -1275,6 +1320,10 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'reader';
   }
+  .pdf-workbench-layout.has-thumbnail-tray {
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas: 'reader' 'organizer';
+  }
   .pdf-editor,
   .pdf-output {
     position: absolute;
@@ -1287,6 +1336,59 @@
   }
   .pdf-editor {
     left: 0;
+  }
+  .pdf-editor.is-thumbnail-tray {
+    position: relative;
+    grid-area: organizer;
+    z-index: auto;
+    inset: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    padding-inline-end: 5px;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    box-shadow: none;
+    overflow: hidden;
+  }
+  .is-thumbnail-tray .pdf-editing {
+    padding: 0;
+  }
+  .is-thumbnail-tray .pdf-page-grid {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 60px;
+    gap: 6px;
+    padding: 5px 7px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+  .is-thumbnail-tray .pdf-page {
+    display: grid;
+    justify-items: center;
+    padding: 3px 3px 1px;
+    border-radius: 7px;
+  }
+  .pdf-workbench .is-thumbnail-tray .pdf-page-thumb {
+    height: 58px;
+    min-height: 0;
+    padding: 2px;
+  }
+  .is-thumbnail-tray .pdf-canvas {
+    min-height: 0;
+  }
+  .pdf-thumbnail-number {
+    color: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .pdf-workbench .pdf-thumbnail-tray-close {
+    width: 32px;
+    color: var(--muted);
+    border-color: transparent;
+    background: transparent;
   }
   .pdf-output {
     right: 0;
@@ -1306,13 +1408,11 @@
   .pdf-workbench button.pdf-export-toggle {
     padding-inline: 8px;
   }
-  .pdf-workbench button.pdf-mode-action {
-    justify-content: center;
-    min-width: 42px;
-    padding: 5px 7px;
+  .pdf-workbench button.pdf-thumbnails-toggle {
+    width: 32px;
   }
   .pdf-document-toolbar button,
-  .pdf-tools-toolbar button {
+  .pdf-tools-toolbar .pdf-tool-category {
     min-height: 40px;
   }
 }
@@ -1331,24 +1431,42 @@
     min-width: 0;
     max-width: 390px;
   }
-  .pdf-workbench button.pdf-mode-action {
+  .pdf-tools-modes > .pdf-tool-group {
     flex: 1 1 0;
-    flex-direction: column;
-    gap: 1px;
+    position: static;
     min-width: 0;
+  }
+  .pdf-tools-modes .pdf-tool-dropdown {
+    inset-inline: 8px;
+    width: auto;
+  }
+  .pdf-workbench button.pdf-tool-category {
+    position: relative;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
     padding: 4px 0;
     font-size: 11px;
-    white-space: nowrap;
   }
-  .pdf-mode-action .pdf-tool-full {
+  .pdf-tool-category .pdf-tool-full {
     display: none;
   }
-  .pdf-mode-action .pdf-tool-short {
+  .pdf-tool-category .pdf-tool-short {
     display: inline;
   }
-  .pdf-mode-action svg {
+  .pdf-tool-category > svg {
     width: 17px;
     height: 17px;
+  }
+  .pdf-tool-category .pdf-tool-caret {
+    position: absolute;
+    top: 6px;
+    right: 3px;
+  }
+  .pdf-tool-caret svg {
+    width: 9px;
+    height: 9px;
   }
   .pdf-tools-toolbar .pdf-icon-button {
     min-height: 40px;
@@ -1373,7 +1491,7 @@
   .pdf-reader-toolbar {
     column-gap: 7px;
   }
-  .pdf-workbench button.pdf-mode-action {
+  .pdf-workbench button.pdf-tool-category {
     font-size: 10px;
   }
 }

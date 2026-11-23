@@ -34,12 +34,13 @@ test('PDF editor alias opens the annotation workspace at full viewport height', 
     'preview.pdf'
   );
   const reader = page.getByRole('region', { name: 'PDF 预览' });
+  const layout = page.locator('.pdf-workbench-layout');
   await expect(reader.locator('canvas').first()).toBeVisible();
   for (const width of [1440, 1024, 768, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await expect
       .poll(async () => {
-        const box = (await reader.boundingBox())!;
+        const box = (await layout.boundingBox())!;
         return Math.abs(900 - box.y - box.height);
       })
       .toBeLessThan(2);
@@ -49,6 +50,11 @@ test('PDF editor alias opens the annotation workspace at full viewport height', 
       )
     ).toBe(true);
   }
+  await expect(
+    page
+      .getByRole('complementary', { name: '页面缩略图' })
+      .getByRole('button', { name: '预览输出第 1 页' })
+  ).toBeVisible();
   const more = page.getByRole('button', { name: '更多工具', exact: true });
   await more.click();
   await page.getByRole('button', { name: '清空', exact: true }).click();

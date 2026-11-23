@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode
+} from 'react';
 import Glyph from '@components/workbench/Glyph';
 import type { PdfAsset, PdfPageInstance } from '../shared/page-plan';
 import type { PageMenuAnchor } from './PdfPageMenu';
@@ -61,6 +67,7 @@ export default function PdfPageGrid({
   offset,
   selected,
   currentPage,
+  previewOnly,
   busy,
   thumbnail,
   onSelect,
@@ -74,6 +81,7 @@ export default function PdfPageGrid({
   offset: number;
   selected: ReadonlySet<string>;
   currentPage: string | null;
+  previewOnly: boolean;
   busy: boolean;
   thumbnail: (source: PdfAsset, index: number, rotation: number) => ReactNode;
   onSelect: (id: string, range: boolean) => void;
@@ -93,6 +101,18 @@ export default function PdfPageGrid({
   const [dragging, setDragging] = useState<ReadonlySet<string> | null>(null);
   const [target, setTarget] = useState<DropTarget | null>(null);
   useEffect(() => () => cancelAnimationFrame(frame.current), []);
+  useLayoutEffect(() => {
+    const strip = grid.current;
+    if (!previewOnly || !strip) return;
+    const current = strip.querySelector('[aria-current="page"]');
+    if (!current) return;
+    const thumb = current.getBoundingClientRect();
+    const viewport = strip.getBoundingClientRect();
+    if (thumb.left < viewport.left + 4)
+      strip.scrollLeft += thumb.left - viewport.left - 4;
+    else if (thumb.right > viewport.right - 4)
+      strip.scrollLeft += thumb.right - viewport.right + 4;
+  }, [previewOnly, currentPage]);
 
   const updateTarget = (current: PageDrag) => {
     const next = findTarget(grid.current, current);
@@ -199,7 +219,8 @@ export default function PdfPageGrid({
             className={`pdf-page ${checked ? 'is-selected' : ''}`}
             onPointerDown={(event) => {
               suppressClick.current = false;
-              if (busy || event.button !== 0 || drag.current) return;
+              if (previewOnly || busy || event.button !== 0 || drag.current)
+                return;
               const element = event.target as Element;
               const grip = element.closest('.pdf-page-grip');
               if (
@@ -237,38 +258,43 @@ export default function PdfPageGrid({
               }
             }}
           >
-            <div className="pdf-page-header">
-              <label className="pdf-page-select">
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={(event) =>
-                    onSelect(
-                      page.id,
-                      (event.nativeEvent as MouseEvent).shiftKey
-                    )
-                  }
+            {!previewOnly && (
+              <div className="pdf-page-header">
+                <label className="pdf-page-select">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(event) =>
+                      onSelect(
+                        page.id,
+                        (event.nativeEvent as MouseEvent).shiftKey
+                      )
+                    }
+                    aria-label={t(
+                      `选择第 ${number} 页`,
+                      `Select output page ${number}`
+                    )}
+                  />
+                  <span>{number}</span>
+                </label>
+                <button
+                  type="button"
+                  className="pdf-page-grip"
                   aria-label={t(
-                    `选择第 ${number} 页`,
-                    `Select output page ${number}`
+                    `第 ${number} 页操作`,
+                    `Page ${number} actions`
                   )}
-                />
-                <span>{number}</span>
-              </label>
-              <button
-                type="button"
-                className="pdf-page-grip"
-                aria-label={t(`第 ${number} 页操作`, `Page ${number} actions`)}
-                aria-haspopup="menu"
-                title={t(
-                  '拖动排序，点击查看操作',
-                  'Drag to reorder. Click for actions.'
-                )}
-                onClick={(event) => openByButton(event.currentTarget)}
-              >
-                <Glyph name="grip" size={16} />
-              </button>
-            </div>
+                  aria-haspopup="menu"
+                  title={t(
+                    '拖动排序，点击查看操作',
+                    'Drag to reorder. Click for actions.'
+                  )}
+                  onClick={(event) => openByButton(event.currentTarget)}
+                >
+                  <Glyph name="grip" size={16} />
+                </button>
+              </div>
+            )}
             <button
               type="button"
               className="pdf-page-thumb"
@@ -299,7 +325,10 @@ export default function PdfPageGrid({
                 </span>
               )}
             </button>
-            {source && (showSourcePage || !!page.rotation) && (
+            {previewOnly && (
+              <span className="pdf-thumbnail-number">{number}</span>
+            )}
+            {!previewOnly && source && (showSourcePage || !!page.rotation) && (
               <div className="pdf-page-caption">
                 {showSource && (
                   <strong title={source.name}>{source.name}</strong>

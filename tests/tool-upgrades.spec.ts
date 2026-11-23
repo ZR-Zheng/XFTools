@@ -149,8 +149,8 @@ test('PDF reader keeps the active page through zoom and reordering and splits th
     reader.locator('.pdf-reader-sheet[aria-label="输出页 2"] canvas')
   ).toBeVisible();
 
-  await page.getByRole('button', { name: '导出设置' }).click();
-  await page.getByRole('combobox', { name: '导出范围' }).selectOption('split');
+  await page.getByRole('button', { name: '页面整理', exact: true }).click();
+  await page.getByRole('button', { name: '拆分 PDF', exact: true }).click();
   const ranges = page.getByRole('textbox', { name: '拆分范围（按当前页序）' });
   await ranges.fill('1-4');
   await expect(page.getByTestId('process-tool')).toBeDisabled();
@@ -218,14 +218,7 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   await expect(
     documents.getByRole('button', { name: '打开 PDF' })
   ).toBeVisible();
-  for (const name of [
-    '组织页面',
-    '批注',
-    '表单设计',
-    '图片转 PDF',
-    'PDF 压缩',
-    'PDF 转图片'
-  ]) {
+  for (const name of ['页面整理', '批注与表单', '格式转换', '压缩与加密']) {
     await expect(
       tools.getByRole('button', { name, exact: true })
     ).toBeVisible();
@@ -242,6 +235,9 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   await expect(
     readerTab.getByRole('button', { name: '选择文件' })
   ).toBeVisible();
+  await expect(
+    readerTab.getByRole('complementary', { name: '页面整理', exact: true })
+  ).toBeVisible();
   await readerTab
     .locator('input[type=file]')
     .setInputFiles(await pdfFile('Project Overview.pdf', [320, 300]));
@@ -251,13 +247,35 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
     path: '.tmp/screenshots/pdf-workspace-desktop.png'
   });
 
+  await readerTab.setViewportSize({ width: 320, height: 812 });
+  for (const row of [documents, tools])
+    expect(
+      await row.evaluate(
+        (element) => element.scrollWidth <= element.clientWidth
+      )
+    ).toBe(true);
+  const formats = tools.getByRole('button', { name: '格式转换', exact: true });
+  await formats.click();
+  await expect(
+    tools
+      .getByRole('group', { name: '格式转换', exact: true })
+      .getByRole('button', { name: 'PDF 转图片', exact: true })
+  ).toBeVisible();
+  await readerTab.keyboard.press('Escape');
+  await expect(formats).toBeFocused();
   await readerTab.setViewportSize({ width: 375, height: 812 });
-  const organizer = tools.getByRole('button', { name: '组织页面' });
-  expect(
-    await tools.evaluate(
-      (element) => element.scrollWidth <= element.clientWidth
-    )
-  ).toBe(true);
+  const organizer = documents.getByRole('button', { name: '组织页面' });
+  const thumbnails = readerTab.getByRole('complementary', {
+    name: '页面缩略图',
+    exact: true
+  });
+  await expect(thumbnails).toBeVisible();
+  await thumbnails.getByRole('button', { name: '预览输出第 2 页' }).click();
+  await expect(reader.getByRole('textbox', { name: '跳转到页码' })).toHaveValue(
+    '2'
+  );
+  await thumbnails.getByRole('button', { name: '隐藏缩略图' }).click();
+  await expect(thumbnails).toBeHidden();
   await expect(organizer).toHaveAttribute('aria-expanded', 'false');
   await organizer.click();
   await expect(organizer).toHaveAttribute('aria-expanded', 'true');
@@ -265,6 +283,7 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   await expect(pageActions).toBeHidden();
   await readerTab.getByRole('button', { name: '预览输出第 2 页' }).click();
   await expect(organizer).toHaveAttribute('aria-expanded', 'false');
+  await expect(thumbnails).toBeVisible();
   await expect(reader.getByRole('textbox', { name: '跳转到页码' })).toHaveValue(
     '2'
   );
@@ -277,7 +296,10 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   await readerTab.screenshot({
     path: '.tmp/screenshots/pdf-workspace-mobile.png'
   });
-  const exportPanel = documents.getByRole('button', { name: '导出设置' });
+  const exportPanel = documents.getByRole('button', {
+    name: '保存 PDF',
+    exact: true
+  });
   await exportPanel.click();
   const scope = readerTab.getByRole('combobox', { name: '导出范围' });
   await expect(scope).toBeVisible();

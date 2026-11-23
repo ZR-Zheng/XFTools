@@ -209,7 +209,10 @@ test('Tool categories follow function and keep existing links', async ({
     page.locator('.tool-grid a[href="/pdf/workspace"]')
   ).toBeVisible();
   await page.goto('/pdf/protect-pdf');
-  await expect(page.getByLabel('输出格式与操作')).toHaveValue('protect');
+  await expect(
+    page.getByRole('complementary', { name: '密码保护 PDF', exact: true })
+  ).toBeVisible();
+  await expect(page.getByLabel('打开密码')).toBeVisible();
   await page.goto('/categories/converters');
   await expect(
     page.locator('.tool-grid a[href="/number/byte-converter"]')
@@ -382,7 +385,7 @@ test('PDF form entry saves an editable field', async ({ page }) => {
     .click({ position: { x: 25, y: 25 } });
   await page.getByLabel('默认值', { exact: true }).fill('XFTools');
   await page.getByRole('button', { name: '保存属性', exact: true }).click();
-  await page.getByRole('button', { name: '导出设置' }).click();
+  await page.getByRole('button', { name: '保存 PDF', exact: true }).click();
   await page.getByTestId('process-tool').click();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: '下载 PDF', exact: true }).click();

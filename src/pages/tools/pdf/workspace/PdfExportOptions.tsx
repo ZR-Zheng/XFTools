@@ -6,25 +6,16 @@ import {
 import { useEffect, useState } from 'react';
 import { downloadFile } from '@utils/file';
 
-const formatGroups: { label: [string, string]; options: OutputKind[] }[] = [
-  { label: ['保存文档', 'Save document'], options: ['pdf'] },
-  { label: ['转换格式', 'Convert format'], options: ['png', 'epub'] },
-  {
-    label: ['文件处理', 'Process file'],
-    options: ['extract', 'compress', 'protect']
-  }
-];
-
 export function outputLabel(
   kind: OutputKind,
   t: (zh: string, en: string) => string
 ) {
   const labels: Record<OutputKind, [string, string]> = {
-    pdf: ['PDF', 'PDF'],
-    png: ['PNG', 'PNG'],
-    epub: ['EPUB', 'EPUB'],
+    pdf: ['保存 PDF', 'Save PDF'],
+    png: ['PDF 转图片', 'PDF to images'],
+    epub: ['PDF 转 EPUB', 'PDF to EPUB'],
     extract: ['提取内嵌图片', 'Extract embedded images'],
-    compress: ['压缩 PDF', 'Compress PDF'],
+    compress: ['PDF 压缩', 'Compress PDF'],
     protect: ['密码保护 PDF', 'Password-protect PDF']
   };
   return t(...labels[kind]);
@@ -32,49 +23,33 @@ export function outputLabel(
 
 export default function PdfExportOptions({
   settings,
+  showPngRanges,
   busy,
   onChange,
   t
 }: {
   settings: OutputSettings;
+  showPngRanges: boolean;
   busy: boolean;
   onChange: (change: Partial<OutputSettings>) => void;
   t: (zh: string, en: string) => string;
 }) {
   return (
     <>
-      <label className="pdf-output-name">
-        {t('输出格式与操作', 'Output format and action')}
-        <select
-          value={settings.kind}
-          disabled={busy}
-          onChange={(event) =>
-            onChange({ kind: event.target.value as OutputKind })
-          }
-        >
-          {formatGroups.map(({ label, options }) => (
-            <optgroup key={label[1]} label={t(...label)}>
-              {options.map((kind) => (
-                <option key={kind} value={kind}>
-                  {outputLabel(kind, t)}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-      </label>
       {settings.kind === 'png' && (
         <>
-          <label className="pdf-output-name">
-            {t('导出页码', 'Page ranges to render')}
-            <input
-              type="text"
-              placeholder="1, 3-5"
-              value={settings.ranges}
-              disabled={busy}
-              onChange={(event) => onChange({ ranges: event.target.value })}
-            />
-          </label>
+          {showPngRanges && (
+            <label className="pdf-output-name">
+              {t('导出页码', 'Page ranges to render')}
+              <input
+                type="text"
+                placeholder="1, 3-5"
+                value={settings.ranges}
+                disabled={busy}
+                onChange={(event) => onChange({ ranges: event.target.value })}
+              />
+            </label>
+          )}
           <label className="pdf-output-name">
             {t('渲染倍率', 'Render scale')}
             <select

@@ -140,8 +140,14 @@ test('PDF export keeps the original document while switching from selected PNG p
     mimeType: 'application/pdf',
     buffer: Buffer.from(await pdf.save())
   });
+  const convert = page.getByRole('button', { name: '格式转换', exact: true });
+  await convert.click();
   await page.getByRole('button', { name: 'PDF 转图片', exact: true }).click();
-  await expect(page.getByLabel('输出格式与操作')).toHaveValue('png');
+  await expect(
+    page.getByRole('complementary', { name: 'PDF 转图片', exact: true })
+  ).toBeVisible();
+  await expect(page.getByLabel('导出页码')).toHaveCount(0);
+  await page.getByLabel('导出范围').selectOption('png-range');
   await page.getByLabel('导出页码').fill('2');
   await page.getByLabel('渲染倍率').selectOption('1');
   await page.getByTestId('process-tool').click();
@@ -152,9 +158,12 @@ test('PDF export keeps the original document while switching from selected PNG p
   ]);
   await expect(page.locator('.pdf-output-items li')).toHaveCount(1);
 
-  const formats = page.getByLabel('输出格式与操作');
-  await formats.selectOption('epub');
-  await expect(formats).toHaveValue('epub');
+  await convert.click();
+  await page.getByRole('button', { name: 'PDF 转 EPUB', exact: true }).click();
+  await expect(
+    page.getByRole('complementary', { name: 'PDF 转 EPUB', exact: true })
+  ).toBeVisible();
+  await expect(page.getByLabel('渲染倍率')).toHaveCount(0);
   await expect(page.locator('.pdf-output-items li')).toHaveCount(0);
   await expect(page.locator('.pdf-document-label')).toContainText('report.pdf');
   await page.getByTestId('process-tool').click();

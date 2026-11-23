@@ -77,6 +77,7 @@ test('PDF annotations and new editable forms follow a rotated cropped page throu
   await page.getByLabel('批注内容').fill('中文文本');
   await page.getByRole('button', { name: '保存属性' }).click();
 
+  await page.getByRole('button', { name: '批注与表单', exact: true }).click();
   await page.getByRole('button', { name: '表单设计', exact: true }).click();
   await place(page, '文本框', 120, 220);
   await page.getByLabel('字段名称').fill('customer');
@@ -93,7 +94,7 @@ test('PDF annotations and new editable forms follow a rotated cropped page throu
   await page.getByRole('checkbox', { name: '选择第 2 页' }).check();
   await page.getByRole('button', { name: '旋转 90°', exact: true }).click();
   await page.getByRole('button', { name: '复制页面' }).click();
-  await page.getByRole('button', { name: '导出设置' }).click();
+  await page.getByRole('button', { name: '保存 PDF', exact: true }).click();
   await page.getByTestId('process-tool').click();
   const { bytes } = await download(page, '下载 PDF');
   const saved = await PDFDocument.load(bytes);
@@ -156,7 +157,7 @@ test('advanced PDF editor opens a working copy and returns its saved form to the
   await widget.press('Tab');
   await apply.click();
   await expect(editor).toBeHidden();
-  await page.getByRole('button', { name: '导出设置' }).click();
+  await page.getByRole('button', { name: '保存 PDF', exact: true }).click();
   await page.getByTestId('process-tool').click();
   const { bytes } = await download(page, '下载 PDF');
   expect(
@@ -216,8 +217,12 @@ test('PDF compression reduces an unpacked document and preserves its pages', asy
     pdf.addPage([200, 320]).drawText(`Original text ${index}`);
   await page.goto('/pdf/workspace');
   const original = await upload(page, pdf, 'unpacked.pdf', false);
+  await page.getByRole('button', { name: '压缩与加密', exact: true }).click();
   await page.getByRole('button', { name: 'PDF 压缩', exact: true }).click();
-  await expect(page.getByLabel('输出格式与操作')).toHaveValue('compress');
+  await expect(
+    page.getByRole('complementary', { name: 'PDF 压缩', exact: true })
+  ).toBeVisible();
+  await expect(page.getByLabel('渲染倍率')).toHaveCount(0);
   await page.getByLabel('压缩级别').selectOption('high');
   await page.getByTestId('process-tool').click();
   const result = await download(page, '下载 PDF');
@@ -255,8 +260,8 @@ test('images are added in the configured order and extracted from the current PD
   await page.getByRole('button', { name: '上移 photo-2.png' }).click();
   await page.getByRole('button', { name: '生成并加入工作台' }).click();
   await expect(page.locator('.pdf-reader-sheet canvas').first()).toBeVisible();
-  await page.getByRole('button', { name: '导出设置' }).click();
-  await page.getByLabel('输出格式与操作').selectOption('extract');
+  await page.getByRole('button', { name: '格式转换', exact: true }).click();
+  await page.getByRole('button', { name: '提取内嵌图片', exact: true }).click();
   await page.getByTestId('process-tool').click();
   const output = await download(page, '下载 ZIP');
   const zip = await JSZip.loadAsync(output.bytes);
@@ -281,8 +286,15 @@ test('a large PDF keeps the preview virtualized during jumps on a phone-width vi
   await number.press('Enter');
   await expect(number).toHaveValue('220');
   await expect(
-    page.locator('canvas[aria-label="large.pdf · 220"]')
+    page
+      .getByRole('region', { name: 'PDF 预览' })
+      .locator('canvas[aria-label="large.pdf · 220"]')
   ).toBeVisible();
+  await expect(
+    page
+      .getByRole('complementary', { name: '页面缩略图' })
+      .getByRole('button', { name: '预览输出第 220 页' })
+  ).toHaveAttribute('aria-current', 'page');
   expect(await page.locator('.pdf-reader-sheet').count()).toBeLessThan(10);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth)

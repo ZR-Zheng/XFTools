@@ -25,6 +25,7 @@ import PdfPasswordPrompt from './PdfPasswordPrompt';
 import PdfPageGrid from './PdfPageGrid';
 import PdfPageMenu, { type PageMenuAnchor } from './PdfPageMenu';
 import PdfSidebarResize from './PdfSidebarResize';
+import PdfToolsToolbar from './PdfToolsToolbar';
 import PdfExportOptions, {
   PdfResultItems,
   outputLabel
@@ -64,7 +65,9 @@ import './pdf-workbench.css';
 const PdfCanvas = lazy(() => import('../shared/PdfCanvas'));
 const PdfAdvancedEditor = lazy(() => import('./PdfAdvancedEditor'));
 const compactPanels = '(max-width: 740px)';
+const pagesPerPanel = 24;
 type RightPanel = 'export' | 'annotation' | 'form' | 'images';
+type OutputScope = ExportMode | 'png-range';
 const empty = (): PdfWorkspace => ({ sources: [], pages: [] });
 const sizeLabel = (bytes: number) =>
   bytes < 1048576
@@ -191,15 +194,13 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     () => window.matchMedia(compactPanels).matches
   );
   const [drawer, setDrawer] = useState<'pages' | RightPanel | null>(() =>
-    window.matchMedia(compactPanels).matches &&
-    (preset === 'editor' ||
-      preset === 'form' ||
-      preset === 'images' ||
-      preset === 'export')
-      ? initialPanel
+    window.matchMedia(compactPanels).matches
+      ? preset === 'rotate'
+        ? 'pages'
+        : initialPanel
       : null
   );
-  const [pagesOpen, setPagesOpen] = useState<boolean | null>(null);
+  const [pagesOpen, setPagesOpen] = useState(true);
   const [desktopPanel, setDesktopPanel] = useState<RightPanel | null>(
     initialPanel
   );
@@ -227,9 +228,10 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
           : 'document.pdf';
   const [filename, setFilename] = useState(initialFilename);
   const [bookmarks, setBookmarks] = useState(preset === 'merge');
-  const [exportMode, setExportMode] = useState<ExportMode>(
+  const [exportMode, setExportMode] = useState<OutputScope>(
     preset === 'split' ? 'selection' : 'all'
   );
+  const [merging, setMerging] = useState(preset === 'merge');
   const [ranges, setRanges] = useState('');
   const [rotationAngle, setRotationAngle] = useState(90);
   const [output, setOutput] = useState<OutputSettings>({
@@ -257,11 +259,9 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   const [sidebarWidth, setSidebarWidth] = useState<number>();
   const [pageMenu, setPageMenu] = useState<PageMenuAnchor | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const moreMenu = useRef<HTMLDivElement>(null);
-  const moreButton = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const organizer = useRef<HTMLElement>(null);
+  const organizerToggle = useRef<HTMLButtonElement>(null);
   const selectionAnchor = useRef<string | null>(null);
   const assets = useRef(new Map<string, PdfAsset>());
   const past = useRef<PdfWorkspace[]>([]),
@@ -269,10 +269,11 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   const task = useRef<AbortController | null>(null);
   const sourceDrag = useRef<string | null>(null);
   const { sources, pages } = workspace;
-  const showPages = compact
-    ? drawer === 'pages'
-    : (pagesOpen ?? Boolean(sources.length || pages.length || preset));
-  const activePage = pages.find((page) => page.id === currentPage);
+  const thumbnailTray = compact && pagesOpen && !drawer && pages.length > 0;
+  const showPages = compact ? drawer === 'pages' || thumbnailTray : pagesOpen;
+  const organizerMode = thumbnailTray ? 'pages' : mode;
+  const activePageIndex = pages.findIndex((page) => page.id === currentPage);
+  const activePage = pages[activePageIndex];
   const selectedPage = pages.find((page) => page.id === selectedMark?.pageId);
   const currentEdit = selectedPage?.edits?.find(
     (edit) => edit.id === selectedMark?.editId
@@ -285,15 +286,18 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     setPlacement(null);
     openPanel(rightPanel === panel ? null : panel);
   };
-  const showPageOrganizer = () => {
-    setMode('pages');
-    if (mode !== 'pages') setWindowIndex(0);
+  const showOrganizer = (view: typeof mode) => {
+    setMode(view);
+    if (view === 'pages' && thumbnailTray)
+      setWindowIndex(Math.floor(Math.max(0, activePageIndex) / pagesPerPanel));
+    else if (mode !== view) setWindowIndex(0);
+    setPagesOpen(true);
     if (compact) setDrawer('pages');
-    else setPagesOpen(true);
   };
-  const closeMore = () => {
-    setMoreOpen(false);
-    moreButton.current?.focus();
+  const toggleOrganizer = () => {
+    if (compact && drawer === 'pages') setDrawer(null);
+    else if (!compact && showPages) setPagesOpen(false);
+    else showOrganizer('pages');
   };
   const activeFilename =
     sources.find((source) => source.id === activePage?.sourceId)?.name ??
@@ -307,18 +311,6 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     media.addEventListener('change', change);
     return () => media.removeEventListener('change', change);
   }, []);
-  useEffect(() => {
-    if (!moreOpen) return;
-    const closeOutside = (event: Event) => {
-      if (!moreMenu.current?.contains(event.target as Node)) setMoreOpen(false);
-    };
-    document.addEventListener('pointerdown', closeOutside);
-    document.addEventListener('focusin', closeOutside);
-    return () => {
-      document.removeEventListener('pointerdown', closeOutside);
-      document.removeEventListener('focusin', closeOutside);
-    };
-  }, [moreOpen]);
   const setSelected: typeof setSelectedState = (next) => {
     setSelectedState(next);
     if (exportMode === 'selection') setResult(null);
@@ -373,10 +365,12 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
       if (!retained.has(id)) assets.current.delete(id);
     });
   }, [workspace]);
-  const pageSize = mode === 'files' ? 12 : 24;
-  const items = mode === 'files' ? sources.length : pages.length;
+  const pageSize = organizerMode === 'files' ? 12 : pagesPerPanel;
+  const items = organizerMode === 'files' ? sources.length : pages.length;
   const lastWindow = Math.max(0, Math.ceil(items / pageSize) - 1);
-  const currentWindow = Math.min(windowIndex, lastWindow);
+  const currentWindow = thumbnailTray
+    ? Math.floor(Math.max(0, activePageIndex) / pageSize)
+    : Math.min(windowIndex, lastWindow);
   const offset = currentWindow * pageSize;
   const selectedIds = useMemo(
     () =>
@@ -407,10 +401,20 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   }, [exportMode, pages, ranges, selectedIds]);
   const pdfOutput = ['pdf', 'compress', 'protect'].includes(output.kind);
   const useBookmarks = pdfOutput && bookmarks;
+  const showPngRanges = output.kind === 'png' && exportMode === 'png-range';
+  const pngRanges = showPngRanges ? output.ranges.trim() : '';
+  let outputPageCount = groups.reduce(
+    (count, group) => count + group.length,
+    0
+  );
   let invalidPngRange = false;
-  if (output.kind === 'png' && groups.length && output.ranges.trim()) {
+  if (showPngRanges) outputPageCount = 0;
+  if (pngRanges && groups.length) {
     try {
-      readPageGroups(output.ranges, groups[0].length);
+      const numbers = new Set<number>();
+      for (const { first, last } of readPageGroups(pngRanges, groups[0].length))
+        for (let number = first; number <= last; number++) numbers.add(number);
+      outputPageCount = numbers.size;
     } catch {
       invalidPngRange = true;
     }
@@ -418,28 +422,50 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   const canExport =
     !!groups.length &&
     !invalidPngRange &&
+    (!showPngRanges || !!pngRanges) &&
     (output.kind !== 'protect' ||
       (!!output.password && output.password === output.confirmPassword));
   const changeOutput = (change: Partial<OutputSettings>) => {
-    const kindChanged = change.kind && change.kind !== output.kind;
-    if (kindChanged && change.kind !== 'pdf' && exportMode === 'split')
-      setExportMode('all');
-    setOutput((previous) => ({
-      ...previous,
-      ...(kindChanged ? { password: '', confirmPassword: '' } : {}),
-      ...change
-    }));
+    setOutput((previous) => ({ ...previous, ...change }));
     setResult(null);
   };
-  const openOutput = (kind: OutputKind) => {
-    if (kind !== output.kind) changeOutput({ kind });
+  const openOutput = (
+    kind: OutputKind,
+    scope: OutputScope = 'all',
+    merge = false
+  ) => {
+    if (busy) return;
+    if (kind !== output.kind)
+      changeOutput({ kind, password: '', confirmPassword: '' });
+    if (exportMode !== scope || merging !== merge) {
+      setExportMode(scope);
+      setMerging(merge);
+      setResult(null);
+    }
     setPlacement(null);
     openPanel('export');
   };
-  const outputPageCount = groups.reduce(
-    (count, group) => count + group.length,
-    0
-  );
+  const savePanel =
+    showExport && output.kind === 'pdf' && !merging && exportMode !== 'split';
+  const outputTitle = merging
+    ? t('合并 PDF', 'Merge PDFs')
+    : exportMode === 'split'
+      ? t('拆分 PDF', 'Split PDF')
+      : output.kind === 'pdf' && exportMode === 'selection'
+        ? t('提取选中页', 'Extract selected pages')
+        : outputLabel(output.kind, t);
+  const outputAction =
+    output.kind === 'png'
+      ? t('生成 PNG', 'Generate PNG')
+      : output.kind === 'epub'
+        ? t('生成 EPUB', 'Generate EPUB')
+        : output.kind === 'compress'
+          ? t('开始压缩', 'Compress')
+          : output.kind === 'protect'
+            ? t('加密并保存', 'Encrypt and save')
+            : output.kind === 'pdf' && !merging && exportMode === 'all'
+              ? t('生成 PDF', 'Generate PDF')
+              : outputTitle;
   const outputHasForms = useMemo(() => {
     const formSources = new Set(
       sources.filter((source) => source.hasForms).map((source) => source.id)
@@ -652,10 +678,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   };
   const exportSelection = (ids: ReadonlySet<string>) => {
     if (ids !== selectedIds) setSelected(new Set(ids));
-    setExportMode('selection');
-    setResult(null);
-    setPlacement(null);
-    openPanel('export');
+    openOutput(output.kind, 'selection');
   };
   const applyRotation = () => {
     if (!pages.length) return;
@@ -697,7 +720,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               file,
               {
                 ...output,
-                ranges: output.ranges.replace(/，/g, ',').replace(/–/g, '-')
+                ranges: pngRanges.replace(/，/g, ',').replace(/–/g, '-')
               },
               {
                 signal: controller.signal,
@@ -867,10 +890,6 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
       }}
       onKeyDown={(event) => {
         if (event.key === 'Escape' && !preview && !event.defaultPrevented) {
-          if (moreOpen) {
-            closeMore();
-            return;
-          }
           setPlacement(null);
           setDrawer(null);
         }
@@ -915,6 +934,18 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               ? t('添加文件', 'Add files')
               : t('打开 PDF', 'Open PDF')}
           </button>
+          <button
+            type="button"
+            className="pdf-icon-button pdf-thumbnails-toggle"
+            ref={organizerToggle}
+            aria-expanded={compact ? drawer === 'pages' : showPages}
+            aria-controls="pdf-arrange-panel"
+            aria-label={t('组织页面', 'Organize pages')}
+            title={t('页面缩略图', 'Page thumbnails')}
+            onClick={toggleOrganizer}
+          >
+            <Glyph name="panel" size={18} />
+          </button>
         </div>
         <div
           className="pdf-document-label"
@@ -932,176 +963,201 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
         <button
           type="button"
           className="pdf-primary pdf-export-toggle"
-          aria-label={t('导出设置', 'Export settings')}
-          aria-expanded={showExport}
+          aria-expanded={savePanel}
           aria-controls="pdf-export-panel"
-          onClick={() => togglePanel('export')}
+          onClick={() =>
+            savePanel
+              ? openPanel(null)
+              : openOutput(
+                  'pdf',
+                  output.kind === 'pdf' &&
+                    exportMode === 'selection' &&
+                    !merging
+                    ? 'selection'
+                    : 'all'
+                )
+          }
         >
           <Glyph name="download" size={17} />
-          {t('导出', 'Export')}
+          {outputLabel('pdf', t)}
         </button>
       </div>
-      <div
-        className="pdf-tools-toolbar"
-        role="group"
-        aria-label={t('PDF 工具栏', 'PDF tools toolbar')}
-      >
-        <div className="pdf-tools-modes">
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-expanded={showPages}
-            aria-controls="pdf-arrange-panel"
-            aria-label={t('组织页面', 'Organize pages')}
-            title={t('组织页面', 'Organize pages')}
-            onClick={() =>
-              compact
-                ? setDrawer(showPages ? null : 'pages')
-                : setPagesOpen(!showPages)
-            }
-          >
-            <Glyph name="panel" size={19} />
-            <span>{t('页面', 'Pages')}</span>
-          </button>
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-label={t('批注', 'Annotations')}
-            title={t('批注', 'Annotations')}
-            aria-expanded={rightPanel === 'annotation'}
-            onClick={() => togglePanel('annotation')}
-          >
-            <Glyph name="message" size={17} />
-            <span>{t('批注', 'Annotations')}</span>
-          </button>
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-label={t('表单设计', 'Form design')}
-            title={t('表单设计', 'Form design')}
-            aria-expanded={rightPanel === 'form'}
-            onClick={() => togglePanel('form')}
-          >
-            <Glyph name="form" size={17} />
-            <span>{t('表单', 'Forms')}</span>
-          </button>
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-label={t('图片转 PDF', 'Images to PDF')}
-            title={t('图片转 PDF', 'Images to PDF')}
-            aria-expanded={rightPanel === 'images'}
-            onClick={() => togglePanel('images')}
-          >
-            <Glyph name="image" size={17} />
-            <span className="pdf-tool-full">
-              {t('图片转 PDF', 'Images to PDF')}
-            </span>
-            <span className="pdf-tool-short">{t('转 PDF', 'To PDF')}</span>
-          </button>
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-label={t('PDF 压缩', 'Compress PDF')}
-            title={t('PDF 压缩', 'Compress PDF')}
-            aria-pressed={showExport && output.kind === 'compress'}
-            aria-controls="pdf-export-panel"
-            disabled={!!busy}
-            onClick={() => openOutput('compress')}
-          >
-            <Glyph name="compress" size={17} />
-            <span className="pdf-tool-full">
-              {t('PDF 压缩', 'Compress PDF')}
-            </span>
-            <span className="pdf-tool-short">{t('压缩', 'Shrink')}</span>
-          </button>
-          <button
-            type="button"
-            className="pdf-mode-action"
-            aria-label={t('PDF 转图片', 'PDF to images')}
-            title={t('PDF 转图片（PNG）', 'PDF to PNG images')}
-            aria-pressed={showExport && output.kind === 'png'}
-            aria-controls="pdf-export-panel"
-            disabled={!!busy}
-            onClick={() => openOutput('png')}
-          >
-            <Glyph name="image-export" size={17} />
-            <span className="pdf-tool-full">
-              {t('PDF 转图片', 'PDF to images')}
-            </span>
-            <span className="pdf-tool-short">{t('转图', 'To image')}</span>
-          </button>
-        </div>
-        <div className="pdf-tool-extras">
-          <div className="pdf-edit-history">
-            <button
-              type="button"
-              className="pdf-icon-button"
-              aria-label={t('撤销', 'Undo')}
-              title={t('撤销', 'Undo')}
-              disabled={!!busy || !past.current.length}
-              onClick={() => history(true)}
-            >
-              <Glyph name="undo" size={18} />
-            </button>
-            <button
-              type="button"
-              className="pdf-icon-button"
-              aria-label={t('重做', 'Redo')}
-              title={t('重做', 'Redo')}
-              disabled={!!busy || !future.current.length}
-              onClick={() => history(false)}
-            >
-              <Glyph name="redo" size={18} />
-            </button>
-          </div>
-          <div className="pdf-more" ref={moreMenu}>
-            <button
-              ref={moreButton}
-              type="button"
-              className="pdf-icon-button"
-              aria-label={t('更多工具', 'More tools')}
-              title={t('更多工具', 'More tools')}
-              aria-expanded={moreOpen}
-              aria-controls="pdf-more-tools"
-              onClick={() => setMoreOpen(!moreOpen)}
-            >
-              <Glyph name="more" size={23} />
-            </button>
-            <div
-              className="pdf-more-tools"
-              id="pdf-more-tools"
-              role="group"
-              aria-label={t('更多工具', 'More tools')}
-              hidden={!moreOpen}
-            >
-              <button
-                type="button"
-                aria-pressed={favorite}
-                onClick={() => {
-                  closeMore();
-                  toggleBookmarked(path);
-                }}
-              >
-                <Glyph name="star" size={17} filled={favorite} />
-                {w(favorite ? 'removeFavorite' : 'addFavorite')}
-              </button>
-              <button
-                type="button"
-                className="pdf-danger"
-                disabled={!!busy || (!sources.length && !pages.length)}
-                onClick={() => {
-                  closeMore();
-                  clear();
-                }}
-              >
-                <Glyph name="trash" size={17} />
-                {t('清空', 'Clear')}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PdfToolsToolbar
+        undo={() => history(true)}
+        redo={() => history(false)}
+        canUndo={!busy && past.current.length > 0}
+        canRedo={!busy && future.current.length > 0}
+        groups={[
+          {
+            id: 'pages',
+            label: t('页面整理', 'Organize pages'),
+            icon: 'panel',
+            actions: [
+              {
+                label: t('页面缩略图', 'Page thumbnails'),
+                description: t(
+                  '拖动排序，旋转或删除页面',
+                  'Reorder, rotate or delete pages'
+                ),
+                icon: 'grid',
+                active: showPages && organizerMode === 'pages',
+                run: () => showOrganizer('pages')
+              },
+              {
+                label: t('合并 PDF', 'Merge PDFs'),
+                description: t(
+                  '将多个 PDF 合成一个文件',
+                  'Combine multiple PDFs into one file'
+                ),
+                icon: 'copy',
+                active: showExport && merging,
+                disabled: !!busy,
+                run: () => {
+                  openOutput('pdf', 'all', true);
+                  if (!compact) showOrganizer('files');
+                }
+              },
+              {
+                label: t('拆分 PDF', 'Split PDF'),
+                description: t(
+                  '按页码范围分别保存',
+                  'Save each page range separately'
+                ),
+                icon: 'list',
+                active: showExport && exportMode === 'split',
+                disabled: !!busy,
+                run: () => openOutput('pdf', 'split')
+              },
+              {
+                label: t('提取选中页', 'Extract selected pages'),
+                icon: 'download',
+                active: savePanel && exportMode === 'selection',
+                disabled: !!busy,
+                run: () => openOutput('pdf', 'selection')
+              }
+            ]
+          },
+          {
+            id: 'edit',
+            label: t('批注与表单', 'Annotations and forms'),
+            short: t('批注表单', 'Edit'),
+            icon: 'message',
+            actions: [
+              {
+                label: t('批注', 'Annotations'),
+                description: t(
+                  '便签、高亮、手绘与文本',
+                  'Notes, highlights, ink and text'
+                ),
+                icon: 'message',
+                active: rightPanel === 'annotation',
+                run: () => togglePanel('annotation')
+              },
+              {
+                label: t('表单设计', 'Form design'),
+                description: t(
+                  '添加文本框、复选框等可填写字段',
+                  'Add fillable fields, including checkboxes and text boxes'
+                ),
+                icon: 'form',
+                active: rightPanel === 'form',
+                run: () => togglePanel('form')
+              }
+            ]
+          },
+          {
+            id: 'convert',
+            label: t('格式转换', 'Convert formats'),
+            short: t('格式转换', 'Convert'),
+            icon: 'convert',
+            actions: [
+              {
+                label: outputLabel('png', t),
+                description: t('每页生成一张 PNG', 'Render each page as a PNG'),
+                icon: 'image-export',
+                active: showExport && output.kind === 'png',
+                disabled: !!busy,
+                run: () =>
+                  openOutput('png', output.kind === 'png' ? exportMode : 'all')
+              },
+              {
+                label: t('图片转 PDF', 'Images to PDF'),
+                icon: 'image',
+                active: rightPanel === 'images',
+                run: () => togglePanel('images')
+              },
+              {
+                label: outputLabel('epub', t),
+                description: t(
+                  '用可选中的文字生成电子书',
+                  'Create an ebook from selectable text'
+                ),
+                icon: 'file',
+                active: showExport && output.kind === 'epub',
+                disabled: !!busy,
+                run: () => openOutput('epub')
+              },
+              {
+                label: outputLabel('extract', t),
+                description: t(
+                  '下载文档原有的图片',
+                  'Download images embedded in the document'
+                ),
+                icon: 'download',
+                active: showExport && output.kind === 'extract',
+                disabled: !!busy,
+                run: () => openOutput('extract')
+              }
+            ]
+          },
+          {
+            id: 'file',
+            label: t('压缩与加密', 'Compress and encrypt'),
+            short: t('压缩加密', 'Optimize'),
+            icon: 'shield',
+            actions: [
+              {
+                label: outputLabel('compress', t),
+                description: t(
+                  '选择压缩等级，减小文件体积',
+                  'Choose a compression level to reduce file size'
+                ),
+                icon: 'compress',
+                active: showExport && output.kind === 'compress',
+                disabled: !!busy,
+                run: () => openOutput('compress')
+              },
+              {
+                label: outputLabel('protect', t),
+                description: t(
+                  '设置打开 PDF 所需的密码',
+                  'Require a password to open the PDF'
+                ),
+                icon: 'shield',
+                active: showExport && output.kind === 'protect',
+                disabled: !!busy,
+                run: () => openOutput('protect')
+              }
+            ]
+          }
+        ]}
+        more={[
+          {
+            label: w(favorite ? 'removeFavorite' : 'addFavorite'),
+            active: favorite,
+            icon: 'star',
+            run: () => toggleBookmarked(path)
+          },
+          {
+            label: t('清空', 'Clear'),
+            icon: 'trash',
+            danger: true,
+            disabled: !!busy || (!sources.length && !pages.length),
+            run: clear
+          }
+        ]}
+        t={t}
+      />
       {!!busy && (
         <div className="pdf-task" role="status">
           <span>{progress || t('正在处理…', 'Processing…')}</span>
@@ -1132,7 +1188,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
         </div>
       )}
       <div
-        className={`pdf-workbench-layout ${showPages ? 'has-organizer' : ''} ${rightPanel ? 'has-panel' : ''}`}
+        className={`pdf-workbench-layout ${showPages ? 'has-organizer' : ''} ${rightPanel ? 'has-panel' : ''} ${thumbnailTray ? 'has-thumbnail-tray' : ''}`}
         style={
           sidebarWidth
             ? ({ '--pdf-sidebar-size': `${sidebarWidth}px` } as CSSProperties)
@@ -1148,13 +1204,17 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
           />
         )}
         <aside
-          className="pdf-editor"
+          className={`pdf-editor ${thumbnailTray ? 'is-thumbnail-tray' : ''}`}
           ref={organizer}
           id="pdf-arrange-panel"
-          aria-label={t('页面整理', 'Page organizer')}
+          aria-label={
+            thumbnailTray
+              ? t('页面缩略图', 'Page thumbnails')
+              : t('页面整理', 'Page organizer')
+          }
           hidden={!showPages}
         >
-          <div className="pdf-editor-toolbar">
+          <div className="pdf-editor-toolbar" hidden={thumbnailTray}>
             <div
               className="pdf-mode"
               role="group"
@@ -1193,7 +1253,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
             )}
           </div>
           <fieldset className="pdf-editing" disabled={!!busy}>
-            {mode === 'files' ? (
+            {organizerMode === 'files' ? (
               <>
                 {!!sources.length && (
                   <p className="pdf-help">
@@ -1319,7 +1379,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               </>
             ) : (
               <>
-                <div className="pdf-page-controls">
+                <div className="pdf-page-controls" hidden={thumbnailTray}>
                   <div className="pdf-page-toolbar">
                     {preset === 'rotate' && (
                       <div className="pdf-rotation-controls">
@@ -1485,6 +1545,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
                   offset={offset}
                   selected={selectedIds}
                   currentPage={currentPage}
+                  previewOnly={thumbnailTray}
                   busy={Boolean(busy)}
                   thumbnail={thumbnail}
                   onSelect={toggle}
@@ -1503,7 +1564,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
                 : t('暂无文件', 'No files')}
             </p>
           )}
-          {items > pageSize && (
+          {!thumbnailTray && items > pageSize && (
             <nav
               className="pdf-pagination"
               aria-label={t('工作区分页', 'Workspace pagination')}
@@ -1526,6 +1587,20 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
                 {t('下一组', 'Next')}
               </button>
             </nav>
+          )}
+          {thumbnailTray && (
+            <button
+              type="button"
+              className="pdf-icon-button pdf-thumbnail-tray-close"
+              aria-label={t('隐藏缩略图', 'Hide thumbnails')}
+              title={t('隐藏缩略图', 'Hide thumbnails')}
+              onClick={() => {
+                setPagesOpen(false);
+                organizerToggle.current?.focus({ preventScroll: true });
+              }}
+            >
+              <Glyph name="close" size={16} />
+            </button>
           )}
         </aside>
         {showPages && !compact && (
@@ -1616,11 +1691,11 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
         <aside
           className="pdf-output"
           id="pdf-export-panel"
-          aria-label={t('导出设置', 'Export settings')}
+          aria-labelledby="pdf-output-title"
           hidden={!showExport}
         >
           <div className="pdf-output-heading">
-            <h3>{t('导出设置', 'Export settings')}</h3>
+            <h3 id="pdf-output-title">{outputTitle}</h3>
             <button
               type="button"
               className="pdf-icon-button"
@@ -1630,33 +1705,46 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               <Glyph name="close" size={compact ? 21 : 17} />
             </button>
           </div>
-          <PdfExportOptions
-            settings={output}
-            onChange={changeOutput}
-            busy={Boolean(busy)}
-            t={t}
-          />
-          <label className="pdf-output-name">
-            {t('导出范围', 'Export scope')}
-            <select
-              value={exportMode}
-              disabled={!!busy}
-              onChange={(event) => {
-                setExportMode(event.target.value as ExportMode);
-                setResult(null);
-              }}
-            >
-              <option value="all">{t('全部页面', 'All pages')}</option>
-              <option value="selection">
-                {t('选中页面', 'Selected pages')}
-              </option>
-              {output.kind === 'pdf' && (
-                <option value="split">
-                  {t('按范围拆分', 'Split by ranges')}
+          {merging && (
+            <div className="pdf-output-selection">
+              <span>
+                {t(
+                  `已添加 ${sources.length} 个文件`,
+                  `${sources.length} files added`
+                )}
+              </span>
+              <button
+                type="button"
+                disabled={!!busy || !sources.length}
+                onClick={() => showOrganizer('files')}
+              >
+                {t('调整文件顺序', 'Arrange source files')}
+              </button>
+            </div>
+          )}
+          {exportMode !== 'split' && (
+            <label className="pdf-output-name">
+              {t('导出范围', 'Export scope')}
+              <select
+                value={exportMode}
+                disabled={!!busy}
+                onChange={(event) => {
+                  setExportMode(event.target.value as OutputScope);
+                  setResult(null);
+                }}
+              >
+                <option value="all">{t('全部页面', 'All pages')}</option>
+                <option value="selection">
+                  {t('选中页面', 'Selected pages')}
                 </option>
-              )}
-            </select>
-          </label>
+                {output.kind === 'png' && (
+                  <option value="png-range">
+                    {t('指定页码', 'Specific pages')}
+                  </option>
+                )}
+              </select>
+            </label>
+          )}
           {exportMode === 'selection' && (
             <div className="pdf-output-selection">
               {!selectedIds.size && (
@@ -1665,7 +1753,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               <button
                 type="button"
                 disabled={!!busy || !pages.length}
-                onClick={showPageOrganizer}
+                onClick={() => showOrganizer('pages')}
               >
                 {selectedIds.size
                   ? t('调整选中页', 'Change selected pages')
@@ -1697,6 +1785,13 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               )}
             </p>
           )}
+          <PdfExportOptions
+            settings={output}
+            showPngRanges={showPngRanges}
+            onChange={changeOutput}
+            busy={Boolean(busy)}
+            t={t}
+          />
           {invalidPngRange && (
             <p className="pdf-form-note" role="alert">
               {t(
@@ -1768,17 +1863,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               disabled={!canExport || !!busy}
               onClick={() => void exportPdf()}
             >
-              {busy === 'export'
-                ? t('生成中…', 'Generating…')
-                : output.kind !== 'pdf'
-                  ? outputLabel(output.kind, t)
-                  : exportMode === 'split'
-                    ? t('拆分 PDF', 'Split PDF')
-                    : exportMode === 'selection'
-                      ? t('提取选中页', 'Extract selected pages')
-                      : preset === 'merge'
-                        ? t('合并 PDF', 'Merge PDFs')
-                        : t('生成 PDF', 'Generate PDF')}
+              {busy === 'export' ? t('生成中…', 'Generating…') : outputAction}
             </button>
           </div>
           <div className="flow-result pdf-result" aria-live="polite">
@@ -1802,7 +1887,8 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               disabled={!result || !!busy}
               onClick={() => result && downloadFile(result.file)}
             >
-              {result?.file.type === 'application/zip'
+              {result?.file.type === 'application/zip' ||
+              (!result && output.kind === 'png')
                 ? t('下载 ZIP', 'Download ZIP')
                 : output.kind === 'epub'
                   ? t('下载 EPUB', 'Download EPUB')
@@ -1816,7 +1902,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
       </div>
       {pageMenu &&
         showPages &&
-        mode === 'pages' &&
+        organizerMode === 'pages' &&
         !busy &&
         (() => {
           const number = pages.findIndex((page) => page.id === pageMenu.id) + 1;
