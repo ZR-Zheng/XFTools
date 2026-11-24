@@ -9,12 +9,17 @@ test('Chinese launcher has one catalog and filters by action', async ({
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('工具箱');
   await expect(page.locator('.tool-grid .tile-link')).toHaveCount(7);
+  for (const removed of ['图片转 WebP', '批量缩放'])
+    await expect(
+      page.getByRole('link', { name: removed, exact: true })
+    ).toHaveCount(0);
+  await expect(page.locator('.launcher-heading')).toHaveCount(0);
   await expect(
-    page.getByRole('link', { name: '图片转 WebP', exact: true })
+    page.locator('.launcher-bar').getByRole('searchbox')
+  ).toBeVisible();
+  await expect(
+    page.locator('.launcher-card :is(.tile-icon, .launcher-card-arrow)')
   ).toHaveCount(0);
-  expect(
-    (await page.locator('.launcher-heading').boundingBox())?.height
-  ).toBeLessThan(120);
   await expect(page.locator('iframe')).toHaveCount(0);
   await page
     .getByRole('searchbox', { name: '搜索工具', exact: true })
@@ -414,23 +419,51 @@ test('Responsive layouts, direct mobile navigation and 404', async ({
   await page.goto('/');
   const grid = page.locator('.launcher-grid');
   await expect(grid).toBeVisible();
-  const mobileSearch = await page.getByRole('search').boundingBox();
-  const headingWidth = await page
-    .locator('.launcher-heading')
-    .evaluate((heading) => {
-      const style = getComputedStyle(heading);
-      return (
-        heading.clientWidth -
-        parseFloat(style.paddingLeft) -
-        parseFloat(style.paddingRight)
-      );
-    });
-  expect(mobileSearch!.width).toBeCloseTo(headingWidth);
+  const search = page.locator('.launcher-bar').getByRole('search');
+  await expect(search).toBeVisible();
+  const mobileSearch = (await search.boundingBox())!;
+  const brand = (await page
+    .getByRole('link', { name: 'XFTools' })
+    .boundingBox())!;
+  const cards = (await grid.boundingBox())!;
+  expect(mobileSearch.x).toBeGreaterThan(brand.x + brand.width);
+  expect(mobileSearch.x + mobileSearch.width).toBeCloseTo(
+    cards.x + cards.width
+  );
   await page.screenshot({ path: '.tmp/screenshots/launcher-mobile.png' });
   await page.goto('/this-page-does-not-exist');
   await expect(
     page.getByRole('heading', { level: 1, name: '这个页面走丢了' })
   ).toBeVisible();
+});
+
+test('Chart artwork shares the same position within its card as other artwork', async ({
+  page
+}) => {
+  for (const width of [1440, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    const tiles = page.locator('.launcher-card');
+    await expect(tiles).toHaveCount(7);
+    const offsets = await tiles.evaluateAll((cards) =>
+      cards.map((card) => {
+        const { right, top } = card.getBoundingClientRect();
+        const { x, y, width, height } = card
+          .querySelector('.tile-art')!
+          .getBoundingClientRect();
+        return {
+          category: card.getAttribute('data-category'),
+          x: right - x - width / 2,
+          y: y + height / 2 - top
+        };
+      })
+    );
+    const chart = offsets.find((offset) => offset.category === 'charts')!;
+    for (const offset of offsets) {
+      expect(offset.x).toBeCloseTo(chart.x, 0);
+      expect(offset.y).toBeCloseTo(chart.y, 0);
+    }
+  }
 });
 
 test('The mobile header returns from tool categories to the catalog', async ({

@@ -2,6 +2,9 @@ import { toolAliases } from './tool-aliases';
 
 type LaunchAction = { label: string; to: string };
 
+export const normalizeLauncherAction = (value: string) =>
+  value.toLowerCase().replace(/\s+/g, '');
+
 function action(label: string, legacy: keyof typeof toolAliases): LaunchAction {
   const { path, query } = toolAliases[legacy];
   return { label, to: `/${path}?${query}` };
@@ -20,7 +23,6 @@ export const launchActions: Partial<Record<string, LaunchAction[]>> = {
   'image/workspace': [
     action('裁剪', 'image-generic/crop'),
     { label: '画布扩展', to: '/image/workspace?tool=extend' },
-    action('批量缩放', 'image-generic/resize'),
     action('去背景', 'image-generic/remove-background')
   ],
   'video/workspace': [

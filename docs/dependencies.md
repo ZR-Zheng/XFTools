@@ -30,7 +30,7 @@ PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 E
 
 PDF 压缩逐张重采样兼容的内嵌图片，并比较编码体积。选择 JPEG 2000 时，浏览器 Worker 才加载 Cornerstone OpenJPEG WASM。分发许可见 `public/licenses/`。 [OpenJPEG 编码器](https://github.com/cornerstonejs/codecs/tree/main/packages/openjpeg)
 
-自动抠图使用固定为 1.21.0 的 ONNX Runtime Web CPU 运行时。Node.js 要求 24 或更新版本。
+自动抠图使用 ONNX Runtime Web 的 WASM CPU 运行时，JavaScript 与 WASM 资源随同一版本构建。Node.js 要求 24 或更新版本。
 
 图片编辑器的「纯色去底」可离线运行。「自动抠图」在点击处理后才从站点自身加载 U²-NetP 模型（约 4.6 MB）和 WASM 运行时，使用浏览器 Worker 识别主体。部署时随构建发布 `models/u2netp/` 和 `assets/` 即可。模型来源、校验值和许可见模型目录。 [U²-Net 官方项目](https://github.com/xuebinqin/U-2-Net)
 

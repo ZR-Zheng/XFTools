@@ -1,3 +1,8 @@
+/* Switching formats can add options without shifting the centered workspace. */
+html:has(.conversion-workspace) {
+  scrollbar-gutter: stable;
+}
+
 .tool-page.tool-page-standalone:has(> .tool-workspace > .conversion-workspace),
 .tool-page-standalone > .tool-workspace:has(> .conversion-workspace) {
   display: block;

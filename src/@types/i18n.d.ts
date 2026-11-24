@@ -1,7 +1,6 @@
 import 'i18next';
 
 import translation from '../../public/locales/zh/translation.json';
-import string from '../../public/locales/zh/string.json';
 import video from '../../public/locales/zh/video.json';
 import time from '../../public/locales/zh/time.json';
 import pdf from '../../public/locales/zh/pdf.json';
@@ -13,7 +12,6 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     resources: {
       translation: typeof translation;
-      string: typeof string;
       video: typeof video;
       time: typeof time;
       pdf: typeof pdf;

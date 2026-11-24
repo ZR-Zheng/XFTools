@@ -60,77 +60,29 @@
 
 .launcher.workspace-page {
   max-width: var(--launcher-width);
-  padding: 34px var(--launcher-gutter) 36px;
+  padding: 24px var(--launcher-gutter) 36px;
 }
 
 .launcher-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.launcher-heading h1 {
+  margin-bottom: 16px;
   color: #193967;
-  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-size: clamp(1.45rem, 2.5vw, 1.85rem);
   font-weight: 750;
   line-height: 1.2;
   letter-spacing: -0.03em;
-}
-
-.launcher[data-view='home'] .launcher-heading {
-  position: relative;
-  isolation: isolate;
-  min-height: 104px;
-  overflow: hidden;
-  padding: 18px clamp(20px, 3.1vw, 36px);
-  border: 1px solid #3369bf;
-  border-radius: 20px;
-  background:
-    radial-gradient(ellipse at 88% 25%, #508be9 0%, transparent 62%),
-    linear-gradient(108deg, #173768, #2655a9 68%, #2c65bd);
-  box-shadow: 0 12px 27px rgb(31 67 137 / 17%);
-}
-
-.launcher[data-view='home'] .launcher-heading::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0 0 0 31%;
-  background:
-    radial-gradient(
-      ellipse at 70% 100%,
-      rgb(150 200 255 / 25%),
-      transparent 65%
-    ),
-    repeating-linear-gradient(
-      127deg,
-      transparent 0 12px,
-      rgb(216 234 255 / 13%) 12px 13px,
-      transparent 13px 25px
-    );
-  mask-image: linear-gradient(90deg, transparent, black 46%);
-  pointer-events: none;
-  content: '';
-}
-
-.launcher[data-view='home'] .launcher-heading h1 {
-  color: #f7fbff;
-  font-size: clamp(1.65rem, 3.1vw, 2.3rem);
 }
 
 .launcher-search {
   display: flex;
   align-items: center;
   gap: 9px;
-  width: min(100%, 350px);
-  min-height: 46px;
+  width: min(100%, 360px);
+  min-width: 0;
   padding-inline: 11px;
   border: 1px solid var(--glass-line);
-  border-radius: 11px;
+  border-radius: 10px;
   background: var(--glass-raised);
   color: var(--action);
-  box-shadow: var(--glass-shadow);
 }
 
 .launcher-search:focus-within {
@@ -173,6 +125,7 @@
 
 .launcher-search-clear {
   display: grid;
+  flex: 0 0 auto;
   width: 35px;
   height: 35px;
   place-items: center;
@@ -185,7 +138,7 @@
   background: var(--blue-soft);
 }
 .launcher-result-count {
-  margin: -5px 0 12px;
+  margin: 0 0 12px;
   color: var(--muted);
   font-size: 0.85rem;
 }
@@ -263,29 +216,17 @@
 }
 
 .launcher-card .launcher-card-main {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  min-height: 152px;
-  padding: 17px 120px 16px 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  align-items: center;
+  align-content: start;
+  gap: 12px;
+  padding: 15px 16px;
   border-radius: 16px 16px 6px 6px;
 }
 
 .launcher-card-main:focus-visible {
   outline-offset: -4px;
-}
-
-.launcher-card .launcher-card-icon {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  margin: 0;
-  border-radius: 12px;
-  color: var(--tile-accent);
-  background: var(--tile-tint);
 }
 
 .launcher-card .tile-content {
@@ -302,23 +243,6 @@
   font-size: 0.83rem;
   line-height: 1.5;
 }
-.launcher-card-arrow {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  top: 13px;
-  right: 14px;
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgb(255 255 255 / 82%);
-  border-radius: 9px;
-  background: rgb(255 255 255 / 56%);
-  color: var(--tile-accent);
-}
-.launcher-card-main:hover .launcher-card-arrow {
-  background: white;
-}
-
 .launcher-actions {
   display: flex;
   align-items: center;
@@ -377,21 +301,12 @@
     font-size: 18px;
   }
   .launcher.workspace-page {
-    padding-top: 24px;
-  }
-  .launcher-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    margin-bottom: 15px;
-  }
-  .launcher[data-view='home'] .launcher-heading {
-    min-height: 0;
-    padding: 12px 14px;
-    border-radius: 16px;
+    padding-top: 16px;
   }
   .launcher-search {
     width: 100%;
+    gap: 7px;
+    padding-inline: 8px;
   }
   .launcher-search input {
     font-size: 1rem;
@@ -404,8 +319,9 @@
     gap: 10px;
   }
   .launcher-card .launcher-card-main {
-    min-height: 129px;
-    padding: 12px 105px 12px 14px;
+    grid-template-columns: minmax(0, 1fr) 91px;
+    gap: 10px;
+    padding: 12px 14px;
   }
   .launcher-actions {
     padding-block: 7px;

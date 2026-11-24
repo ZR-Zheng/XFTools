@@ -1,11 +1,18 @@
+.tile-art-slot {
+  display: flex;
+  height: 80px;
+  align-items: center;
+  align-self: start;
+  justify-content: center;
+  pointer-events: none;
+}
+
 .tile-art {
-  position: absolute;
-  right: 14px;
-  bottom: 13px;
+  position: relative;
+  flex: 0 0 auto;
   width: 99px;
   height: 76px;
   color: var(--tile-strong);
-  pointer-events: none;
 }
 
 .art-convert-file,
@@ -175,7 +182,6 @@
 }
 
 .art-wave {
-  bottom: 18px;
   display: flex;
   height: 58px;
   align-items: center;
@@ -195,7 +201,6 @@
 }
 
 .art-chart {
-  bottom: 14px;
   display: grid;
   height: 64px;
   place-items: center;
@@ -239,10 +244,10 @@
 }
 
 @media (max-width: 590px) {
+  .tile-art-slot {
+    height: 70px;
+  }
   .tile-art {
-    right: 10px;
-    bottom: 10px;
     scale: 0.86;
-    transform-origin: bottom right;
   }
 }

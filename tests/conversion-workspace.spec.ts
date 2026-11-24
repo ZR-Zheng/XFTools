@@ -4,6 +4,8 @@ import JSZip from 'jszip';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { GifReader } from 'omggif';
 
+test.use({ launchOptions: { ignoreDefaultArgs: ['--hide-scrollbars'] } });
+
 const video = 'tests/fixtures/video/purple-tone.webm';
 const silent = 'tests/fixtures/video/blue-silent.webm';
 const image = 'src/pages/tools/image/png/convert-jgp-to-png/test.jpg';
@@ -54,6 +56,42 @@ test('File conversion aliases choose the matching category and output', async ({
     );
     await expect(preset(page)).toHaveValue(format);
   }
+});
+
+test('Switching image output keeps the workspace aligned with classic scrollbars', async ({
+  page
+}) => {
+  const width = 1120;
+  await page.setViewportSize({ width, height: 400 });
+  await page.goto('/converters/workspace?group=image&format=png');
+  await page.addStyleTag({
+    content: 'html::-webkit-scrollbar { width: 16px; }'
+  });
+  await picker(page).setInputFiles(image);
+  await expect(row(page, 'test.jpg')).toBeVisible();
+  const workspace = page.locator('.conversion-workspace');
+  const height = () => workspace.evaluate((element) => element.offsetHeight);
+  const compact = await height();
+  await preset(page).selectOption('jpg');
+  const expanded = await height();
+  expect(expanded).toBeGreaterThan(compact);
+  await page.setViewportSize({
+    width,
+    height: Math.floor((compact + expanded) / 2)
+  });
+  const geometry = () =>
+    workspace.locator('.cw-container').evaluate((element) => {
+      const { x, width } = element.getBoundingClientRect();
+      const root = document.documentElement;
+      return { x, width, scrollable: root.scrollHeight > root.clientHeight };
+    });
+  const before = await geometry();
+  expect(before.scrollable).toBe(true);
+  await preset(page).selectOption('png');
+  const after = await geometry();
+  expect(after.scrollable).toBe(false);
+  expect(after.x).toBeCloseTo(before.x);
+  expect(after.width).toBeCloseTo(before.width);
 });
 
 test('Mixed tasks save settings, produce files and ZIP, and isolate failures', async ({
@@ -129,9 +167,11 @@ test('Mixed tasks save settings, produce files and ZIP, and isolate failures', a
     fullPage: true
   });
   await page.setViewportSize({ width: 375, height: 812 });
-  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
-    375
-  );
+  const { scrollWidth, clientWidth } = await page.evaluate(() => {
+    const root = document.documentElement;
+    return { scrollWidth: root.scrollWidth, clientWidth: root.clientWidth };
+  });
+  expect(scrollWidth).toBe(clientWidth);
   await page.screenshot({
     path: '.tmp/screenshots/conversion-workspace-mobile.png',
     fullPage: true
