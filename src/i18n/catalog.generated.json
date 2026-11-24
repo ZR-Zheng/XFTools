@@ -173,6 +173,11 @@
         "description": "通过指定开始和结束时间来修剪视频文件。从视频的开头或结尾删除不需要的部分。",
         "shortDescription": "通过删除不需要的部分来修剪视频",
         "title": "修剪视频"
+      },
+      "workspace": {
+        "description": "在时间线上剪辑视频和 GIF，用静态图片制作动图，调整倍速和画面，添加配乐并导出视频、GIF 或音频。",
+        "shortDescription": "在同一时间线上剪辑视频和 GIF，或用图片制作动图",
+        "title": "视频工作台"
       }
     }
   }

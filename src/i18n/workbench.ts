@@ -49,7 +49,6 @@ const zh = {
   video: '视频处理',
   time: '日期与时间',
   audio: '音频处理',
-  png: 'PNG 图像',
   gif: 'GIF 动图',
   converters: '格式转换'
 };

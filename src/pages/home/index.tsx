@@ -17,7 +17,7 @@ import ToolTile from '../../components/workbench/ToolTile';
 const featuredPaths = [
   'pdf/workspace',
   'image/workspace',
-  'video/trim',
+  'video/workspace',
   'time/convert-unix-to-date'
 ];
 

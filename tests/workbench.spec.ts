@@ -208,15 +208,12 @@ test('Tool categories follow function and keep existing links', async ({
     page.getByRole('complementary', { name: '密码保护 PDF', exact: true })
   ).toBeVisible();
   await expect(page.getByLabel('打开密码')).toBeVisible();
-  for (const category of ['image-generic', 'png']) {
-    await page.goto(`/categories/${category}`);
-    await expect(
-      page.locator('.tool-grid a[href="/image/workspace"]')
-    ).toBeVisible();
-    await expect(
-      page.locator('.tool-grid a[href="/pdf/workspace"]')
-    ).toHaveCount(0);
-  }
+  await page.goto('/categories/png');
+  await expect(page).toHaveURL(/\/categories\/image-generic$/);
+  await expect(
+    page.locator('.tool-grid a[href="/image/workspace"]')
+  ).toBeVisible();
+  await expect(page.locator('.tool-grid a[href="/pdf/workspace"]')).toHaveCount(0);
   await page.goto('/categories/converters');
   await expect(
     page.locator('.tool-grid a[href="/number/byte-converter"]')
@@ -242,7 +239,8 @@ test('Removed categories and tools are absent from the workspace and old links',
     'number',
     'csv',
     'security',
-    'string'
+    'string',
+    'png'
   ]) {
     await expect(page.locator(`a[href="/categories/${category}"]`)).toHaveCount(
       0
@@ -338,32 +336,6 @@ test('PDF processing waits for an explicit action and produces a download', asyn
   const merged = await PDFDocument.load(await readFile(filePath!));
   expect(merged.getPageCount()).toBe(2);
   expect(merged.getPage(0).getSize()).toEqual({ width: 200, height: 100 });
-});
-
-test('Media tools wait for all source files before processing', async ({
-  page
-}) => {
-  const requests: string[] = [];
-  page.on('request', (request) => requests.push(request.url()));
-  await page.goto('/video/add-audio');
-  const process = page.getByTestId('process-tool');
-  await expect(process).toBeDisabled();
-  await page.locator('.flow-input input[type="file"]').setInputFiles({
-    name: 'video.webm',
-    mimeType: 'video/webm',
-    buffer: Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
-  });
-  await expect(process).toBeDisabled();
-  await page.locator('.flow-settings input[type="file"]').setInputFiles({
-    name: 'audio.wav',
-    mimeType: 'audio/wav',
-    buffer: Buffer.alloc(44)
-  });
-  await expect(process).toBeEnabled();
-  // Observe beyond the former one-second automatic conversion timer.
-  await page.waitForTimeout(1200);
-  expect(requests.some((url) => /ffmpeg-core|\.wasm/.test(url))).toBe(false);
-  await expect(process).toBeEnabled();
 });
 
 test('PDF form entry saves an editable field', async ({ page }) => {

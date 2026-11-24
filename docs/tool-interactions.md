@@ -11,7 +11,7 @@
 | [CyberChef](https://gchq.github.io/CyberChef/) | 输入输出并排、及时反馈、处理参数靠近任务 | 文本、代码和结构化数据工具以双栏为主；常用选项在编辑区上方；说明与示例默认折叠 |
 | [IT Tools](https://github.com/CorentinTh/it-tools) | 按工具用途使用表单 | 短数值使用两行输入 |
 | [PDF24 Merge](https://tools.pdf24.org/en/merge-pdf)、[PDF24 Split](https://tools.pdf24.org/en/split-pdf) | 文件排序、页面选择、处理与导出 | 同一个 PDF 工作台支持连续预览、文件和页面排序、缩略图选页和按范围拆分；主预览按视口渲染，侧栏每组最多显示 24 张页面缩略图 |
-| [AudioMass](https://github.com/pkalogiros/AudioMass) | 波形预览、范围选择、播放选区 | 音频输入提供本地波形；音视频裁剪保留原生播放控制，并提供秒数输入、范围滑块、时长和播放选区按钮 |
+| [AudioMass](https://github.com/pkalogiros/AudioMass) | 波形预览、范围选择、播放选区 | 音频裁剪提供本地波形、原生播放控制、秒数输入、范围滑块和播放选区按钮 |
 | [EpochConverter](https://www.epochconverter.com/) | 时间戳和日期双向转换、秒与毫秒区分 | Unix 工具提供日期时间选择器、单位与时区选择、当前时间快捷操作和可复制的多格式结果；原批量功能保留在折叠区 |
 
 这里参考的是交互方式，未引入这些项目的 UI 框架或外部处理服务。继续使用 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) 的渐进展示、可见标签和拖动替代操作建议，沿用已有 `design-system/xftools/MASTER.md`。
@@ -26,6 +26,11 @@
 
 - 图片格式转换和图片压缩在切换模式时保留已导入的图片。预览可在原图与结果间切换，支持单张下载和批量 ZIP。格式转换按输出格式显示画质和透明设置，PNG 专用压缩显示保色程度、目标体积和抖动选项。
 - PDF 格式导出在同一个页面切换 PNG 和 EPUB。PNG 支持点选页面、设置渲染倍率和批量下载，EPUB 提取文档中的可选文字。
+- 视频工作台将素材、项目预览、参数和时间线放在同一页。主轨可混排视频、GIF 和静态图片，静态图片的停留时长可以批量应用。时间线支持截取、分割、重排和复制，配乐轨支持混音、替换原声和循环。手机端通过设置抽屉调整片段。MP4、GIF 和音频导出使用当前编辑结果，FFmpeg 在首次导出时从同站点加载，素材在浏览器内处理。
+- 剪辑模板提供 16:9 横屏、9:16 竖屏、1:1 方形视频、4:5 竖版图文、1:1 方形动图和原始比例。套用模板会设置预览和导出的共同画布，以及新导入静态图片的默认停留时长。可以选择保留完整画面或居中裁切铺满。模板变更可撤销，已编辑的片段继续可编辑。
+- 从「模板 → 导入剪映草稿」选择可直接读取的 `draft_content.json`、`template.json` 或明文备份，再选择本地音视频和图片。同名素材可自动关联，其他素材可手动选取。导入映射主视频轨和一段配乐，保留画布、支持的帧率、片段区间、固定倍速、音量和直角旋转／翻转。时轴间隙以空白片段保留。导入前会提示未映射的叠加轨、字幕、转场和特效，导入操作可撤销。参照 [pyJianYingDraft](https://github.com/GuanYixuan/pyJianYingDraft) 和 [Jianying-CapCut2XML 的草稿转换说明](https://github.com/Ersiter/Jianying-CapCut2XML#readme)。
+- 视频预览按解码帧绘制，播放头和拖动预览合并更新。GIF 在 Worker 中解码，切换素材时释放帧和 Worker。支持 Web Locks 的浏览器会让同站点的多个视频导出排队，排队和导出均可取消。导出从本地文件按需读取，GIF 分两遍生成色板和编码。浏览器接近成片大小上限时会提示缩短片段或调整编码设置。参考 [MasterSelects 预览代理说明](https://github.com/Sportinger/MasterSelects/blob/master/docs/Features/Proxy-System.md) 和 [Emscripten 文件系统说明](https://emscripten.org/docs/api_reference/Filesystem-API.html#file-systems)。
+- 时间线工具栏提供撤销和重做。`Ctrl/⌘ + Z` 撤销，`Ctrl/⌘ + Shift + Z` 或 `Ctrl + Y` 重做，空格播放或暂停，`S` 分割，`Ctrl/⌘ + D` 直接复制片段，也可用 `Ctrl/⌘ + C` 和 `Ctrl/⌘ + V` 复制粘贴。`Delete` 或 `Backspace` 删除片段。左右方向键以 1/30 秒为步长定位，按住 `Shift` 跳一秒，`Home` 和 `End` 跳到开头和末尾。文本输入和表单控件保留自身的键盘操作。
 - 时长换算支持单项和逐行批量输入。换算方向决定小数位数、单位后缀或补零选项，批量结果与输入逐行对齐。
 
 - 公共页头集中展示标题、摘要、收藏与常用操作。PDF 文件操作和图片编辑操作使用同一页头，手机允许操作组换行。PDF 编辑区自适应剩余视口。详见[紧凑布局](compact-tool-workspaces.md)。
@@ -44,4 +49,4 @@
 
 浏览器测试检查全部工具路由在 1440px 与 375px 下的加载、运行时错误和横向溢出。其他验证包括缩放实际 PNG 尺寸、混合比例批量 ZIP、PDF 实际提取页数、参数修改后结果失效、波形与裁剪控制、时间戳双向转换和简体中文界面。
 
-全部入口巡检不等于逐个格式的完整处理验证；大型视频转码、在线模型下载、所有 HEIC/GIF 编码组合仍需使用相应真实文件验证。
+大型视频转码、在线模型下载和 HEIC/GIF 编码组合仍需使用相应文件验证。

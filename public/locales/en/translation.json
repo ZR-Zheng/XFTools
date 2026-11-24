@@ -38,10 +38,6 @@
       "description": "Tools for working with PDF files - extract text from PDFs, convert PDFs to other formats, manipulate PDFs, and much more.",
       "title": "PDF Tools"
     },
-    "png": {
-      "description": "Tools for working with PNG images – convert PNGs to JPGs, create transparent PNGs, change PNG colors, crop, rotate, resize PNGs, and much more.",
-      "title": "PNG Tools"
-    },
     "seeAll": "See all {{title}}",
     "time": {
       "description": "Tools for working with time and date – calculate time differences, convert between time zones, format dates, generate date sequences, and much more.",

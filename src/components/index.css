@@ -597,7 +597,6 @@ a {
   background: #e7eef9;
 }
 [data-category='image-generic'] .tile-icon,
-[data-category='png'] .tile-icon,
 [data-category='gif'] .tile-icon {
   color: #21665b;
   background: #e0f2eb;
@@ -620,7 +619,6 @@ a {
   background: #49372e;
 }
 [data-theme='dark'] [data-category='image-generic'] .tile-icon,
-[data-theme='dark'] [data-category='png'] .tile-icon,
 [data-theme='dark'] [data-category='gif'] .tile-icon {
   color: #8edbbf;
   background: #263d38;

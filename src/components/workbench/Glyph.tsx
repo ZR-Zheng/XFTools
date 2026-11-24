@@ -18,6 +18,9 @@ const paths: Record<string, string> = {
   file: 'M14 2H5v20h14V7z M14 2v6h5 M8 13h8 M8 17h6',
   text: 'M4 5h16 M12 5v15 M8 20h8',
   video: 'M3 5h13v14H3z M16 10l5-3v10l-5-3',
+  play: 'm8 4 13 8-13 8z',
+  pause: 'M9 5v14m6-14v14',
+  scissors: 'M4 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M4 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M9 8l12 12M9 16 21 4',
   audio:
     'M9 18V5l11-2v13 M9 8l11-2 M9 18a3 3 0 1 1-3-3h3 M20 16a3 3 0 1 1-3-3h3',
   code: 'm8 6-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18',
@@ -50,7 +53,6 @@ const paths: Record<string, string> = {
 };
 export const categoryGlyph: Record<string, string> = {
   'image-generic': 'image',
-  png: 'image',
   gif: 'image',
   pdf: 'file',
   string: 'text',

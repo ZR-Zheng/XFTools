@@ -38,6 +38,9 @@ describe('tool catalog', () => {
     ['pdf/export', 'pdf'],
     ['image-generic/convert', 'image-generic'],
     ['converters/audio-converter', 'audio'],
+    ['video/trim', 'video'],
+    ['audio/extract-audio', 'video'],
+    ['converters/video-to-gif', 'video'],
     ['image-generic/compress', 'image-generic'],
     ['time/convert-duration', 'time'],
     ['number/byte-converter', 'converters']

@@ -36,7 +36,6 @@ export interface ToolMeta {
 
 export type ToolCategory =
   | 'image-generic'
-  | 'png'
   | 'gif'
   | 'time'
   | 'video'

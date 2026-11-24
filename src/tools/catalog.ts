@@ -7,11 +7,9 @@ const assignments: Record<
 > = {
   'image/workspace': {
     primary: 'image-generic',
-    also: ['png', 'converters']
+    also: ['converters']
   },
-  'converters/audio-converter': { primary: 'audio', also: ['converters'] },
-  'converters/video-to-gif': { primary: 'gif', also: ['video', 'converters'] },
-  'audio/extract-audio': { primary: 'audio', also: ['video', 'converters'] }
+  'converters/audio-converter': { primary: 'audio', also: ['converters'] }
 };
 export function classifyTool(
   route: string,
@@ -46,9 +44,9 @@ export function getToolInteraction(
   if (category === 'pdf') return 'pdf';
   if (
     /^(?:video|audio)\//.test(route) ||
-    /audio-converter|video-to-gif|^gif\//.test(route)
+    /audio-converter|^gif\//.test(route)
   )
     return 'media';
-  if (/^(?:image|image-generic|png)\//.test(route)) return 'image';
+  if (/^(?:image|image-generic)\//.test(route)) return 'image';
   return 'text';
 }

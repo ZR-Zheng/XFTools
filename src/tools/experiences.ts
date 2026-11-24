@@ -55,26 +55,17 @@ assign('date', ['time/convert-unix-to-date', 'time/discord-timestamp']);
 assign('form', ['time/date-weekday-calculator', 'time/time-between-dates']);
 assign('media', [
   'audio/change-speed',
-  'audio/extract-audio',
   'audio/loop',
   'audio/merge-audio',
   'audio/trim',
-  'video/add-audio',
-  'video/change-speed',
-  'video/compress',
-  'video/crop-video',
-  'video/flip',
-  'video/loop',
-  'video/merge-video',
-  'video/resize',
-  'video/rotate',
-  'video/trim',
-  'gif/change-speed',
-  'gif/images-to-gif',
-  'converters/audio-converter',
-  'converters/video-to-gif'
+  'converters/audio-converter'
 ]);
-assign('custom', ['time/convert-duration', 'image/workspace', 'pdf/workspace']);
+assign('custom', [
+  'time/convert-duration',
+  'image/workspace',
+  'pdf/workspace',
+  'video/workspace'
+]);
 pages['time/crontab-guru'] = {
   layout: 'form',
   entry: 'cron',
@@ -83,13 +74,6 @@ pages['time/crontab-guru'] = {
   reference: 'it-tools'
 };
 
-const primary: Record<string, number[]> = {
-  'video/add-audio': [0, 1, 2],
-  'video/crop-video': [1],
-  'video/resize': [0, 1, 2]
-};
-for (const [route, primaryGroups] of Object.entries(primary))
-  pages[route].primaryGroups = primaryGroups;
 pages['time/truncate-clock-time'].placeholder = [
   '例如：12:34:56',
   'For example: 12:34:56'

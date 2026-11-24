@@ -1,8 +1,38 @@
 const imageWorkspace = 'image/workspace';
 const durationConverter = 'time/convert-duration';
 const pdfWorkspace = 'pdf/workspace';
+const videoWorkspace = 'video/workspace';
 
 export const toolAliases = {
+  'gif/change-speed': { path: videoWorkspace, query: 'panel=clip&format=gif' },
+  'gif/images-to-gif': {
+    path: videoWorkspace,
+    query: 'panel=clip&format=gif&preset=images'
+  },
+  'video/trim': { path: videoWorkspace, query: 'panel=clip' },
+  'video/merge-video': { path: videoWorkspace, query: 'panel=clip' },
+  'video/loop': { path: videoWorkspace, query: 'panel=clip' },
+  'video/change-speed': { path: videoWorkspace, query: 'panel=clip' },
+  'video/crop-video': { path: videoWorkspace, query: 'panel=picture' },
+  'video/rotate': { path: videoWorkspace, query: 'panel=picture' },
+  'video/flip': { path: videoWorkspace, query: 'panel=picture' },
+  'video/add-audio': { path: videoWorkspace, query: 'panel=audio' },
+  'video/resize': {
+    path: videoWorkspace,
+    query: 'panel=export&format=mp4&preset=resize'
+  },
+  'video/compress': {
+    path: videoWorkspace,
+    query: 'panel=export&format=mp4&preset=compress'
+  },
+  'audio/extract-audio': {
+    path: videoWorkspace,
+    query: 'panel=export&format=mp3'
+  },
+  'converters/video-to-gif': {
+    path: videoWorkspace,
+    query: 'panel=export&format=gif'
+  },
   'pdf/merge-pdf': { path: pdfWorkspace, query: 'mode=merge' },
   'pdf/split-pdf': { path: pdfWorkspace, query: 'mode=split' },
   'pdf/rotate-pdf': { path: pdfWorkspace, query: 'mode=rotate' },

@@ -18,7 +18,6 @@ const toolCategoriesOrder: ToolCategory[] = [
   'video',
   'time',
   'audio',
-  'png',
   'gif',
   'converters'
 ];
@@ -37,12 +36,6 @@ const categoriesConfig: {
   value: FullI18nKey;
   icon: IconifyIcon | string;
 }[] = [
-  {
-    type: 'png',
-    icon: 'ph:file-png-thin',
-    value: 'translation:categories.png.description',
-    title: 'translation:categories.png.title'
-  },
   {
     type: 'gif',
     icon: 'material-symbols-light:gif-rounded',
@@ -89,7 +82,6 @@ const categoriesConfig: {
 const CATEGORIES_USER_TYPES_MAPPINGS: Partial<Record<ToolCategory, UserType>> =
   {
     gif: 'generalUsers',
-    png: 'generalUsers',
     'image-generic': 'generalUsers',
     video: 'generalUsers',
     audio: 'generalUsers',

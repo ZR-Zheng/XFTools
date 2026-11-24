@@ -177,5 +177,10 @@
     "presetMode": "预设分辨率",
     "presetModeDesc": "从常见视频分辨率中选择",
     "width": "宽度（像素）"
+  },
+  "workspace": {
+    "title": "视频工作台",
+    "description": "在时间线上剪辑视频和 GIF，用静态图片制作动图，调整倍速和画面，添加配乐并导出视频、GIF 或音频。",
+    "shortDescription": "在同一时间线上剪辑视频和 GIF，或用图片制作动图"
   }
 }

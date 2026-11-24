@@ -38,10 +38,6 @@
       "description": "处理 PDF 文件的工具 - 从 PDF 中提取文本、将 PDF 转换为其他格式、操作 PDF 等等。",
       "title": "PDF 工具"
     },
-    "png": {
-      "description": "处理 PNG 图像的工具 - 将 PNG 转换为 JPG、创建透明 PNG、更改 PNG 颜色、裁剪、旋转、调整 PNG 大小等等。",
-      "title": "PNG 工具"
-    },
     "seeAll": "查看全部 {{title}}",
     "time": {
       "description": "处理时间和日期的工具——计算时差、在时区之间转换、格式化日期、生成日期序列等等。",

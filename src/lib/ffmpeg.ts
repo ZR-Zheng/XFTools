@@ -1,8 +1,13 @@
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { toBlobURL } from '@ffmpeg/util';
+import coreAsset from '@ffmpeg/core?url';
+import wasmAsset from '@ffmpeg/core/wasm?url';
 
-const CORE_VERSION = '0.12.10';
-const BASE_URL = `https://unpkg.com/@ffmpeg/core@${CORE_VERSION}/dist/esm`;
+export function loadFFmpeg(ffmpeg: FFmpeg) {
+  return ffmpeg.load({
+    coreURL: new URL(coreAsset, location.href).href,
+    wasmURL: new URL(wasmAsset, location.href).href
+  });
+}
 
 let ffmpegInstance: FFmpeg | null = null;
 let loadingPromise: Promise<FFmpeg> | null = null;
@@ -21,16 +26,7 @@ async function getFFmpeg(): Promise<FFmpeg> {
     loadingPromise = (async () => {
       const ffmpeg = new FFmpeg();
 
-      await ffmpeg.load({
-        coreURL: await toBlobURL(
-          `${BASE_URL}/ffmpeg-core.js`,
-          'text/javascript'
-        ),
-        wasmURL: await toBlobURL(
-          `${BASE_URL}/ffmpeg-core.wasm`,
-          'application/wasm'
-        )
-      });
+      await loadFFmpeg(ffmpeg);
 
       ffmpegInstance = ffmpeg;
 
