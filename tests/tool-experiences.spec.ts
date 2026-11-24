@@ -27,22 +27,18 @@ test('Resize uses a compact preview, linked dimensions and real output pixels', 
   page
 }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto('/image-generic/resize');
-  await expect(page.locator('.flow-result')).toHaveCount(0);
-  expect(
-    (await page.locator('.resize-upload').boundingBox())!.height
-  ).toBeLessThan(260);
+  await page.goto('/image/workspace?tool=resize');
   await expect(
-    page.getByRole('button', { name: '调整大小', exact: true })
+    page.getByRole('button', { name: '导出', exact: true })
   ).toBeDisabled();
-  await page.locator('input[type=file]').setInputFiles(await imageFile(page));
-  const width = page.getByTestId('width-input'),
-    height = page.getByTestId('height-input');
+  await page.getByLabel('选择图片文件').setInputFiles(await imageFile(page));
+  const width = page.getByLabel('宽度（px）', { exact: true }),
+    height = page.getByLabel('高度（px）', { exact: true });
   await width.fill('80');
   await expect(height).toHaveValue('60');
   await height.fill('30');
   await expect(width).toHaveValue('40');
-  await page.getByRole('button', { name: '调整大小', exact: true }).click();
+  await page.getByRole('button', { name: '导出', exact: true }).click();
   const downloaded = page.waitForEvent('download');
   await page.getByRole('button', { name: '下载图片', exact: true }).click();
   const bytes = await readFile((await (await downloaded).path())!);
@@ -51,15 +47,14 @@ test('Resize uses a compact preview, linked dimensions and real output pixels', 
   await page.getByLabel('锁定宽高比', { exact: true }).uncheck();
   await width.fill('100');
   await height.fill('50');
-  await expect(page.getByTestId('resize-target')).toHaveText('100 × 50');
+  await expect(page.locator('.iw-view-size')).toHaveText('100 × 50 px');
   await expect(
     page.getByRole('button', { name: '下载图片', exact: true })
   ).toHaveCount(0);
-  await page.getByRole('button', { name: '百分比', exact: true }).click();
-  await page.getByTestId('percentage-input').fill('25');
-  await expect(page.getByTestId('resize-target')).toHaveText('40 × 30');
-  await page.getByTestId('percentage-input').fill('0');
-  await page.getByRole('button', { name: '调整大小', exact: true }).click();
+  await width.fill('0');
+  await expect(
+    page.getByRole('button', { name: '导出', exact: true })
+  ).toBeDisabled();
   await expect(page.getByRole('alert')).toBeVisible();
   for (const viewport of [375, 768, 1024]) {
     await page.setViewportSize({ width: viewport, height: 900 });
@@ -79,20 +74,22 @@ test('Resize batch keeps individual ratios and exports a ZIP', async ({
 }) => {
   await page.goto('/image-generic/resize');
   await page
-    .locator('input[type=file]')
+    .getByLabel('选择批量图片')
     .setInputFiles([
       await imageFile(page),
       await imageFile(page, 120, 160, 'portrait.png')
     ]);
-  await page.getByTestId('width-input').fill('80');
-  await expect(page.locator('.resize-file-card').nth(1)).toContainText(
-    '80 × 107'
-  );
+  await page.getByLabel('目标宽度（px）').fill('80');
+  await expect(
+    page.getByRole('listitem').filter({ hasText: 'portrait.png' })
+  ).toContainText('80 × 107');
   await page
-    .getByRole('button', { name: '调整 2 张图片', exact: true })
+    .getByRole('button', { name: '调整大小 2 张图片', exact: true })
     .click();
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: '下载全部 ZIP', exact: true }).click();
+  await page
+    .getByRole('button', { name: '下载全部为 ZIP', exact: true })
+    .click();
   const archive = await download;
   expect(archive.suggestedFilename()).toMatch(/\.zip$/);
   const zip = await JSZip.loadAsync(await readFile((await archive.path())!));
@@ -104,17 +101,17 @@ test('Resize preserves SVG vectors and keeps tiny percent outputs valid', async 
   page
 }) => {
   await page.goto('/image-generic/resize');
-  await page.locator('input[type=file]').setInputFiles({
+  await page.getByLabel('选择批量图片').setInputFiles({
     name: 'vector.svg',
     mimeType: 'image/svg+xml',
     buffer: Buffer.from(
       '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50"><rect width="100" height="50" fill="blue"/></svg>'
     )
   });
-  await page.getByTestId('width-input').fill('50');
+  await page.getByLabel('目标宽度（px）').fill('50');
   await page.getByRole('button', { name: '调整大小', exact: true }).click();
   let download = page.waitForEvent('download');
-  await page.getByRole('button', { name: '下载图片', exact: true }).click();
+  await page.getByRole('button', { name: '下载', exact: true }).click();
   const svg = await readFile((await (await download).path())!, 'utf8');
   expect(svg).toContain('width="50"');
   expect(svg).toContain('height="25"');
@@ -123,13 +120,13 @@ test('Resize preserves SVG vectors and keeps tiny percent outputs valid', async 
     .getByRole('button', { name: '移除 vector.svg', exact: true })
     .click();
   await page
-    .locator('input[type=file]')
+    .getByLabel('选择批量图片')
     .setInputFiles(await imageFile(page, 1, 1, 'tiny.png'));
-  await page.getByRole('button', { name: '百分比', exact: true }).click();
-  await page.getByTestId('percentage-input').fill('1');
+  await page.getByLabel('缩放方式').selectOption('percentage');
+  await page.getByLabel('缩放百分比').fill('1');
   await page.getByRole('button', { name: '调整大小', exact: true }).click();
   download = page.waitForEvent('download');
-  await page.getByRole('button', { name: '下载图片', exact: true }).click();
+  await page.getByRole('button', { name: '下载', exact: true }).click();
   const png = await readFile((await (await download).path())!);
   expect(png.readUInt32BE(16)).toBe(1);
   expect(png.readUInt32BE(20)).toBe(1);

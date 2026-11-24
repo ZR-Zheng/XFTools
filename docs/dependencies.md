@@ -24,11 +24,13 @@
 
 ## 保留的功能模块
 
-PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 EmbedPDF 高级编辑器与同源 PDFium WASM。FFmpeg 用于音视频处理，Tesseract 与背景移除运行时用于 OCR 和去背景。大型 WASM、OCR、模型处理仍可能需要下载资源。
+PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 EmbedPDF 高级编辑器与同源 PDFium WASM。FFmpeg 用于音视频处理，背景移除运行时用于图片抠图。大型 WASM 和去背景模型仍可能需要下载资源。
 
 图片编辑器提供旋转、翻转、百分比裁剪、亮度、对比度、饱和度、文字标注、撤销与 PNG/JPEG/WebP 导出；不再加载旧编辑 SDK。React-PDF 继续从自身对应的 PDF.js 版本加载 worker，避免版本不一致。
 
 onnxruntime-web 仍固定为 1.21.0，以满足背景移除库的兼容要求。Node.js 要求 24 或更新版本。
+
+图片工作台的「纯色去底」可离线运行。自动抠图默认从 IMG.LY 下载模型，部署时也可在构建前设置 `VITE_BACKGROUND_REMOVAL_PUBLIC_PATH=/models/background-removal/`，并在该地址托管与依赖版本匹配的 `@imgly/background-removal-data` 包中 `dist/` 的内容。浏览器会从该地址读取 `resources.json` 及清单里的文件，用于本地推理。 [IMG.LY 模型资源说明](https://github.com/imgly/background-removal-js#custom-asset-serving)
 
 ## 开发与验证
 

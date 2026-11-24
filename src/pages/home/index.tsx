@@ -16,9 +16,7 @@ import Glyph from '../../components/workbench/Glyph';
 import ToolTile from '../../components/workbench/ToolTile';
 const featuredPaths = [
   'pdf/workspace',
-  'image-generic/resize',
-  'string/text-compare',
-  'image-generic/convert',
+  'image/workspace',
   'video/trim',
   'time/convert-unix-to-date'
 ];

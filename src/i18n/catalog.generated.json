@@ -43,70 +43,10 @@
       }
     },
     "image": {
-      "changeColors": {
-        "description": "快速准确地将图像中的选定颜色替换为新颜色。",
-        "shortDescription": "快速交换图像中的颜色",
-        "title": "改变图像的颜色"
-      },
-      "changeOpacity": {
-        "description": "轻松调整图片透明度。只需上传图片，使用滑块在 0（完全透明）和 1（完全不透明）之间设置所需的不透明度，然后下载修改后的图片即可。",
-        "shortDescription": "调整图像的透明度",
-        "title": "更改图像不透明度"
-      },
-      "compress": {
-        "description": "按目标体积批量压缩图片，或用 PNG 专用模式减少色板颜色并保留原始像素尺寸。",
-        "shortDescription": "批量压缩图片，支持通用和 PNG 专用模式",
-        "title": "压缩图像"
-      },
-      "convert": {
-        "description": "批量将图片转换为 JPG、WebP 或 PNG。可设置画质和透明区域的处理方式，逐张预览并下载单张或 ZIP。",
-        "shortDescription": "在一个工作台批量转换 JPG、WebP 和 PNG",
-        "title": "图片格式转换"
-      },
-      "createTransparent": {
-        "description": "通过移除所选颜色，使图像背景变为透明。",
-        "shortDescription": "快速使图像透明",
-        "title": "创建透明 PNG"
-      },
-      "crop": {
-        "description": "裁剪图像以删除不需要的区域。",
-        "shortDescription": "快速裁剪图像。",
-        "title": "裁剪图片"
-      },
-      "editor": {
-        "description": "高级图像编辑器，包含裁剪、旋转、注释、调整颜色和添加水印等工具。使用专业级工具编辑图像。",
-        "shortDescription": "使用高级工具和功能编辑图像",
-        "title": "图像编辑器"
-      },
-      "imageToText": {
-        "description": "使用光学字符识别 (OCR) 从图像 (JPG、PNG) 中提取文本。",
-        "shortDescription": "使用 OCR 从图像中提取文本。",
-        "title": "图像转文本 (OCR)"
-      },
-      "removeBackground": {
-        "description": "自动移除图像背景，并保留主体为透明背景。",
-        "shortDescription": "自动删除图像的背景",
-        "title": "移除图片背景"
-      },
-      "resize": {
-        "description": "将图像调整为不同的尺寸。",
-        "shortDescription": "轻松调整图像大小。",
-        "title": "调整图像大小"
-      },
-      "rotate": {
-        "description": "按指定角度旋转图像。",
-        "shortDescription": "轻松旋转图像。",
-        "title": "旋转图像"
-      },
-      "split": {
-        "description": "根据纸张格式和页边距，将地图或大图分割为多页。通过设置打印方格对应的像素和方格数量，控制图片缩放比例。",
-        "shortDescription": "将大图分割为多页 PDF，方便打印拼接。",
-        "title": "图片分页打印"
-      },
-      "watermark": {
-        "description": "使用文件名或自定义文字，为一张或多张图片添加文字水印。",
-        "shortDescription": "为图片添加自定义文字水印",
-        "title": "图片添加水印"
+      "workspace": {
+        "description": "在同一画布裁剪、旋转、缩放、调色、替色、调整透明度和添加水印。支持去背景、批量处理和分页打印。",
+        "shortDescription": "连续编辑、去背景、批量处理和分页打印",
+        "title": "图片工作台"
       }
     },
     "number": {
@@ -121,100 +61,6 @@
         "description": "预览、合并、拆分、批注、表单、压缩、加密与转换 PDF。",
         "shortDescription": "预览、整理、编辑与转换 PDF。",
         "title": "PDF 工作台"
-      }
-    },
-    "string": {
-      "censor": {
-        "description": "用于审查文本中单词的实用程序。在左侧的输入表单中加载您的文本，并在选项中指定所有脏话，您将立即在输出区域获得已审查的文本。\", longDescription: '使用此在线工具，您可以审查任何文本中的某些单词。您可以指定不想要的单词列表（例如脏话或秘密单词），程序会用替代单词替换它们，并创建可安全阅读的文本。您可以在选项中的多行文本字段中通过每行输入一个单词来指定这些单词。', keywords: ['text', 'censor', 'words', 'characters'], component: lazy(() => import('./index')), i18n: { name: 'string:censor.title', description: 'string:censor.description",
-        "shortDescription": "快速掩盖脏话或用替代词代替。",
-        "title": "屏蔽指定文本"
-      },
-      "createPalindrome": {
-        "description": "回文创建工具，可从任何文本创建回文。输入文本即可立即将其转换为正反读相同的回文。非常适合文字游戏、创建对称文本模式或探索语言学知识。",
-        "shortDescription": "创建正读和倒读相同的文本",
-        "title": "创建回文"
-      },
-      "emailExtractor": {
-        "description": "从文本中提取所有邮箱地址。粘贴文本，即可得到整理后的邮箱列表。",
-        "shortDescription": "从文本中识别并提取邮箱地址",
-        "title": "邮箱地址提取"
-      },
-      "extractSubstring": {
-        "description": "文本子字符串提取工具。输入文本并指定起始和终止位置即可提取所需部分。非常适合数据处理、文本分析或从较大文本块中提取特定内容。",
-        "shortDescription": "提取指定位置之间的部分文本",
-        "title": "提取子字符串"
-      },
-      "hiddenCharacterDetector": {
-        "description": "检测隐藏的 Unicode 字符，尤其是可能用于攻击的 RTL 覆盖字符。",
-        "longDescription": "此工具可帮助您检测文本中隐藏的 Unicode 字符，尤其是可能用于攻击的从右到左 (RTL) 覆盖字符。它可以识别隐藏字符、零宽度字符以及其他可能隐藏在看似无害的文本中的潜在恶意 Unicode 序列。",
-        "shortDescription": "查找文本中隐藏的 Unicode 字符",
-        "title": "隐藏字符检测器"
-      },
-      "join": {
-        "description": "使用可自定义的分隔符将文本片段连接在一起。",
-        "shortDescription": "使用指定的分隔符连接文本元素",
-        "title": "合并文本"
-      },
-      "palindrome": {
-        "description": "回文检测工具。即时验证文本正读和反读是否一致。非常适合字谜游戏、语言分析或验证对称文本模式。支持各种分隔符和多词回文检测。",
-        "shortDescription": "检查文本正读和反读是否相同",
-        "title": "回文检测"
-      },
-      "quote": {
-        "description": "使用可自定义的选项在文本周围添加引号。",
-        "shortDescription": "使用各种样式在文本周围添加引号",
-        "title": "文本添加引号"
-      },
-      "randomizeCase": {
-        "description": "文本大小写随机化工具。输入文本后，即可立即将其转换为随机的大小写字母。非常适合创建独特的文本效果、测试大小写敏感度或生成丰富的文本模式。",
-        "shortDescription": "随机化文本中字母的大小写",
-        "title": "随机转换大小写"
-      },
-      "repeat": {
-        "description": "使用可自定义的分隔符多次重复文本。",
-        "shortDescription": "重复文本多次",
-        "title": "重复文本"
-      },
-      "reverse": {
-        "description": "文本反转工具。输入任意文本即可立即逐字符反转。非常适合创建镜像文本、分析回文或玩转文本模式。反转时保留空格和特殊字符。",
-        "shortDescription": "逐个字符地反转任何文本",
-        "title": "反转文本"
-      },
-      "rotate": {
-        "description": "按指定位置旋转文本中的字符。",
-        "shortDescription": "按位置移动文本中的字符。",
-        "title": "循环移位文本"
-      },
-      "split": {
-        "description": "文本分割工具。输入文本并指定分隔符即可将其拆分为多个部分。非常适合数据处理、文本操作或从较大的文本块中提取特定内容。",
-        "shortDescription": "使用分隔符将文本拆分为多个部分",
-        "title": "拆分文本"
-      },
-      "statistic": {
-        "description": "分析文本并生成综合统计数据。",
-        "shortDescription": "获取有关文本的统计数据",
-        "title": "文本统计"
-      },
-      "textCompare": {
-        "description": "对比两段文本，突出显示新增、删除及修改内容。",
-        "longDescription": "快速定位两个文本版本之间的差异，突出显示新增、删除和修改的内容。适用于审阅编辑、跟踪更改或对比文档，可按单词或字符级别调整对比精度。",
-        "shortDescription": "对比两段文本，快速定位差异",
-        "title": "文本差异对比"
-      },
-      "textReplacer": {
-        "description": "用新内容替换文本模式。",
-        "shortDescription": "快速替换内容中的文本",
-        "title": "文本替换器"
-      },
-      "truncate": {
-        "description": "将文本缩短至指定长度。",
-        "shortDescription": "将文本截断为指定长度",
-        "title": "截断文本"
-      },
-      "uppercase": {
-        "description": "将文本转换为大写字母。",
-        "shortDescription": "将文本转换为大写",
-        "title": "转换为大写"
       }
     },
     "time": {

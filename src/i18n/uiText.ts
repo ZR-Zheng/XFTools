@@ -42,7 +42,6 @@ export function uiText<T>(value: T): T {
       ? [explicitNamespace]
       : [
           'translation',
-          'string',
           'number',
           'image',
           'video',

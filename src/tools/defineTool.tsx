@@ -20,6 +20,7 @@ export type UserType = 'generalUsers' | 'developers';
 export interface ToolMeta {
   path: string;
   standalone?: boolean;
+  loadFullLocale?: boolean;
   component: LazyExoticComponent<JSXElementConstructor<ToolComponentProps>>;
   keywords: string[];
   icon: IconifyIcon | string;
@@ -34,7 +35,6 @@ export interface ToolMeta {
 }
 
 export type ToolCategory =
-  | 'string'
   | 'image-generic'
   | 'png'
   | 'gif'
@@ -44,7 +44,7 @@ export type ToolCategory =
   | 'audio'
   | 'converters';
 
-export type ToolRoutePrefix = ToolCategory | 'number';
+export type ToolRoutePrefix = ToolCategory | 'number' | 'image';
 
 export interface DefinedTool {
   interaction: ToolInteraction;
@@ -74,6 +74,7 @@ export const defineTool = (
     icon,
     path,
     standalone,
+    loadFullLocale = true,
     keywords,
     component,
     i18n,
@@ -100,9 +101,10 @@ export const defineTool = (
     userTypes: i18n.userTypes,
     component: function ToolComponent() {
       const { t } = useTranslation(validNamespaces);
-      const [ready, setReady] = useState(false);
+      const [ready, setReady] = useState(!loadFullLocale);
       const [error, setError] = useState('');
       useEffect(() => {
+        if (!loadFullLocale) return;
         let active = true;
         ensureToolLocale(i18n.name.split(':')[0])
           .then(() => {

@@ -358,7 +358,7 @@ test('old rotation link applies an absolute angle and retains editable form fiel
   );
 });
 
-test('Transparent PNG exports true alpha and explicit background replacement invalidates downloads', async ({
+test('Transparent PNG legacy link previews alpha and replacement on the same canvas', async ({
   page
 }) => {
   await page.goto('/image-generic/create-transparent');
@@ -384,28 +384,23 @@ test('Transparent PNG exports true alpha and explicit background replacement inv
     mimeType: 'image/png',
     buffer: Buffer.from(encoded, 'base64')
   });
-  await page.getByTestId('process-tool').click();
-  const result = page.locator('.flow-result img');
-  await expect(result).toBeVisible();
-  const pixels = await result.evaluate(async (image: HTMLImageElement) => {
-    await image.decode();
-    const canvas = document.createElement('canvas');
-    canvas.width = 2;
-    canvas.height = 1;
-    const context = canvas.getContext('2d')!;
-    context.drawImage(image, 0, 0);
-    return [...context.getImageData(0, 0, 2, 1).data];
-  });
-  expect(pixels[3]).toBe(0);
-  expect(pixels[7]).toBe(128);
-  await page
-    .getByRole('radio', { name: '替换为背景颜色', exact: true })
-    .check();
-  await expect(
+  const mode = page.getByRole('combobox', { name: /^颜色处理/ });
+  await expect(mode).toHaveValue('transparent');
+  await page.getByLabel('预览颜色处理').check();
+  const pixels = () =>
     page
-      .locator('.flow-result')
-      .getByRole('button', { name: '下载', exact: true })
-  ).toBeDisabled();
+      .locator('.iw-viewer canvas')
+      .evaluate((canvas: HTMLCanvasElement) => [
+        ...canvas.getContext('2d')!.getImageData(0, 0, 2, 1).data
+      ]);
+  await expect.poll(async () => (await pixels())[3]).toBe(0);
+  expect((await pixels())[7]).toBe(128);
+  await mode.selectOption('replace');
+  await page.getByLabel('替换颜色').fill('#ff0000');
+  await expect
+    .poll(async () => (await pixels()).slice(0, 4))
+    .toEqual([255, 0, 0, 255]);
+  expect((await pixels())[7]).toBe(128);
 });
 
 test('PDF page pagination retains selection for cross-screen ordering', async ({

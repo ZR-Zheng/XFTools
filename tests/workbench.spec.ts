@@ -115,20 +115,18 @@ test('XFTools branding, removed notices and one page heading', async ({
   await page.screenshot({ path: '.tmp/screenshots/favorites-zh.png' });
 });
 
-test('Chinese tool descriptions, examples and source labels remain consistent', async ({
+test('Chinese examples and descriptions are shown in the support section', async ({
   page
 }) => {
-  await page.goto('/string/uppercase');
+  await page.goto('/time/check-leap-years');
   await page.locator('.tool-support-details > summary').click();
   await expect(
     page.getByRole('heading', {
-      name: '将文本转为大写',
+      name: '查找 2 月 29 日的生日',
       exact: true
     })
   ).toBeVisible();
-  await expect(
-    page.getByText('将文本中的字母统一转换为大写。', { exact: true })
-  ).toBeVisible();
+  await expect(page.getByText(/^我们的一位朋友出生在闰年/)).toBeVisible();
 });
 
 test('Favorites update across navigation and can be removed', async ({
@@ -148,23 +146,24 @@ test('Favorites update across navigation and can be removed', async ({
     page.getByRole('heading', { name: '把顺手的工具，收进这里' })
   ).toBeVisible();
 });
-test('Text tool still computes and appears in recent tools', async ({
+test('Unit conversion computes and appears in recent tools', async ({
   page
 }) => {
-  await page.goto('/string/uppercase');
+  await page.goto('/number/byte-converter');
   await expect(page.getByTestId('text-input')).toBeVisible();
-  await page.getByTestId('text-input').fill('hello');
-  await expect(page.getByTestId('text-result')).toHaveValue('HELLO');
+  await page.getByTestId('text-input').fill('2');
+  await expect(page.getByTestId('text-result')).toHaveValue('2000000');
   await page.screenshot({ path: '.tmp/screenshots/tool-zh.png' });
   await page.locator('.sidebar a[href="/recent"]').click();
   await expect(
-    page.locator('.tool-grid a[href="/string/uppercase"]')
+    page.locator('.tool-grid a[href="/number/byte-converter"]')
   ).toBeVisible();
 });
 test('Image editor still loads after uploading an image', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/image-generic/editor');
+  await expect(page).toHaveURL(/\/image\/workspace\?tab=edit$/);
   const png = await page.evaluate(() => {
     const canvas = document.createElement('canvas');
     canvas.width = 32;
@@ -181,19 +180,15 @@ test('Image editor still loads after uploading an image', async ({ page }) => {
   });
   await expect(page.locator('canvas').first()).toBeVisible({ timeout: 20000 });
   await expect(
-    page.getByText('色彩调整', { exact: true }).first()
+    page.getByRole('button', { name: '调色', exact: true })
   ).toBeVisible();
-  await expect(page.getByText('Finetune', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: '.tmp/screenshots/image-editor-zh.png' });
-  await page.getByRole('button', { name: '旋转 90°', exact: true }).click();
-  await expect
-    .poll(() =>
-      page
-        .locator('.image-canvas-stage canvas')
-        .evaluate((canvas: HTMLCanvasElement) => [canvas.width, canvas.height])
-    )
-    .toEqual([16, 32]);
-  await page.getByLabel('文字内容', { exact: true }).fill('XFTools');
+  await page.getByRole('button', { name: '旋转', exact: true }).click();
+  await page.getByRole('button', { name: '右转 90°', exact: true }).click();
+  await expect(page.locator('.iw-view-size')).toHaveText('16 × 32 px');
+  await page.getByRole('button', { name: '水印', exact: true }).click();
+  await page.getByLabel('水印文字', { exact: true }).fill('XFTools');
+  await page.getByRole('button', { name: '导出', exact: true }).click();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: '下载图片', exact: true }).click();
   expect((await download).suggestedFilename()).toBe('sample-edited.png');
@@ -213,6 +208,15 @@ test('Tool categories follow function and keep existing links', async ({
     page.getByRole('complementary', { name: '密码保护 PDF', exact: true })
   ).toBeVisible();
   await expect(page.getByLabel('打开密码')).toBeVisible();
+  for (const category of ['image-generic', 'png']) {
+    await page.goto(`/categories/${category}`);
+    await expect(
+      page.locator('.tool-grid a[href="/image/workspace"]')
+    ).toBeVisible();
+    await expect(
+      page.locator('.tool-grid a[href="/pdf/workspace"]')
+    ).toHaveCount(0);
+  }
   await page.goto('/categories/converters');
   await expect(
     page.locator('.tool-grid a[href="/number/byte-converter"]')
@@ -223,7 +227,7 @@ test('Removed categories and tools are absent from the workspace and old links',
   page
 }) => {
   await page.addInitScript(() => {
-    const history = ['csv/csv-to-json', 'string/bcrypt', 'pdf/merge-pdf'];
+    const history = ['csv/csv-to-json', 'string/uppercase', 'pdf/merge-pdf'];
     localStorage.setItem('bookmarkedTools', history.join(','));
     localStorage.setItem('recentTools', JSON.stringify(history));
   });
@@ -237,14 +241,22 @@ test('Removed categories and tools are absent from the workspace and old links',
     'list',
     'number',
     'csv',
-    'security'
+    'security',
+    'string'
   ]) {
     await expect(page.locator(`a[href="/categories/${category}"]`)).toHaveCount(
       0
     );
   }
   const search = page.getByRole('searchbox', { name: '搜索工具', exact: true });
-  for (const query of ['Base64', 'CSV', 'bcrypt', '密码生成器']) {
+  for (const query of [
+    'Base64',
+    'CSV',
+    'bcrypt',
+    '密码生成器',
+    'OCR',
+    '将文本转为大写'
+  ]) {
     await search.fill(query);
     await expect(page.locator('.tool-grid .tile-link')).toHaveCount(0);
     await expect(
@@ -259,7 +271,7 @@ test('Removed categories and tools are absent from the workspace and old links',
       '/pdf/workspace'
     );
   }
-  for (const category of ['encoding', 'csv', 'security']) {
+  for (const category of ['encoding', 'csv', 'security', 'string']) {
     await page.goto(`/categories/${category}`);
     await expect(
       page.getByRole('heading', { name: '没有找到这个分类' })
@@ -267,7 +279,10 @@ test('Removed categories and tools are absent from the workspace and old links',
   }
   for (const route of [
     '/string/base64',
+    '/string/uppercase',
+    '/string/split',
     '/image-generic/qr-code',
+    '/image-generic/image-to-text',
     '/xml/xml-validator',
     '/json/prettify',
     '/number/generic-calc/ohms-law',
@@ -285,19 +300,6 @@ test('Removed categories and tools are absent from the workspace and old links',
       page.getByRole('heading', { name: '这个页面走丢了' })
     ).toBeVisible();
   }
-});
-
-test('Native radio controls change the text splitting operation', async ({
-  page
-}) => {
-  await page.goto('/string/split');
-  await page.getByTestId('text-input').fill('hello world');
-  const chunks = page.getByRole('radio', { name: '使用多个块', exact: true });
-  await chunks.check();
-  await expect(chunks).toBeChecked();
-  await expect(page.getByTestId('text-result')).toHaveValue(
-    'hel\\nlo \\nwor\\nld'
-  );
 });
 
 test('PDF processing waits for an explicit action and produces a download', async ({

@@ -26,11 +26,11 @@ const mergePdfTool = {
 } as unknown as DefinedTool;
 
 const base64Tool = {
-  type: 'string',
-  path: 'string/base64',
-  name: 'string:base64.title' as FullI18nKey,
-  description: 'string:base64.description' as FullI18nKey,
-  shortDescription: 'string:base64.shortDescription' as FullI18nKey,
+  type: 'converters',
+  path: 'converters/base64',
+  name: 'converters:base64.title' as FullI18nKey,
+  description: 'converters:base64.description' as FullI18nKey,
+  shortDescription: 'converters:base64.shortDescription' as FullI18nKey,
   icon: 'icon',
   keywords: ['b64'],
   component: (() => null) as unknown,
@@ -51,7 +51,7 @@ const otherPdfTool = {
 
 const pdfToolWithAlternativeCategory = {
   type: 'pdf',
-  alternativeCategories: ['string'],
+  alternativeCategories: ['converters'],
   path: 'pdf/pdf-to-text',
   name: 'pdf:pdfToText.title' as FullI18nKey,
   description: 'pdf:pdfToText.description' as FullI18nKey,
@@ -70,9 +70,9 @@ const enTranslations: Record<string, string> = {
   'pdf:otherPdf.title': 'Document helper',
   'pdf:otherPdf.description': 'Helper for pdf tasks',
   'pdf:otherPdf.shortDescription': 'PDF helper',
-  'string:base64.title': 'Base64 Encoder/Decoder',
-  'string:base64.description': 'Encode or decode Base64 text',
-  'string:base64.shortDescription': 'Convert text to and from Base64'
+  'converters:base64.title': 'Base64 Encoder/Decoder',
+  'converters:base64.description': 'Encode or decode Base64 text',
+  'converters:base64.shortDescription': 'Convert text to and from Base64'
 };
 
 const esTranslations: Record<string, string> = {
@@ -146,18 +146,18 @@ describe('alternative categories', () => {
   const tools = [mergePdfTool, base64Tool, pdfToolWithAlternativeCategory];
 
   it('returns the primary category followed by the alternative ones', () => {
-    expect(getToolCategories(base64Tool)).toEqual(['string']);
+    expect(getToolCategories(base64Tool)).toEqual(['converters']);
     expect(getToolCategories(pdfToolWithAlternativeCategory)).toEqual([
       'pdf',
-      'string'
+      'converters'
     ]);
   });
 
   it('lists a tool in the alternative categories it declared', () => {
     const categories = getToolsByCategory([], tEn, tools);
-    const stringCategory = categories.find(({ type }) => type === 'string');
+    const converters = categories.find(({ type }) => type === 'converters');
 
-    expect(stringCategory?.tools).toContain(pdfToolWithAlternativeCategory);
+    expect(converters?.tools).toContain(pdfToolWithAlternativeCategory);
   });
 
   it('keeps listing a tool in its primary category', () => {

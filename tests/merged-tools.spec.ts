@@ -26,7 +26,9 @@ test('Image conversion keeps the upload while switching format and invalidates o
   page
 }) => {
   await page.goto('/converters/convert-to-webp');
-  await expect(page).toHaveURL(/\/image-generic\/convert\?format=webp$/);
+  await expect(page).toHaveURL(
+    /\/image\/workspace\?tab=batch&operation=convert&format=webp$/
+  );
   await expect(
     page.getByRole('radio', { name: 'WebP', exact: true })
   ).toBeChecked();
@@ -34,7 +36,7 @@ test('Image conversion keeps the upload while switching format and invalidates o
     page.getByRole('checkbox', { name: '保留透明区域' })
   ).toBeChecked();
   const buffer = await transparentPng(page);
-  await page.locator('input[type=file]').setInputFiles([
+  await page.getByLabel('选择批量图片').setInputFiles([
     { name: 'first.png', mimeType: 'image/png', buffer },
     { name: 'first.png', mimeType: 'image/png', buffer }
   ]);
@@ -88,7 +90,9 @@ test('Existing PNG compression links select the PNG controls in the shared works
   page
 }) => {
   await page.goto('/png/compress-png');
-  await expect(page).toHaveURL(/\/image-generic\/compress\?mode=png$/);
+  await expect(page).toHaveURL(
+    /\/image\/workspace\?tab=batch&operation=compress&mode=png$/
+  );
   await expect(
     page.getByRole('radio', { name: 'PNG 专用', exact: true })
   ).toBeChecked();
@@ -194,10 +198,7 @@ test('Multiple saved links to merged tools are shown as single canonical entries
     await page.goto(path);
     const links = page.locator('.tool-grid .tile-link');
     await expect(links).toHaveCount(2);
-    await expect(links.first()).toHaveAttribute(
-      'href',
-      '/image-generic/convert'
-    );
+    await expect(links.first()).toHaveAttribute('href', '/image/workspace');
     await expect(links.last()).toHaveAttribute(
       'href',
       '/time/convert-duration'

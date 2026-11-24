@@ -21,7 +21,7 @@ async function download(page: import('@playwright/test').Page, process = true) {
 test.describe('Compress PNG tool', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/png/compress-png');
-    await page.locator('input[type="file"]').setInputFiles(imagePath);
+    await page.getByLabel('选择批量图片').setInputFiles(imagePath);
     await expect(page.locator('input[name="quality"]')).toBeVisible();
   });
 
@@ -54,7 +54,7 @@ test.describe('Compress PNG tool with several files', () => {
   test('should zip every compressed file', async ({ page }) => {
     const buffer = fs.readFileSync(imagePath);
     await page.goto('/png/compress-png');
-    await page.locator('input[type="file"]').setInputFiles([
+    await page.getByLabel('选择批量图片').setInputFiles([
       { name: 'first.png', mimeType: 'image/png', buffer },
       { name: 'second.png', mimeType: 'image/png', buffer }
     ]);

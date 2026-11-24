@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import useFileDrop from 'hooks/useFileDrop';
 import useObjectUrl from 'hooks/useObjectUrl';
 import { getImageDimensions } from '@utils/image';
@@ -23,7 +23,10 @@ export interface ImageBatchOutput {
   dimensions?: { width: number; height: number };
 }
 
-type ProcessImage = (file: File) => Promise<ImageBatchOutput>;
+type ProcessImage = (
+  file: File,
+  signal?: AbortSignal
+) => Promise<ImageBatchOutput>;
 type Outcome = ImageBatchOutput | { error: string };
 
 interface Report {
@@ -40,11 +43,12 @@ function formatSize(bytes: number) {
     : (bytes / 1024 / 1024).toFixed(2) + ' MB';
 }
 
-async function createArchive(files: File[], name: string) {
+async function createArchive(files: File[], name: string, signal: AbortSignal) {
   const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   const usedNames = new Set<string>();
   for (const file of files) {
+    signal.throwIfAborted();
     const base = file.name.replace(/\.[^.]+$/, '');
     const extension = file.name.slice(base.length);
     let filename = file.name;
@@ -55,6 +59,7 @@ async function createArchive(files: File[], name: string) {
     usedNames.add(filename.toLowerCase());
     zip.file(filename, new Uint8Array(await file.arrayBuffer()));
   }
+  signal.throwIfAborted();
   return new File([await zip.generateAsync({ type: 'blob' })], name, {
     type: 'application/zip'
   });
@@ -65,7 +70,7 @@ function ResultPreview({ file }: { file: File }) {
   return url ? <img src={url} alt="处理结果" /> : null;
 }
 
-interface Props {
+export interface ImageBatchSettings {
   settings: ReactNode;
   settingsTitle: string;
   importHint: string;
@@ -73,6 +78,13 @@ interface Props {
   archiveName: string;
   processImage: ProcessImage;
   ready?: boolean;
+  describeSource?: (size: { width: number; height: number }) => string;
+}
+
+interface Props extends ImageBatchSettings {
+  embedded?: boolean;
+  getCurrentImage?: () => Promise<File>;
+  onBusyChange?: (busy: boolean) => void;
 }
 
 export default function ImageBatchWorkbench({
@@ -82,12 +94,18 @@ export default function ImageBatchWorkbench({
   action,
   archiveName,
   processImage,
-  ready = true
+  ready = true,
+  describeSource,
+  embedded = false,
+  getCurrentImage,
+  onBusyChange
 }: Props) {
+  const previewId = useId();
   const picker = useRef<HTMLInputElement>(null);
   const urls = useRef(new Set<string>());
   const active = useRef(true);
   const working = useRef(false);
+  const job = useRef<AbortController | null>(null);
   const nextId = useRef(0);
   const [sources, setSources] = useState<Source[]>([]);
   const [selected, setSelected] = useState<number>();
@@ -96,70 +114,80 @@ export default function ImageBatchWorkbench({
   const [importErrors, setImportErrors] = useState<string[]>([]);
   const [progress, setProgress] = useState<number | null>(null);
   const [report, setReport] = useState<Report>();
+  const [cancelled, setCancelled] = useState(false);
 
   useEffect(() => {
     active.current = true;
     return () => {
       active.current = false;
+      job.current?.abort();
       for (const url of urls.current) URL.revokeObjectURL(url);
       urls.current.clear();
     };
   }, []);
 
+  async function importFiles(getFiles: () => File[] | Promise<File[]>) {
+    if (working.current) return;
+    working.current = true;
+    setImporting(true);
+    setImportErrors([]);
+    const added: Source[] = [];
+    const failed: string[] = [];
+    try {
+      const files = await getFiles();
+      for (const source of files) {
+        if (!active.current) return;
+        try {
+          let file = source;
+          if (
+            /\.hei[cf]$/i.test(source.name) ||
+            /^image\/hei[cf]/.test(source.type)
+          ) {
+            const { heicTo } = await import('heic-to');
+            const blob = await heicTo({ blob: source, type: 'image/jpeg' });
+            file = new File(
+              [blob],
+              source.name.replace(/\.[^.]+$/, '') + '.jpg',
+              {
+                type: 'image/jpeg'
+              }
+            );
+          }
+          const dimensions = await getImageDimensions(file);
+          if (!active.current) return;
+          const url = URL.createObjectURL(file);
+          urls.current.add(url);
+          added.push({
+            ...dimensions,
+            id: nextId.current++,
+            name: source.name,
+            file,
+            url
+          });
+        } catch {
+          failed.push(source.name);
+        }
+      }
+      if (added.length) {
+        setSources((previous) => [...previous, ...added]);
+        setSelected(added[0].id);
+        setShowResult(false);
+      }
+      setImportErrors(failed);
+    } catch (error) {
+      if (active.current)
+        setImportErrors([
+          error instanceof Error ? error.message : '当前编辑结果'
+        ]);
+    } finally {
+      working.current = false;
+      if (active.current) setImporting(false);
+    }
+  }
+
   const { isDragging, dropHandlers, addFiles } = useFileDrop({
     accept: acceptedImages,
-    onFiles: async (files) => {
-      if (working.current) return;
-      working.current = true;
-      setImporting(true);
-      setImportErrors([]);
-      const added: Source[] = [];
-      const failed: string[] = [];
-      try {
-        for (const source of files) {
-          if (!active.current) return;
-          try {
-            let file = source;
-            if (
-              /\.hei[cf]$/i.test(source.name) ||
-              /^image\/hei[cf]/.test(source.type)
-            ) {
-              const { heicTo } = await import('heic-to');
-              const blob = await heicTo({ blob: source, type: 'image/jpeg' });
-              file = new File(
-                [blob],
-                source.name.replace(/\.[^.]+$/, '') + '.jpg',
-                {
-                  type: 'image/jpeg'
-                }
-              );
-            }
-            const dimensions = await getImageDimensions(file);
-            if (!active.current) return;
-            const url = URL.createObjectURL(file);
-            urls.current.add(url);
-            added.push({
-              ...dimensions,
-              id: nextId.current++,
-              name: source.name,
-              file,
-              url
-            });
-          } catch {
-            failed.push(source.name);
-          }
-        }
-        if (added.length) {
-          setSources((previous) => [...previous, ...added]);
-          setSelected(added[0].id);
-          setShowResult(false);
-        }
-        setImportErrors(failed);
-      } finally {
-        working.current = false;
-        if (active.current) setImporting(false);
-      }
-    }
+    onFiles: (files) => importFiles(() => files)
   });
 
   const current =
@@ -182,6 +210,11 @@ export default function ImageBatchWorkbench({
   async function run() {
     if (!sources.length || working.current || !ready) return;
     working.current = true;
+    const controller = new AbortController();
+    const { signal } = controller;
+    job.current = controller;
+    onBusyChange?.(true);
+    setCancelled(false);
     setReport(undefined);
     setProgress(0);
     const outcomes = new Map<number, Outcome>();
@@ -190,12 +223,14 @@ export default function ImageBatchWorkbench({
     let archiveError = false;
     try {
       for (const item of sources) {
-        if (!active.current) return;
+        if (signal.aborted) return;
         try {
-          const output = await processImage(item.file);
+          const output = await processImage(item.file, signal);
+          if (signal.aborted) return;
           outcomes.set(item.id, output);
           files.push(output.file);
         } catch (error) {
+          if (signal.aborted) return;
           outcomes.set(item.id, {
             error: error instanceof Error ? error.message : '无法处理此图片。'
           });
@@ -205,12 +240,12 @@ export default function ImageBatchWorkbench({
       }
       if (files.length > 1) {
         try {
-          archive = await createArchive(files, archiveName);
+          archive = await createArchive(files, archiveName, signal);
         } catch {
           archiveError = true;
         }
       }
-      if (active.current) {
+      if (active.current && !signal.aborted) {
         setReport({
           sources,
           process: processImage,
@@ -222,7 +257,11 @@ export default function ImageBatchWorkbench({
       }
     } finally {
       working.current = false;
-      if (active.current) setProgress(null);
+      job.current = null;
+      if (active.current) {
+        setProgress(null);
+        onBusyChange?.(false);
+      }
     }
   }
 
@@ -231,13 +270,10 @@ export default function ImageBatchWorkbench({
     : 0;
 
   return (
-    <div className="image-batch-workbench">
-      <section
-        className="image-batch-main"
-        aria-labelledby="image-batch-preview"
-      >
+    <div className={`image-batch-workbench${embedded ? ' is-embedded' : ''}`}>
+      <section className="image-batch-main" aria-labelledby={previewId}>
         <header className="image-batch-toolbar">
-          <h2 id="image-batch-preview">图片预览</h2>
+          <h2 id={previewId}>{embedded ? '处理队列' : '图片预览'}</h2>
           {source && (
             <div
               className="image-batch-switch"
@@ -265,11 +301,28 @@ export default function ImageBatchWorkbench({
         <div
           className={`image-batch-stage${isDragging ? ' is-dragging' : ''}`}
           {...dropHandlers}
+          onDragEnter={(event) => {
+            if (embedded) event.stopPropagation();
+            dropHandlers.onDragEnter(event);
+          }}
+          onDragOver={(event) => {
+            if (embedded) event.stopPropagation();
+            dropHandlers.onDragOver(event);
+          }}
+          onDragLeave={(event) => {
+            if (embedded) event.stopPropagation();
+            dropHandlers.onDragLeave(event);
+          }}
+          onDrop={(event) => {
+            if (embedded) event.stopPropagation();
+            void dropHandlers.onDrop(event);
+          }}
         >
           <input
             ref={picker}
             type="file"
             accept={acceptedImages.join(',')}
+            aria-label={embedded ? '选择批量图片' : undefined}
             multiple
             hidden
             onChange={(event) => {
@@ -288,7 +341,7 @@ export default function ImageBatchWorkbench({
             <button
               className="image-batch-upload"
               type="button"
-              disabled={importing}
+              disabled={importing || busy}
               onClick={() => picker.current?.click()}
             >
               <span className="image-batch-upload-icon">
@@ -299,12 +352,27 @@ export default function ImageBatchWorkbench({
                   ? '正在导入…'
                   : isDragging
                     ? '松开以导入'
-                    : '选择图片或拖放到这里'}
+                    : embedded
+                      ? '添加图片或拖入队列'
+                      : '选择图片或拖放到这里'}
               </strong>
               <span>{importHint}</span>
             </button>
           )}
         </div>
+        {embedded && (
+          <button
+            type="button"
+            className="image-batch-current"
+            disabled={!getCurrentImage || busy || importing}
+            onClick={() => {
+              if (getCurrentImage)
+                void importFiles(async () => [await getCurrentImage()]);
+            }}
+          >
+            <Glyph name="add" size={16} /> 加入当前编辑结果
+          </button>
+        )}
         {source && (
           <div className="image-batch-caption">
             <div>
@@ -363,6 +431,7 @@ export default function ImageBatchWorkbench({
                             : '处理失败'
                           : formatSize(item.file.size)}
                       </small>
+                      {describeSource && <small>{describeSource(item)}</small>}
                     </span>
                   </button>
                   {done && (
@@ -404,7 +473,9 @@ export default function ImageBatchWorkbench({
             onClick={() => void run()}
           >
             {busy
-              ? '正在处理…'
+              ? cancelled
+                ? '正在取消…'
+                : '正在处理…'
               : sources.length > 1
                 ? action + ' ' + sources.length + ' 张图片'
                 : action}
@@ -416,6 +487,23 @@ export default function ImageBatchWorkbench({
               value={progress ?? 0}
               max={sources.length}
             />
+          )}
+          {busy && embedded && (
+            <button
+              type="button"
+              disabled={cancelled}
+              onClick={() => {
+                job.current?.abort();
+                setCancelled(true);
+              }}
+            >
+              取消批量任务
+            </button>
+          )}
+          {!busy && cancelled && (
+            <p className="image-batch-message" role="status">
+              已取消批量任务
+            </p>
           )}
           {result && (
             <button

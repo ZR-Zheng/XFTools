@@ -4,7 +4,8 @@ import { lazy } from 'react';
 export const pdfWorkspace = defineTool('pdf', {
   path: 'workspace',
   standalone: true,
-  alternativeCategories: ['image-generic', 'png', 'converters'],
+  loadFullLocale: false,
+  alternativeCategories: ['converters'],
   icon: 'mdi:file-document-edit',
   component: lazy(() => import('./index')),
   keywords: [

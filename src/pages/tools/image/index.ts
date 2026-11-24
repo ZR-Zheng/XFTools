@@ -1,3 +1,3 @@
-import { imageGenericTools } from './generic';
+import { imageWorkspace } from './workspace/meta';
 
-export const imageTools = imageGenericTools;
+export const imageTools = [imageWorkspace];

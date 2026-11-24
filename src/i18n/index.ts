@@ -6,7 +6,6 @@ import enCommon from '../../public/locales/en/translation.json';
 import { registerInterfaceCopy } from './interface-copy';
 
 export const validNamespaces = [
-  'string',
   'number',
   'video',
   'time',

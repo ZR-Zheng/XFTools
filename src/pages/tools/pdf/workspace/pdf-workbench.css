@@ -1,16 +1,8 @@
 .standalone-tool-shell {
   min-height: 100dvh;
-  background: #f7f9f8;
+  background: #edf4ff;
 }
 .tool-page.tool-page-standalone {
-  --ink: #1d2c2d;
-  --muted: #536667;
-  --line: #d9e2df;
-  --surface: #fff;
-  --surface-soft: #f3f7f6;
-  --blue: #176852;
-  --blue-soft: #e0f0e8;
-  color: var(--ink);
   display: grid;
   grid-template-rows: minmax(0, 1fr);
   width: 100%;
@@ -26,12 +18,20 @@
   margin: 0;
 }
 .pdf-workbench {
+  --ink: var(--workspace-ink);
+  --muted: var(--workspace-muted);
+  --line: var(--workspace-line);
+  --surface: var(--workspace-surface);
+  --surface-soft: var(--workspace-soft);
+  --blue: var(--workspace-accent);
+  --blue-soft: var(--workspace-selected);
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
-  background: var(--surface);
+  color: var(--ink);
+  background: var(--workspace-background);
 }
 .pdf-workbench-layout {
   --pdf-output-width: 0px;
@@ -72,6 +72,7 @@
   align-items: center;
   padding: 6px 12px;
   border-bottom: 1px solid var(--line);
+  background: var(--workspace-glass);
 }
 .pdf-document-toolbar {
   display: grid;
@@ -98,7 +99,6 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  background: var(--surface-soft);
 }
 .pdf-tools-modes {
   gap: 7px;
@@ -197,10 +197,10 @@
   overflow: auto;
   gap: 2px;
   padding: 5px;
-  background: var(--surface);
+  background: var(--workspace-glass-raised);
   border: 1px solid var(--line);
   border-radius: 10px;
-  box-shadow: 0 8px 24px rgb(21 41 37 / 15%);
+  box-shadow: 0 8px 24px rgb(33 66 118 / 15%);
 }
 .pdf-tool-utilities .pdf-tool-dropdown {
   right: 0;
@@ -238,7 +238,7 @@
 .pdf-editor,
 .pdf-output,
 .pdf-reader {
-  background: var(--surface);
+  background: var(--workspace-glass-panel);
   min-width: 0;
   min-height: 0;
 }
@@ -246,7 +246,6 @@
   grid-area: organizer;
   overflow: auto;
   border-right: 1px solid var(--line);
-  background: #f8faf9;
 }
 .pdf-sidebar-resize {
   position: absolute;
@@ -271,7 +270,7 @@
   height: 26px;
   transform: translateY(-50%);
   border-radius: 4px;
-  background: #91a9a1;
+  background: #8ba6ce;
   content: '';
 }
 .pdf-sidebar-resize:is(:hover, :focus-visible, [data-resizing])::before {
@@ -332,7 +331,7 @@
   overscroll-behavior: contain;
   overflow-anchor: none;
   scrollbar-gutter: stable;
-  background: #dce5e3;
+  background: var(--workspace-canvas);
 }
 .pdf-reader-empty {
   position: absolute;
@@ -349,9 +348,10 @@
   justify-items: center;
   width: min(100%, 420px);
   padding: clamp(20px, 4vw, 44px) 16px;
-  border: 1px dashed #8ca7a0;
+  border: 1px dashed #8eacd8;
   border-radius: 14px;
-  background: #f8fbfa;
+  background: var(--workspace-glass-panel);
+  box-shadow: var(--workspace-shadow);
 }
 .pdf-drop-card strong {
   margin-top: 13px;
@@ -380,7 +380,7 @@
 .pdf-workbench.is-dragging .pdf-reader-viewport {
   outline: 2px solid var(--blue);
   outline-offset: -3px;
-  background: #d1e8de;
+  background: var(--workspace-selected);
 }
 .pdf-workbench.is-dragging .pdf-drop-card {
   border-color: var(--blue);
@@ -396,7 +396,7 @@
   transform: translateX(-50%);
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 2px 8px rgb(29 49 45 / 20%);
+  box-shadow: 0 2px 8px rgb(28 52 99 / 20%);
 }
 .pdf-reader-sheet .pdf-canvas {
   min-height: 0;
@@ -434,7 +434,7 @@
 }
 .pdf-placement-draft {
   border: 1px dashed var(--blue);
-  background: rgb(23 104 82 / 17%);
+  background: rgb(36 91 199 / 17%);
 }
 .pdf-workbench .pdf-mark button {
   width: 100%;
@@ -478,8 +478,8 @@
 .pdf-mark-textarea,
 .pdf-mark-checkbox,
 .pdf-mark-radio {
-  border: 1px solid #277667;
-  background: rgb(236 250 246 / 86%);
+  border: 1px solid var(--workspace-accent);
+  background: var(--workspace-glass-panel);
 }
 .pdf-mark-list,
 .pdf-edit-property-actions {
@@ -558,7 +558,7 @@
   flex-direction: column;
 }
 .pdf-advanced-dialog::backdrop {
-  background: rgb(24 41 40 / 48%);
+  background: rgb(20 40 80 / 48%);
 }
 .pdf-advanced-dialog header {
   display: flex;
@@ -586,7 +586,7 @@
   color: var(--ink);
 }
 .pdf-password-dialog::backdrop {
-  background: rgb(24 41 40 / 42%);
+  background: rgb(20 40 80 / 42%);
 }
 .pdf-password-dialog h2 {
   font-size: 18px;
@@ -607,7 +607,7 @@
   display: grid;
   margin: 0 0 12px;
   padding: 12px;
-  border: 1px dashed #99afa8;
+  border: 1px dashed #9eb6db;
   border-radius: 8px;
 }
 .pdf-image-drop button {
@@ -684,11 +684,10 @@
 .pdf-workbench .pdf-primary {
   background: var(--blue);
   border-color: var(--blue);
-  color: var(--surface);
+  color: white;
 }
 .pdf-workbench .pdf-primary:hover:not(:disabled) {
-  background: var(--blue);
-  filter: brightness(0.93);
+  background: var(--workspace-accent-hover);
 }
 .pdf-edit-history {
   gap: 2px;
@@ -746,7 +745,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: #f8faf9;
+  background: var(--workspace-glass-panel);
 }
 .pdf-mode {
   display: flex;
@@ -754,7 +753,7 @@
   gap: 3px;
   padding: 3px;
   border-radius: 8px;
-  background: #edf3f1;
+  background: var(--workspace-soft);
 }
 .pdf-workbench .pdf-mode button {
   flex: 1;
@@ -880,7 +879,7 @@
   z-index: 1;
   padding: 4px 0 8px;
   margin-top: -4px;
-  background: #f8faf9;
+  background: var(--workspace-glass-panel);
 }
 .pdf-page-toolbar {
   display: grid;
@@ -915,9 +914,9 @@
 .pdf-page-selection {
   padding: 8px;
   margin-top: 5px;
-  border: 1px solid #c8e0d6;
+  border: 1px solid var(--workspace-line);
   border-radius: 9px;
-  background: #edf6f2;
+  background: var(--workspace-soft);
 }
 .pdf-page-selection-heading {
   display: flex;
@@ -1068,8 +1067,8 @@
   padding: 5px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--surface);
-  box-shadow: 0 8px 24px rgb(21 41 37 / 18%);
+  background: var(--workspace-glass-raised);
+  box-shadow: 0 8px 24px rgb(33 66 118 / 18%);
 }
 .pdf-workbench .pdf-page-menu button {
   display: flex;
@@ -1094,7 +1093,7 @@
   width: 100%;
   height: 118px;
   padding: 4px;
-  background: #edf2f1;
+  background: var(--workspace-soft);
   border: 0;
   border-radius: 5px;
 }
@@ -1332,7 +1331,7 @@
     inset-block: 0;
     width: min(320px, 88%);
     overscroll-behavior: contain;
-    box-shadow: 0 0 24px rgb(21 41 37 / 16%);
+    box-shadow: 0 0 24px rgb(33 66 118 / 16%);
   }
   .pdf-editor {
     left: 0;
@@ -1399,10 +1398,10 @@
     inset: 0;
     border: 0;
     border-radius: 0;
-    background: rgb(24 41 40 / 32%);
+    background: rgb(20 40 80 / 32%);
   }
   .pdf-workbench .pdf-panel-backdrop:hover {
-    background: rgb(24 41 40 / 32%);
+    background: rgb(20 40 80 / 32%);
   }
   .pdf-workbench button.pdf-open,
   .pdf-workbench button.pdf-export-toggle {

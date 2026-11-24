@@ -1,0 +1,50 @@
+import { lazy } from 'react';
+import { defineTool } from '@tools/defineTool';
+
+export const imageWorkspace = defineTool('image', {
+  path: 'workspace',
+  standalone: true,
+  loadFullLocale: false,
+  icon: 'mdi:image-edit-outline',
+  component: lazy(() => import('./index')),
+  keywords: [
+    '图片工作台',
+    '图片编辑',
+    '裁剪',
+    '旋转',
+    '翻转',
+    '缩放',
+    '图片缩放',
+    '调整尺寸',
+    '调色',
+    '透明度',
+    '水印',
+    '更换颜色',
+    '创建透明 PNG',
+    '去背景',
+    '批量压缩',
+    '图片压缩',
+    '图片格式转换',
+    '批量转换',
+    '批量缩放',
+    '批量水印',
+    'JPG',
+    'WebP',
+    'PNG',
+    '分页打印',
+    '导出',
+    'image editor',
+    'crop',
+    'rotate',
+    'resize',
+    'watermark',
+    'background removal',
+    'batch compress'
+  ],
+  i18n: {
+    name: 'image:workspace.title',
+    description: 'image:workspace.description',
+    shortDescription: 'image:workspace.shortDescription',
+    userTypes: ['generalUsers']
+  }
+});

@@ -8,7 +8,7 @@ import {
   useState,
   type CSSProperties
 } from 'react';
-import { EncryptedPDFError, PDFDocument } from 'pdf-lib';
+import type { PDFDocument } from 'pdf-lib';
 import { Link, useSearchParams } from 'react-router-dom';
 import type { ToolComponentProps } from '@tools/defineTool';
 import { ToolPageContext } from '@tools/page-context';
@@ -54,15 +54,15 @@ import type {
 } from '../shared/page-plan';
 import PdfReader from './PdfReader';
 import {
-  exportWorkspaceGroups,
-  exportWorkspacePdf,
   readPageGroups,
   willCopyPages,
   type ExportMode
-} from './exports';
+} from './export-selection';
+import '@components/workbench/workspace-theme.css';
 import './pdf-workbench.css';
 
-const PdfCanvas = lazy(() => import('../shared/PdfCanvas'));
+const loadPdfCanvas = () => import('../shared/PdfCanvas');
+const PdfCanvas = lazy(loadPdfCanvas);
 const PdfAdvancedEditor = lazy(() => import('./PdfAdvancedEditor'));
 const compactPanels = '(max-width: 740px)';
 const pagesPerPanel = 24;
@@ -491,15 +491,22 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     const added: PdfAsset[] = [],
       errors: string[] = [];
     const encrypted: File[] = [];
+    const loadLibrary = import('pdf-lib');
+    void loadPdfCanvas().catch(() => {});
+    let library: Awaited<typeof loadLibrary> | undefined;
     for (const [index, file] of files.entries()) {
       if (controller.signal.aborted) break;
       setProgress(
         `${t('读取文件', 'Reading files')} ${index + 1} / ${files.length}`
       );
       try {
-        const data = await file.arrayBuffer();
+        const [data, pdf] = await Promise.all([
+          file.arrayBuffer(),
+          loadLibrary
+        ]);
+        library = pdf;
         controller.signal.throwIfAborted();
-        const document = await PDFDocument.load(data);
+        const document = await pdf.PDFDocument.load(data);
         controller.signal.throwIfAborted();
         if (!document.getPageCount())
           throw new Error(t('文件没有页面', 'No pages in this PDF'));
@@ -509,7 +516,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
       } catch (error) {
         if (controller.signal.aborted) break;
         if (
-          error instanceof EncryptedPDFError ||
+          (library && error instanceof library.EncryptedPDFError) ||
           (error instanceof Error &&
             error.message.startsWith(
               'Input document to `PDFDocument.load` is encrypted.'
@@ -704,6 +711,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     setResult(null);
     setError('');
     try {
+      const { exportWorkspaceGroups } = await import('./exports');
       const file = await exportWorkspaceGroups(sources, groups, {
         filename,
         bookmarks: useBookmarks,
@@ -760,6 +768,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     setError('');
     setPlacement(null);
     try {
+      const { exportWorkspacePdf } = await import('./exports');
       const file = await exportWorkspacePdf(sources, pages, {
         filename,
         bookmarks: false,
@@ -779,7 +788,11 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
     }
   };
   const applyAdvanced = async (file: File) => {
-    const document = await PDFDocument.load(await file.arrayBuffer());
+    const [{ PDFDocument }, bytes] = await Promise.all([
+      import('pdf-lib'),
+      file.arrayBuffer()
+    ]);
+    const document = await PDFDocument.load(bytes);
     if (!document.getPageCount())
       throw new Error(t('PDF 中没有可用页面。', 'The PDF has no pages.'));
     const source = makeAsset(file, document);
@@ -871,7 +884,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
   };
   return (
     <section
-      className={`pdf-workbench ${dragging ? 'is-dragging' : ''}`}
+      className={`workspace-theme pdf-workbench ${dragging ? 'is-dragging' : ''}`}
       aria-label={title}
       onDragOver={(event) => {
         if (!event.dataTransfer.types.includes('Files')) return;

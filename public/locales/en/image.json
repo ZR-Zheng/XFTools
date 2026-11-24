@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "Image workspace",
+    "description": "Crop, rotate, resize, replace colors, adjust opacity, and add watermarks on one canvas. Remove backgrounds, process batches, and export a PDF for tiled printing.",
+    "shortDescription": "Edit images, remove backgrounds, process batches, and print across pages"
+  },
   "changeColors": {
     "description": "Change specific colors in an image by selecting a source color and replacing it with a new one.",
     "fromColor": {
@@ -83,11 +88,6 @@
     "description": "Advanced image editor with tools for cropping, rotating, annotating, adjusting colors, and adding watermarks. Edit your images with professional-grade tools directly in your browser.",
     "shortDescription": "Edit images with advanced tools and features",
     "title": "Image Editor"
-  },
-  "imageToText": {
-    "description": "Extract text from images (JPG, PNG) using optical character recognition (OCR).",
-    "shortDescription": "Extract text from images using OCR.",
-    "title": "Image to Text (OCR)"
   },
   "removeBackground": {
     "description": "Remove the background from an image to isolate the main subject with transparency.",

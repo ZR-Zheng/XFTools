@@ -1,55 +1,11 @@
 import { InitialValuesType, units } from './types';
 import { PDFDocument, PageSizes } from 'pdf-lib';
+import type { ImageJob } from '../../image-job';
 
-async function splitImage(
-  initImg: HTMLImageElement,
-  widthOfEachPart: number,
-  heightOfEachPart: number
-): Promise<File[]> {
-  const { width, height } = initImg;
-  const horParts = Math.ceil(width / widthOfEachPart);
-  const verParts = Math.ceil(height / heightOfEachPart);
-
-  const promises: Promise<File>[] = [];
-
-  for (let y = 0; y < verParts; y++) {
-    for (let x = 0; x < horParts; x++) {
-      const tileW = Math.min(widthOfEachPart, width - x * widthOfEachPart);
-      const tileH = Math.min(heightOfEachPart, height - y * heightOfEachPart);
-
-      const canvas = document.createElement('canvas');
-      // Keep edge tiles page-sized so PDF placement preserves their scale.
-      canvas.width = widthOfEachPart;
-      canvas.height = heightOfEachPart;
-
-      const ctx = canvas.getContext('2d');
-      if (!ctx) throw new Error('Canvas not supported');
-
-      ctx.drawImage(
-        initImg,
-        x * widthOfEachPart,
-        y * heightOfEachPart,
-        tileW,
-        tileH,
-        0,
-        0,
-        tileW,
-        tileH
-      );
-
-      promises.push(canvasToFile(canvas, `part-${x}-${y}.png`));
-    }
-  }
-
-  return Promise.all(promises);
-}
-
-export async function splitImagesToPDF(
-  input: File,
+export function planImagePages(
+  { width, height }: { width: number; height: number },
   values: InitialValuesType
-): Promise<File> {
-  const initImg = await loadImage(input);
-
+) {
   const [pageWidth, pageHeight] = PageSizes[values.pageFormat];
   const ptPerOneSquare = toPts(values.unitsPerOneSquare, values.unitKind);
   const pxPerPt =
@@ -58,26 +14,80 @@ export async function splitImagesToPDF(
   const pageWidthWithPadding = pageWidth - 2 * paddingInPts;
   const pageHeightWithPadding = pageHeight - 2 * paddingInPts;
 
-  const imgParts = await splitImage(
-    initImg,
-    Math.round(pageWidthWithPadding * pxPerPt),
-    Math.round(pageHeightWithPadding * pxPerPt)
-  );
+  const tileWidth = Math.round(pageWidthWithPadding * pxPerPt);
+  const tileHeight = Math.round(pageHeightWithPadding * pxPerPt);
+  if (
+    !Number.isSafeInteger(tileWidth) ||
+    !Number.isSafeInteger(tileHeight) ||
+    tileWidth < 1 ||
+    tileHeight < 1 ||
+    !(pxPerPt > 0) ||
+    !(paddingInPts >= 0) ||
+    !(pageWidthWithPadding > 0) ||
+    !(pageHeightWithPadding > 0)
+  )
+    throw new Error('纸张边距或打印比例无效。');
+  const columns = Math.ceil(width / tileWidth);
+  const rows = Math.ceil(height / tileHeight);
+  return {
+    pageWidth,
+    pageHeight,
+    paddingInPts,
+    pageWidthWithPadding,
+    pageHeightWithPadding,
+    tileWidth,
+    tileHeight,
+    columns,
+    rows
+  };
+}
 
+export async function splitImagesToPDF(
+  input: File,
+  values: InitialValuesType,
+  { signal, report }: ImageJob = {}
+): Promise<File> {
+  const image = await loadImage(input);
+  signal?.throwIfAborted();
+  const plan = planImagePages(image, values);
   const pdfDoc = await PDFDocument.create();
-
-  for (const imgFile of imgParts) {
-    const img = await pdfDoc.embedPng(await imgFile.arrayBuffer());
-    const page = pdfDoc.addPage([pageWidth, pageHeight]);
-    page.drawImage(img, {
-      x: paddingInPts,
-      y: paddingInPts,
-      width: pageWidthWithPadding,
-      height: pageHeightWithPadding
-    });
+  const canvas = document.createElement('canvas');
+  try {
+    // Keep edge tiles page-sized so every page uses the same print scale.
+    canvas.width = plan.tileWidth;
+    canvas.height = plan.tileHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('无法创建分页画布。');
+    const total = plan.rows * plan.columns;
+    for (let y = 0; y < plan.rows; y++) {
+      for (let x = 0; x < plan.columns; x++) {
+        signal?.throwIfAborted();
+        const left = x * plan.tileWidth;
+        const top = y * plan.tileHeight;
+        const width = Math.min(plan.tileWidth, image.width - left);
+        const height = Math.min(plan.tileHeight, image.height - top);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(image, left, top, width, height, 0, 0, width, height);
+        const tile = await canvasToFile(canvas, 'tile.png');
+        const img = await pdfDoc.embedPng(await tile.arrayBuffer());
+        signal?.throwIfAborted();
+        const page = pdfDoc.addPage([plan.pageWidth, plan.pageHeight]);
+        page.drawImage(img, {
+          x: plan.paddingInPts,
+          y: plan.paddingInPts,
+          width: plan.pageWidthWithPadding,
+          height: plan.pageHeightWithPadding
+        });
+        const done = y * plan.columns + x + 1;
+        report?.(`生成第 ${done} / ${total} 页`, done / total);
+      }
+    }
+  } finally {
+    canvas.width = canvas.height = 0;
   }
 
   const pdfBytes = await pdfDoc.save();
+  signal?.throwIfAborted();
 
   return new File(
     [pdfBytes as BlobPart],

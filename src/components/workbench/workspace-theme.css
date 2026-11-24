@@ -1,0 +1,24 @@
+.workspace-theme {
+  --workspace-ink: #192f50;
+  --workspace-muted: #4a6281;
+  --workspace-line: #c9d9ef;
+  --workspace-surface: #fbfdff;
+  --workspace-soft: #eaf2fd;
+  --workspace-accent: #245bc7;
+  --workspace-accent-hover: #1d4ca9;
+  --workspace-selected: #dbe9ff;
+  --workspace-glass: rgb(249 252 255 / 71%);
+  --workspace-glass-panel: rgb(250 252 255 / 86%);
+  --workspace-glass-raised: rgb(250 253 255 / 95%);
+  --workspace-shadow: 0 12px 35px rgb(33 66 118 / 13%);
+  --workspace-background:
+    radial-gradient(ellipse at 5% 0%, #bfd8fd 0%, transparent 60%),
+    radial-gradient(ellipse at 95% 22%, #d0e7ff 0%, transparent 62%), #edf4ff;
+  --workspace-canvas: linear-gradient(150deg, #deebfb, #cddff6);
+}
+
+.workspace-theme
+  :is(.pdf-document-toolbar, .pdf-tool-dropdown, .pdf-page-menu, .iw-toolbar) {
+  -webkit-backdrop-filter: blur(10px) saturate(1.12);
+  backdrop-filter: blur(10px) saturate(1.12);
+}

@@ -63,7 +63,7 @@ describe('splitImagesToPDF', () => {
       const canvas = {
         width: 0,
         height: 0,
-        getContext: () => ({ drawImage: vi.fn() }),
+        getContext: () => ({ clearRect: vi.fn(), drawImage: vi.fn() }),
         toBlob(callback: BlobCallback) {
           new Jimp({ width: canvas.width, height: canvas.height, color: 0 })
             .getBuffer('image/png')

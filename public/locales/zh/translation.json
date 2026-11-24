@@ -43,10 +43,6 @@
       "title": "PNG 工具"
     },
     "seeAll": "查看全部 {{title}}",
-    "string": {
-      "description": "处理文本的工具——将文本转换为图像、查找和替换文本、将文本拆分成片段、连接文本行、重复文本等等。",
-      "title": "文本工具"
-    },
     "time": {
       "description": "处理时间和日期的工具——计算时差、在时区之间转换、格式化日期、生成日期序列等等。",
       "title": "时间工具"
@@ -59,13 +55,12 @@
   },
   "hero": {
     "brand": "XFTools",
-    "description": "处理图片、文档、文本和数据。",
+    "description": "处理图片、PDF、音视频和日期。",
     "examples": {
       "changeGifSpeed": "更改 GIF 速度",
       "compressPng": "压缩 PNG",
       "createTransparentImage": "创建透明图像",
       "splitPdf": "拆分 PDF",
-      "splitText": "拆分文本",
       "trimVideo": "修剪视频"
     },
     "search": {

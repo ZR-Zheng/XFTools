@@ -1,4 +1,3 @@
-import { stringTools } from '../pages/tools/string';
 import { imageTools } from '../pages/tools/image';
 import { DefinedTool, ToolCategory, UserType } from './defineTool';
 import { capitalizeFirstLetter } from '@utils/string';
@@ -16,7 +15,6 @@ import { FullI18nKey, I18nNamespaces } from '../i18n';
 const toolCategoriesOrder: ToolCategory[] = [
   'image-generic',
   'pdf',
-  'string',
   'video',
   'time',
   'audio',
@@ -26,7 +24,6 @@ const toolCategoriesOrder: ToolCategory[] = [
 ];
 export const tools: DefinedTool[] = [
   ...imageTools,
-  ...stringTools,
   ...pdfTools,
   ...videoTools,
   ...numberTools,
@@ -40,12 +37,6 @@ const categoriesConfig: {
   value: FullI18nKey;
   icon: IconifyIcon | string;
 }[] = [
-  {
-    type: 'string',
-    icon: 'solar:text-bold-duotone',
-    value: 'translation:categories.string.description',
-    title: 'translation:categories.string.title'
-  },
   {
     type: 'png',
     icon: 'ph:file-png-thin',

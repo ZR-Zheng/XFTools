@@ -10,7 +10,7 @@ test.describe('Convert JPG to PNG tool', () => {
 
   test('should convert jpg to png', async ({ page }) => {
     // Upload image
-    const fileInput = page.locator('input[type="file"]');
+    const fileInput = page.getByLabel('选择批量图片');
     const imagePath = path.join(__dirname, 'test.jpg');
     await fileInput?.setInputFiles(imagePath);
     await page.getByTestId('process-tool').click();
@@ -41,7 +41,7 @@ test.describe('Convert JPG to PNG tool', () => {
     page
   }) => {
     // Upload image
-    const fileInput = page.locator('input[type="file"]');
+    const fileInput = page.getByLabel('选择批量图片');
     const imagePath = path.join(__dirname, 'test.jpg');
     await fileInput?.setInputFiles(imagePath);
 

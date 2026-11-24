@@ -46,7 +46,6 @@ const zh = {
   categoryNotFound: '没有找到这个分类',
   image: '图像处理',
   pdf: 'PDF 文档',
-  string: '文本处理',
   video: '视频处理',
   time: '日期与时间',
   audio: '音频处理',

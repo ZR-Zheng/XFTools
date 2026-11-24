@@ -5,22 +5,13 @@ const assignments: Record<
   string,
   { primary: ToolCategory; also?: ToolCategory[] }
 > = {
-  'image-generic/convert': {
+  'image/workspace': {
     primary: 'image-generic',
     also: ['png', 'converters']
   },
   'converters/audio-converter': { primary: 'audio', also: ['converters'] },
   'converters/video-to-gif': { primary: 'gif', also: ['video', 'converters'] },
-  'audio/extract-audio': { primary: 'audio', also: ['video', 'converters'] },
-  'image-generic/compress': { primary: 'image-generic', also: ['png'] },
-  'image-generic/create-transparent': {
-    primary: 'image-generic',
-    also: ['png']
-  },
-  'image-generic/image-to-text': {
-    primary: 'image-generic',
-    also: ['string', 'converters']
-  }
+  'audio/extract-audio': { primary: 'audio', also: ['video', 'converters'] }
 };
 export function classifyTool(
   route: string,
@@ -29,7 +20,12 @@ export function classifyTool(
 ) {
   const assignment = assignments[route];
   const primary =
-    assignment?.primary ?? (original === 'number' ? 'converters' : original);
+    assignment?.primary ??
+    (original === 'number'
+      ? 'converters'
+      : original === 'image'
+        ? 'image-generic'
+        : original);
   const extra: ToolCategory[] = [...(assignment?.also || []), ...declared];
   if (route.startsWith('time/convert-')) extra.push('converters');
   return {
@@ -53,6 +49,6 @@ export function getToolInteraction(
     /audio-converter|video-to-gif|^gif\//.test(route)
   )
     return 'media';
-  if (/^(?:image-generic|png)\//.test(route)) return 'image';
+  if (/^(?:image|image-generic|png)\//.test(route)) return 'image';
   return 'text';
 }

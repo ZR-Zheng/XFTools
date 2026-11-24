@@ -46,25 +46,6 @@ function assign(profile: keyof typeof profiles, routes: string[]) {
     pages[route] = { ...profiles[profile] };
   }
 }
-assign('text', [
-  'string/censor',
-  'string/create-palindrome',
-  'string/email-extractor',
-  'string/extract-substring',
-  'string/hidden-character-detector',
-  'string/join',
-  'string/palindrome',
-  'string/quote',
-  'string/randomize-case',
-  'string/repeat',
-  'string/reverse',
-  'string/rotate',
-  'string/split',
-  'string/statistics',
-  'string/replacer',
-  'string/truncate',
-  'string/uppercase'
-]);
 assign('scalar', [
   'number/byte-converter',
   'time/check-leap-years',
@@ -72,17 +53,6 @@ assign('scalar', [
 ]);
 assign('date', ['time/convert-unix-to-date', 'time/discord-timestamp']);
 assign('form', ['time/date-weekday-calculator', 'time/time-between-dates']);
-assign('image', [
-  'image-generic/change-colors',
-  'image-generic/change-opacity',
-  'image-generic/create-transparent',
-  'image-generic/crop',
-  'image-generic/image-to-text',
-  'image-generic/remove-background',
-  'image-generic/rotate',
-  'image-generic/split-to-pages',
-  'image-generic/watermark'
-]);
 assign('media', [
   'audio/change-speed',
   'audio/extract-audio',
@@ -104,16 +74,7 @@ assign('media', [
   'converters/audio-converter',
   'converters/video-to-gif'
 ]);
-assign('comparison', ['string/text-compare']);
-assign('custom', [
-  'image-generic/convert',
-  'image-generic/compress',
-  'time/convert-duration',
-  'image-generic/editor',
-  'image-generic/resize',
-  'pdf/workspace'
-]);
-pages['image-generic/resize'].reference = 'iloveimg';
+assign('custom', ['time/convert-duration', 'image/workspace', 'pdf/workspace']);
 pages['time/crontab-guru'] = {
   layout: 'form',
   entry: 'cron',
@@ -123,16 +84,6 @@ pages['time/crontab-guru'] = {
 };
 
 const primary: Record<string, number[]> = {
-  'string/join': [0],
-  'string/repeat': [0],
-  'string/split': [0],
-  'string/truncate': [0, 1],
-  'string/replacer': [0, 1],
-  'string/statistics': [1],
-  'image-generic/change-opacity': [0],
-  'image-generic/image-to-text': [0],
-  'image-generic/watermark': [0, 1],
-  'image-generic/split-to-pages': [0, 1],
   'video/add-audio': [0, 1, 2],
   'video/crop-video': [1],
   'video/resize': [0, 1, 2]

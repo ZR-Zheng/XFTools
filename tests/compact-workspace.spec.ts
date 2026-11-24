@@ -72,19 +72,17 @@ test('PDF editor alias opens the annotation workspace at full viewport height', 
   expect(errors).toEqual([]);
 });
 
-test('Header actions load examples and reset text options', async ({
+test('Header actions load examples and reset conversion options', async ({
   page
 }) => {
-  await page.goto('/string/split');
+  await page.goto('/number/byte-converter');
   const header = page.locator('.tool-page-header');
   await header.getByRole('button', { name: '载入示例', exact: true }).click();
-  await expect(page.getByTestId('text-input')).toHaveValue(
-    /^1 - eins, 2 - zwei/
-  );
+  await expect(page.getByTestId('text-input')).toHaveValue(/^1\n2\.5\n10/);
   const result = page.getByTestId('text-result');
-  await expect(result).toHaveValue(/^1 - eins\n 2 - zwei/);
-  await page.getByTestId('text-input').fill('one two,three');
-  await expect(result).toHaveValue('one two\nthree');
+  await expect(result).toHaveValue(/^1000\n2500\n10000/);
+  await page.getByTestId('text-input').fill('3');
+  await expect(result).toHaveValue('3000');
   await header.getByRole('button', { name: '重置参数', exact: true }).click();
-  await expect(result).toHaveValue('one\\ntwo,three');
+  await expect(result).toHaveValue('3000000');
 });
