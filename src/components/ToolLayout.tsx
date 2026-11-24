@@ -1,15 +1,11 @@
 import { uiText } from 'i18n/uiText';
-import { useEffect, useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { IconifyIcon } from '@tools/icon';
-import { tools, getToolsByCategory } from '@tools/index';
+import { tools } from '@tools/index';
 import type { ToolCategory } from '@tools/defineTool';
 import { FullI18nKey, validNamespaces } from '../i18n';
-import { useWorkbenchText } from '../i18n/workbench';
 import { usePageTitle } from '../hooks/usePageTitle';
-import { recordTool, useToolHistory } from '../hooks/useToolHistory';
-import { toggleBookmarked } from '@utils/bookmark';
 import Glyph, { categoryGlyph } from './workbench/Glyph';
 import { ToolInteractionContext } from '../tools/interaction';
 import {
@@ -34,18 +30,11 @@ export default function ToolLayout({
   };
 }) {
   const { t } = useTranslation(validNamespaces);
-  const { w } = useWorkbenchText();
-  const { favorites } = useToolHistory();
   const [headerActions, setHeaderActions] = useState<HTMLElement | null>(null);
   const tool = tools.find((tool) => tool.path === fullPath);
   const title = i18n ? t(i18n.name) : tool ? t(tool.name) : '';
   const description = i18n ? t(i18n.shortDescription) : '';
-  const category = getToolsByCategory([], t).find((c) => c.type === type);
-  const favorite = favorites.includes(fullPath);
   usePageTitle(title);
-  useEffect(() => {
-    recordTool(fullPath);
-  }, [fullPath]);
   return (
     <div
       className={
@@ -56,11 +45,6 @@ export default function ToolLayout({
         <h1 className="sr-only">{uiText(title)}</h1>
       ) : (
         <header className="tool-page-header">
-          <nav className="tool-breadcrumb" aria-label={uiText('Breadcrumb')}>
-            <Link to="/">{w('all')}</Link>
-            <Glyph name="chevron" size={12} />
-            <Link to={`/categories/${type}`}>{uiText(category?.rawTitle)}</Link>
-          </nav>
           <div className="tool-heading">
             <span className="tool-heading-icon">
               <Glyph name={categoryGlyph[type]} size={20} />
@@ -73,14 +57,6 @@ export default function ToolLayout({
             </div>
             <div className="tool-heading-controls">
               <div className="tool-header-actions" ref={setHeaderActions} />
-              <button
-                className={`favorite-button ${favorite ? 'is-favorite' : ''}`}
-                aria-label={w(favorite ? 'removeFavorite' : 'addFavorite')}
-                aria-pressed={favorite}
-                onClick={() => toggleBookmarked(fullPath)}
-              >
-                <Glyph name="star" filled={favorite} />
-              </button>
             </div>
           </div>
         </header>

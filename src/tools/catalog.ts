@@ -1,30 +1,13 @@
 import type { ToolCategory, ToolRoutePrefix } from './defineTool';
 
 // URLs describe the original route; categories describe what a tool does.
-const assignments: Record<
-  string,
-  { primary: ToolCategory; also?: ToolCategory[] }
-> = {
-  'image/workspace': {
-    primary: 'image-generic',
-    also: ['converters']
-  },
-  'converters/audio-converter': { primary: 'audio', also: ['converters'] }
-};
 export function classifyTool(
   route: string,
   original: ToolRoutePrefix,
   declared: ToolCategory[] = []
 ) {
-  const assignment = assignments[route];
-  const primary =
-    assignment?.primary ??
-    (original === 'number'
-      ? 'converters'
-      : original === 'image'
-        ? 'image-generic'
-        : original);
-  const extra: ToolCategory[] = [...(assignment?.also || []), ...declared];
+  const primary = original === 'image' ? 'image-generic' : original;
+  const extra: ToolCategory[] = [...declared];
   if (route.startsWith('time/convert-')) extra.push('converters');
   return {
     primary,
@@ -34,7 +17,7 @@ export function classifyTool(
   };
 }
 export type ToolInteraction =
-  'text' | 'compare' | 'image' | 'pdf' | 'media' | 'date';
+  'text' | 'compare' | 'image' | 'pdf' | 'media' | 'date' | 'chart';
 export function getToolInteraction(
   route: string,
   category: ToolCategory
@@ -42,10 +25,8 @@ export function getToolInteraction(
   if (/compare|comparison/.test(route)) return 'compare';
   if (/^time\//.test(route)) return 'date';
   if (category === 'pdf') return 'pdf';
-  if (
-    /^(?:video|audio)\//.test(route) ||
-    /audio-converter|^gif\//.test(route)
-  )
+  if (category === 'charts') return 'chart';
+  if (/^(?:video|audio)\//.test(route) || /audio-converter|^gif\//.test(route))
     return 'media';
   if (/^(?:image|image-generic)\//.test(route)) return 'image';
   return 'text';

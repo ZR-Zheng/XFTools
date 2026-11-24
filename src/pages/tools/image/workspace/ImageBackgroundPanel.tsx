@@ -50,7 +50,7 @@ export default function ImageBackgroundPanel({
       <h2>去背景</h2>
       <p className="iw-task-hint">
         {snapshot
-          ? '自动抠图按需加载 AI 模型。纯色去底可离线处理与图片边缘相连的同色区域。'
+          ? '自动抠图使用 U²-NetP 识别主体，图片在浏览器内处理。纯色去底适合同色背景。'
           : '打开图片后即可去除背景。'}
       </p>
       <label className="iw-field">
@@ -65,7 +65,7 @@ export default function ImageBackgroundPanel({
           }}
         >
           <option value="auto">自动抠图</option>
-          <option value="color">纯色去底（离线）</option>
+          <option value="color">纯色去底</option>
         </select>
       </label>
       <button
@@ -77,6 +77,11 @@ export default function ImageBackgroundPanel({
         开始去背景
       </button>
       <ImageTaskStatus {...task} />
+      {task.result?.method === 'ai' && (
+        <p className="iw-task-hint" role="status">
+          AI 已识别主体并去除背景。
+        </p>
+      )}
       {task.result?.method === 'fallback' && (
         <p className="iw-task-hint" role="status">
           AI 抠图暂不可用，已用纯色去底处理。

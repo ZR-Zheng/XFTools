@@ -1,31 +1,71 @@
 import { expect, test } from '@playwright/test';
 import { PDFDocument } from 'pdf-lib';
-test('Chinese default, search, categories and no upstream embeds', async ({
+test('Chinese launcher has one catalog and filters by action', async ({
   page
 }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(
-    'XFTools'
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('工具箱');
+  await expect(page.locator('.tool-grid .tile-link')).toHaveCount(7);
+  await expect(
+    page.getByRole('link', { name: '图片转 WebP', exact: true })
+  ).toHaveCount(0);
+  expect(
+    (await page.locator('.launcher-heading').boundingBox())?.height
+  ).toBeLessThan(120);
   await expect(page.locator('iframe')).toHaveCount(0);
   await page
     .getByRole('searchbox', { name: '搜索工具', exact: true })
-    .fill('合并 PDF');
+    .fill('合并PDF');
   await expect(page.locator('.tool-grid .tool-tile').first()).toContainText(
-    'PDF 工作台'
+    'PDF 编辑器'
   );
   await expect
     .poll(() => new URL(page.url()).searchParams.get('q'))
-    .toBe('合并 PDF');
+    .toBe('合并PDF');
   await page.getByRole('button', { name: '清除搜索' }).click();
-  await page.locator('.sidebar a[href="/categories/pdf"]').click();
-  await expect(page.locator('.tool-grid .tool-tile').first()).toBeVisible();
+  await expect(page.locator('.tool-grid .tile-link')).toHaveCount(7);
+  await page
+    .getByRole('searchbox', { name: '搜索工具', exact: true })
+    .fill('音乐工作台');
+  await expect(page.locator('.tool-grid .tile-link')).toHaveText(/音频编辑器/);
   expect(errors).toEqual([]);
 });
-test('Chinese-only light shell removes old preferences and aligns footer status with version', async ({
+
+test('Task shortcuts open the exact mode and the workspace returns to the launcher', async ({
+  page,
+  context
+}) => {
+  await page.goto('/');
+  const search = page.getByRole('searchbox', { name: '搜索工具', exact: true });
+  await expect(search).toBeVisible();
+  await page.keyboard.press('Control+k');
+  await expect(search).toBeFocused();
+  await search.fill('拆分PDF');
+  await expect(
+    page.getByRole('link', { name: '拆分 PDF', exact: true })
+  ).toBeVisible();
+  const [opened] = await Promise.all([
+    context.waitForEvent('page'),
+    search.press('Enter')
+  ]);
+  await expect(opened).toHaveURL(/\/pdf\/workspace\?mode=split$/);
+  await expect(
+    opened.getByRole('complementary', { name: '提取选中页', exact: true })
+  ).toBeVisible();
+  await opened.getByRole('link', { name: '返回工具箱', exact: true }).click();
+  await expect(
+    opened.getByRole('heading', { name: '工具箱', exact: true })
+  ).toBeVisible();
+  await expect(search).toHaveValue('拆分PDF');
+  await search.press('Escape');
+  await expect(search).toHaveValue('');
+  await page.getByRole('link', { name: '时长换算', exact: true }).click();
+  await expect(page).toHaveURL(/\/time\/calculator\?view=duration$/);
+});
+test('Compact light shell has no status or version footer', async ({
   page
 }) => {
   await page.addInitScript(() => {
@@ -40,24 +80,12 @@ test('Chinese-only light shell removes old preferences and aligns footer status 
   await expect(
     page.getByRole('button', { name: /Language|语言|切换.*主题/ })
   ).toHaveCount(0);
-  const bottom = page.locator('.sidebar .sidebar-bottom');
-  await expect(bottom.locator('.sidebar-processing')).toHaveText(
-    '浏览器本地处理'
-  );
+  await expect(page.getByRole('contentinfo')).toHaveCount(0);
   await expect(page.getByText('浏览器本地处理', { exact: true })).toHaveCount(
-    1
+    0
   );
+  await expect(page.getByText(/^v\d+\.\d+\.\d+$/)).toHaveCount(0);
   await expect(page.getByRole('main')).not.toContainText(/浏览器|本地处理|MIT/);
-  await expect(page.locator('.app-footer')).not.toContainText(
-    /MIT|浏览器|本地处理/
-  );
-  const status = await bottom.locator('.sidebar-processing').boundingBox();
-  const version = await bottom.locator('.version').boundingBox();
-  expect(
-    Math.abs(status.y + status.height / 2 - (version.y + version.height / 2))
-  ).toBeLessThan(1);
-  expect(version.x).toBeGreaterThan(status.x + status.width);
-  expect(version.y + version.height).toBeLessThanOrEqual(900);
   await page.reload();
   await expect(
     page.getByRole('heading', { level: 1, name: 'PDF 工具', exact: true })
@@ -80,11 +108,10 @@ test('XFTools branding, removed notices and one page heading', async ({
 }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/XFTools/);
-  await expect(page.locator('.brand').first()).toHaveAttribute(
+  await expect(page.locator('.launcher-brand')).toHaveAttribute(
     'aria-label',
     'XFTools'
   );
-  await expect(page.locator('.brand-light').first()).toHaveText('Tools');
   for (const notice of [
     '在你的设备上处理',
     '你的日常效率，从这里开始',
@@ -97,7 +124,7 @@ test('XFTools branding, removed notices and one page heading', async ({
   ]) {
     await expect(page.getByText(notice, { exact: true })).toHaveCount(0);
   }
-  for (const path of ['/favorites', '/recent', '/categories/pdf']) {
+  for (const path of ['/categories/pdf', '/time/calculator']) {
     await page.goto(path);
     const main = page.getByRole('main');
     const heading = await main.getByRole('heading', { level: 1 }).innerText();
@@ -108,11 +135,6 @@ test('XFTools branding, removed notices and one page heading', async ({
       main.getByText('YOUR PERSONAL WORKSPACE', { exact: true })
     ).toHaveCount(0);
   }
-  await page.goto('/favorites');
-  await expect(
-    page.getByRole('main').getByRole('heading', { level: 1, name: '我的收藏' })
-  ).toBeVisible();
-  await page.screenshot({ path: '.tmp/screenshots/favorites-zh.png' });
 });
 
 test('Chinese examples and descriptions are shown in the support section', async ({
@@ -129,35 +151,27 @@ test('Chinese examples and descriptions are shown in the support section', async
   await expect(page.getByText(/^我们的一位朋友出生在闰年/)).toBeVisible();
 });
 
-test('Favorites update across navigation and can be removed', async ({
-  page
-}) => {
+test('Toolbox has no favorites or recent-tool state', async ({ page }) => {
   await page.goto('/');
-  const tile = page.locator('.tool-grid .tool-tile').first();
-  const title = await tile.locator('h3').innerText();
-  await tile.getByRole('button', { name: /添加收藏/ }).click();
-  await page.locator('.sidebar a[href="/favorites"]').click();
-  await expect(page.locator('.tool-grid')).toContainText(title);
-  await page
-    .locator('.tool-grid')
-    .getByRole('button', { name: /取消收藏/ })
-    .click();
   await expect(
-    page.getByRole('heading', { name: '把顺手的工具，收进这里' })
-  ).toBeVisible();
-});
-test('Unit conversion computes and appears in recent tools', async ({
-  page
-}) => {
-  await page.goto('/number/byte-converter');
-  await expect(page.getByTestId('text-input')).toBeVisible();
-  await page.getByTestId('text-input').fill('2');
-  await expect(page.getByTestId('text-result')).toHaveValue('2000000');
-  await page.screenshot({ path: '.tmp/screenshots/tool-zh.png' });
-  await page.locator('.sidebar a[href="/recent"]').click();
+    page.getByRole('link', { name: /我的收藏|最近使用/ })
+  ).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /收藏/ })).toHaveCount(0);
+  await page.getByRole('link', { name: '计算器', exact: true }).click();
   await expect(
-    page.locator('.tool-grid a[href="/number/byte-converter"]')
+    page.getByRole('heading', { name: '计算器', exact: true })
   ).toBeVisible();
+  await expect(page.getByRole('button', { name: /收藏/ })).toHaveCount(0);
+  const stored = await page.evaluate(() =>
+    ['bookmarkedTools', 'recentTools'].map((key) => localStorage.getItem(key))
+  );
+  expect(stored).toEqual([null, null]);
+  for (const removed of ['/favorites', '/recent']) {
+    await page.goto(removed);
+    await expect(
+      page.getByRole('heading', { name: '这个页面走丢了' })
+    ).toBeVisible();
+  }
 });
 test('Image editor still loads after uploading an image', async ({ page }) => {
   const errors: string[] = [];
@@ -199,7 +213,7 @@ test('Tool categories follow function and keep existing links', async ({
   page
 }) => {
   await page.goto('/categories/pdf');
-  await expect(page.locator('.tool-grid a')).toHaveCount(1);
+  await expect(page.locator('.tool-grid .tile-link')).toHaveCount(1);
   await expect(
     page.locator('.tool-grid a[href="/pdf/workspace"]')
   ).toBeVisible();
@@ -213,21 +227,26 @@ test('Tool categories follow function and keep existing links', async ({
   await expect(
     page.locator('.tool-grid a[href="/image/workspace"]')
   ).toBeVisible();
-  await expect(page.locator('.tool-grid a[href="/pdf/workspace"]')).toHaveCount(0);
+  await expect(page.locator('.tool-grid a[href="/pdf/workspace"]')).toHaveCount(
+    0
+  );
   await page.goto('/categories/converters');
   await expect(
-    page.locator('.tool-grid a[href="/number/byte-converter"]')
+    page.locator('.tool-grid a[href="/converters/workspace"]')
   ).toBeVisible();
+  await expect(
+    page.locator(
+      '.tool-grid a[href^="/image/"], .tool-grid a[href^="/pdf/"], .tool-grid a[href^="/video/"], .tool-grid a[href^="/audio/"]'
+    )
+  ).toHaveCount(0);
+  await expect(
+    page.locator('.tool-grid a[href="/number/byte-converter"]')
+  ).toHaveCount(0);
 });
 
 test('Removed categories and tools are absent from the workspace and old links', async ({
   page
 }) => {
-  await page.addInitScript(() => {
-    const history = ['csv/csv-to-json', 'string/uppercase', 'pdf/merge-pdf'];
-    localStorage.setItem('bookmarkedTools', history.join(','));
-    localStorage.setItem('recentTools', JSON.stringify(history));
-  });
   await page.goto('/');
   for (const category of [
     'encoding',
@@ -253,6 +272,7 @@ test('Removed categories and tools are absent from the workspace and old links',
     'bcrypt',
     '密码生成器',
     'OCR',
+    '字节单位换算',
     '将文本转为大写'
   ]) {
     await search.fill(query);
@@ -260,14 +280,6 @@ test('Removed categories and tools are absent from the workspace and old links',
     await expect(
       page.getByRole('heading', { name: '还没有找到工具' })
     ).toBeVisible();
-  }
-  for (const route of ['/favorites', '/recent']) {
-    await page.goto(route);
-    await expect(page.locator('.tool-grid .tile-link')).toHaveCount(1);
-    await expect(page.locator('.tool-grid .tile-link')).toHaveAttribute(
-      'href',
-      '/pdf/workspace'
-    );
   }
   for (const category of ['encoding', 'csv', 'security', 'string']) {
     await page.goto(`/categories/${category}`);
@@ -287,6 +299,7 @@ test('Removed categories and tools are absent from the workspace and old links',
     '/string/url-editor',
     '/list/sort',
     '/number/sum',
+    '/number/byte-converter',
     '/csv/csv-to-json',
     '/csv/change-csv-separator',
     '/string/table-text-converter',
@@ -379,8 +392,10 @@ test('PDF form entry saves an editable field', async ({ page }) => {
   ).toBe(true);
   expect(errors).toEqual([]);
 });
-test('Responsive layouts, reduced motion, drawer and 404', async ({ page }) => {
-  for (const width of [375, 768, 1024, 1440]) {
+test('Responsive layouts, direct mobile navigation and 404', async ({
+  page
+}) => {
+  for (const width of [320, 375, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -397,42 +412,38 @@ test('Responsive layouts, reduced motion, drawer and 404', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await page.getByRole('button', { name: '打开导航' }).click();
-  await page.locator('.ui-drawer a[href="/favorites"]').click();
-  await expect(
-    page.getByRole('heading', { level: 1, name: '我的收藏' })
-  ).toBeVisible();
-  await page.screenshot({ path: '.tmp/screenshots/mobile-zh.png' });
+  const grid = page.locator('.launcher-grid');
+  await expect(grid).toBeVisible();
+  const mobileSearch = await page.getByRole('search').boundingBox();
+  const headingWidth = await page
+    .locator('.launcher-heading')
+    .evaluate((heading) => {
+      const style = getComputedStyle(heading);
+      return (
+        heading.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight)
+      );
+    });
+  expect(mobileSearch!.width).toBeCloseTo(headingWidth);
+  await page.screenshot({ path: '.tmp/screenshots/launcher-mobile.png' });
   await page.goto('/this-page-does-not-exist');
   await expect(
     page.getByRole('heading', { level: 1, name: '这个页面走丢了' })
   ).toBeVisible();
 });
 
-test('Mobile drawer aligns status and version and restores navigation focus', async ({
+test('The mobile header returns from tool categories to the catalog', async ({
   page
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/categories/pdf');
   await expect(
-    page.getByRole('heading', { level: 1, name: 'PDF 工具', exact: true })
+    page.getByRole('heading', { level: 1, name: 'PDF 工具' })
   ).toBeVisible();
-  const menu = page.getByRole('button', { name: '打开导航', exact: true });
-  await menu.click();
-  const drawer = page.locator('.ui-drawer');
-  const status = drawer.locator('.sidebar-processing'),
-    version = drawer.locator('.version');
-  await expect(status).toBeVisible();
+  await page.getByRole('link', { name: 'XFTools' }).click();
   await expect(
-    drawer.getByRole('button', { name: /主题|Language/ })
-  ).toHaveCount(0);
-  const a = await status.boundingBox(),
-    b = await version.boundingBox();
-  expect(Math.abs(a.y + a.height / 2 - (b.y + b.height / 2))).toBeLessThan(1);
-  expect(b.y + b.height).toBeLessThanOrEqual(812);
-  await page.screenshot({ path: '.tmp/screenshots/shell-mobile-drawer.png' });
-  await page.keyboard.press('Escape');
-  await expect(drawer).not.toBeVisible();
-  await expect(menu).toBeFocused();
-  await page.screenshot({ path: '.tmp/screenshots/shell-mobile.png' });
+    page.getByRole('heading', { level: 1, name: '工具箱' })
+  ).toBeVisible();
+  await expect(page.getByRole('contentinfo')).toHaveCount(0);
 });

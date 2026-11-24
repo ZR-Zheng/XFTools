@@ -607,3 +607,24 @@
     grid-template-columns: minmax(0, 1fr) clamp(320px, 35vw, 420px);
   }
 }
+.iw-expand-options {
+  align-items: start;
+}
+.iw-anchor-grid {
+  display: grid;
+  width: fit-content;
+  grid-template-columns: repeat(3, 36px);
+  gap: 4px;
+}
+.iw-anchor-grid button {
+  display: grid;
+  min-height: 36px;
+  padding: 0;
+  place-items: center;
+}
+.iw-anchor-grid button span {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: currentColor;
+}

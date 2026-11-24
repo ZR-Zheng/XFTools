@@ -26,7 +26,7 @@ export const isAcceptedFile = (file: File, accept: string[]): boolean => {
 };
 
 interface UseFileDropOptions {
-  accept: string[];
+  accept?: string[];
   onFiles: (files: File[]) => void | Promise<void>;
 }
 
@@ -43,7 +43,9 @@ export default function useFileDrop({ accept, onFiles }: UseFileDropOptions) {
 
   const addFiles = async (files: FileList | File[]) => {
     const all = Array.from(files);
-    const accepted = all.filter((file) => isAcceptedFile(file, accept));
+    const accepted = accept
+      ? all.filter((file) => isAcceptedFile(file, accept))
+      : all;
     if (accepted.length < all.length) {
       showSnackBar(t('toolMultipleInput.invalidFileType'), 'error');
     }

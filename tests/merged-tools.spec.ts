@@ -25,10 +25,7 @@ async function download(page: Page, name: string) {
 test('Image conversion keeps the upload while switching format and invalidates old downloads', async ({
   page
 }) => {
-  await page.goto('/converters/convert-to-webp');
-  await expect(page).toHaveURL(
-    /\/image\/workspace\?tab=batch&operation=convert&format=webp$/
-  );
+  await page.goto('/image/workspace?tab=batch&operation=convert&format=webp');
   await expect(
     page.getByRole('radio', { name: 'WebP', exact: true })
   ).toBeChecked();
@@ -112,7 +109,7 @@ test('Duration conversion shares clock input between directions and marks bad ba
 }) => {
   await page.goto('/time/convert-time-to-seconds');
   await expect(page).toHaveURL(
-    /\/time\/convert-duration\?mode=time-to-seconds$/
+    /\/time\/calculator\?view=duration&mode=time-to-seconds$/
   );
   await page.getByRole('button', { name: '载入示例', exact: true }).click();
   const result = page.getByLabel('换算结果');
@@ -180,28 +177,4 @@ test('PDF export keeps the original document while switching from selected PNG p
   expect(await archive.file('OEBPS/chapter2.xhtml')?.async('string')).toContain(
     'A &amp; B'
   );
-});
-
-test('Multiple saved links to merged tools are shown as single canonical entries', async ({
-  page
-}) => {
-  await page.addInitScript(() => {
-    const old = [
-      'converters/convert-to-jpg',
-      'png/convert-jgp-to-png',
-      'time/convert-hours-to-days'
-    ];
-    localStorage.setItem('bookmarkedTools', old.join(','));
-    localStorage.setItem('recentTools', JSON.stringify(old));
-  });
-  for (const path of ['/favorites', '/recent']) {
-    await page.goto(path);
-    const links = page.locator('.tool-grid .tile-link');
-    await expect(links).toHaveCount(2);
-    await expect(links.first()).toHaveAttribute('href', '/image/workspace');
-    await expect(links.last()).toHaveAttribute(
-      'href',
-      '/time/convert-duration'
-    );
-  }
 });

@@ -1,22 +1,22 @@
 {
   "workspace": {
-    "title": "PDF Workspace",
+    "title": "PDF Editor",
     "description": "Preview, merge, split, annotate, compress, protect, and convert PDFs.",
-    "shortDescription": "Preview, organize, edit, and convert PDFs."
+    "shortDescription": "Merge, split and organize pages, add annotations and edit forms"
   },
   "compressPdf": {
     "compressedFileSize": "Compressed File Size",
     "compressingPdf": "Compressing PDF...",
     "compressionLevel": "Compression Level",
     "compressionSettings": "Compression Settings",
-    "description": "Reduce PDF file size while maintaining quality using Ghostscript",
+    "description": "Reduce PDF size by optimizing its structure or re-encoding images",
     "errorCompressingPdf": "Failed to compress PDF: {{error}}",
     "errorReadingPdf": "Failed to read PDF file. Please make sure it is a valid PDF.",
     "fileSize": "Original File Size",
     "highCompression": "High Compression",
     "highCompressionDescription": "Maximum file size reduction with some quality loss",
     "inputTitle": "Input PDF",
-    "longDescription": "Compress PDF files securely in your browser using Ghostscript. Your files never leave your device, ensuring complete privacy while reducing file sizes for email sharing, uploading to websites, or saving storage space. Powered by WebAssembly technology.",
+    "longDescription": "Optimize PDF structure without quality loss, or adjust embedded image dimensions, quality and encoding while retaining selectable text and vector content.",
     "lowCompression": "Low Compression",
     "lowCompressionDescription": "Slightly reduce file size with minimal quality loss",
     "mediumCompression": "Medium Compression",

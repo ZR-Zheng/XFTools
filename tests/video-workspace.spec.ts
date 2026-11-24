@@ -191,12 +191,11 @@ test('Exports mixed-size clips, silent source video and soundtrack into a playab
   expect(bytes.includes(Buffer.from('mp4a'))).toBe(true);
 });
 
-test('Legacy export routes produce GIF and extracted audio files', async ({
+test('Editor export routes produce GIF and extracted audio files', async ({
   page
 }) => {
   test.setTimeout(120000);
-  await page.goto('/converters/video-to-gif');
-  await expect(page).toHaveURL(/\/video\/workspace\?panel=export&format=gif$/);
+  await page.goto('/video/workspace?panel=export&format=gif');
   await page.getByLabel('导入视频或图片素材').setInputFiles(videoWithAudio);
   await expect(page.getByLabel('导出格式')).toHaveValue('gif');
   await expect(

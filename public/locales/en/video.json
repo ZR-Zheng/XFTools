@@ -179,8 +179,8 @@
     "title": "Trim Video"
   },
   "workspace": {
-    "title": "Video workspace",
+    "title": "Video Editor",
     "description": "Edit video and GIF clips on one timeline, animate still images, adjust speed and framing, and export video, GIF, or audio.",
-    "shortDescription": "Edit video and GIF clips or animate still images on one timeline"
+    "shortDescription": "Trim clips, add soundtracks and make GIFs on a timeline"
   }
 }

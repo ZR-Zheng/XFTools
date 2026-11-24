@@ -37,13 +37,12 @@ describe('tool catalog', () => {
     ['pdf/protect-pdf', 'pdf'],
     ['pdf/export', 'pdf'],
     ['image-generic/convert', 'image-generic'],
-    ['converters/audio-converter', 'audio'],
+    ['converters/audio-converter', 'converters'],
     ['video/trim', 'video'],
     ['audio/extract-audio', 'video'],
-    ['converters/video-to-gif', 'video'],
+    ['converters/video-to-gif', 'converters'],
     ['image-generic/compress', 'image-generic'],
-    ['time/convert-duration', 'time'],
-    ['number/byte-converter', 'converters']
+    ['time/convert-duration', 'time']
   ])(
     'classifies %s by function while keeping its original URL',
     (route, category) => {

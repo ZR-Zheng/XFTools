@@ -1,8 +1,8 @@
 {
   "workspace": {
-    "title": "Image workspace",
+    "title": "Image Editor",
     "description": "Crop, rotate, resize, replace colors, adjust opacity, and add watermarks on one canvas. Remove backgrounds, process batches, and export a PDF for tiled printing.",
-    "shortDescription": "Edit images, remove backgrounds, process batches, and print across pages"
+    "shortDescription": "Crop images, remove backgrounds, resize batches, and print across pages"
   },
   "changeColors": {
     "description": "Change specific colors in an image by selecting a source color and replacing it with a new one.",

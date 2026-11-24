@@ -7,16 +7,26 @@ test('Every registered tool opens at desktop and mobile widths', async ({
   test.setTimeout(180000);
   await page.goto('/');
   await page.locator('.tool-grid').waitFor();
-  while (await page.locator('.load-more button').count())
-    await page.locator('.load-more button').click();
   const routes = await page
     .locator('.tool-grid .tile-link')
-    .evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href')!));
-  const registered = Number(
-    await page.locator('.sidebar a[href="/"] .nav-count').innerText()
-  );
-  expect(routes).toHaveLength(registered);
-  expect(new Set(routes).size).toBe(registered);
+    .evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        path: node.getAttribute('href')!,
+        title: node.querySelector('h2')?.textContent
+      }))
+    );
+  expect(
+    Object.fromEntries(routes.map(({ path, title }) => [path, title]))
+  ).toEqual({
+    '/audio/workspace': '音频编辑器',
+    '/charts/board': '统计图画板',
+    '/converters/workspace': '文件转换器',
+    '/image/workspace': '图片编辑器',
+    '/pdf/workspace': 'PDF 编辑器',
+    '/time/calculator': '计算器',
+    '/video/workspace': '视频编辑器'
+  });
+  expect(routes).toHaveLength(7);
   const issues: { route: string; message: string }[] = [];
   const headerMetrics: {
     route: string;
@@ -32,7 +42,8 @@ test('Every registered tool opens at desktop and mobile widths', async ({
         issues.push({ route: current, message: error.message })
       );
       while (next < routes.length) {
-        current = routes[next++];
+        const { path, title } = routes[next++];
+        current = path;
         await toolPage.setViewportSize({ width: 1440, height: 1000 });
         await toolPage.goto(current);
         await expect(toolPage.locator('.tool-workspace')).toBeVisible();
@@ -66,9 +77,9 @@ test('Every registered tool opens at desktop and mobile widths', async ({
         await expect(toolPage.getByRole('main')).not.toContainText(
           /浏览器|本地处理|MIT 开源|Processed in your browser/
         );
-        await expect(
-          toolPage.getByRole('heading', { level: 1 })
-        ).not.toContainText(/\w+:\w+\.\w+/);
+        await expect(toolPage.getByRole('heading', { level: 1 })).toHaveText(
+          title!
+        );
         for (const width of [1440, 375]) {
           await toolPage.setViewportSize({ width, height: 1000 });
           const overflow = await toolPage.evaluate(

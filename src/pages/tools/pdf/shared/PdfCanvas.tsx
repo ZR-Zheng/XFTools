@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { getDocument, GlobalWorkerOptions, PDFWorker } from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import { PDFWorker } from 'pdfjs-dist';
 import type { RenderTask } from 'pdfjs-dist';
 import type { PdfAsset } from './page-plan';
 import { useWorkbenchText } from 'i18n/workbench';
+import { openPdfDocument } from './document';
 
-GlobalWorkerOptions.workerSrc = workerUrl;
 let sharedWorker: { worker: PDFWorker; references: number } | undefined;
 function acquireWorker() {
   sharedWorker ??= { worker: new PDFWorker(), references: 0 };
@@ -22,12 +21,12 @@ function releaseWorker(owner: NonNullable<typeof sharedWorker>) {
 function preview(source: PdfAsset) {
   if (!source.preview) {
     let cancelled = false;
-    let task: ReturnType<typeof getDocument> | undefined;
+    let task: ReturnType<typeof openPdfDocument> | undefined;
     let workerOwner: NonNullable<typeof sharedWorker> | undefined;
     source.preview = source.file.arrayBuffer().then((data) => {
       if (cancelled) throw new Error('Preview cancelled.');
       workerOwner = acquireWorker();
-      task = getDocument({ data, worker: workerOwner.worker });
+      task = openPdfDocument({ data, worker: workerOwner.worker });
       return task.promise;
     });
     source.disposePreview = () => {

@@ -1,183 +1,45 @@
 {
   "zh": {
     "audio": {
-      "changeSpeed": {
-        "description": "更改音频文件的播放速度。在保持音调不变的情况下加快或减慢音频速度。",
-        "shortDescription": "更改音频文件的速度",
-        "title": "更改音频速度"
-      },
-      "extractAudio": {
-        "description": "从视频文件中提取音轨。",
-        "shortDescription": "将视频文件（MP4、MOV 等）中的音频提取为 AAC、MP3 或 WAV。",
-        "title": "从视频中提取音频"
-      },
-      "loop": {
-        "description": "将原始音频重复多次，生成循环音频文件。",
-        "shortDescription": "将音频重复拼接为循环音频",
-        "title": "循环音频"
-      },
-      "mergeAudio": {
-        "description": "按顺序连接多个音频文件，将其合并为一个音频文件。",
-        "longDescription": "此工具允许您将多个音频文件按照上传顺序串联成一个文件。非常适合合并播客片段、音乐曲目或任何需要合并的音频文件。支持多种音频格式，包括 MP3、AAC 和 WAV。",
-        "shortDescription": "将多个音频文件合并为一个（MP3、AAC、WAV）。",
-        "title": "合并音频"
-      },
-      "trim": {
-        "description": "通过指定开始和结束时间来剪切和修剪音频文件以提取特定片段。",
-        "longDescription": "此工具允许您通过指定开始和结束时间来修剪音频文件。您可以从较长的音频文件中提取特定片段，删除不需要的部分，或创建较短的片段。支持多种音频格式，包括 MP3、AAC 和 WAV。非常适合播客编辑、音乐制作或任何音频编辑需求。",
-        "shortDescription": "修剪音频文件以提取特定时间段（MP3、AAC、WAV）。",
-        "title": "修剪音频"
+      "workspace": {
+        "description": "在波形时间线上试听、裁剪、拼接、变速和混音，调整增益与淡入淡出，再导出所需格式。",
+        "shortDescription": "在波形上裁剪、变速、混音和导出",
+        "title": "音频编辑器"
       }
     },
     "converters": {
-      "audioConverter": {
-        "description": "在不同格式之间转换音频文件。",
-        "longDescription": "此工具允许您将音频文件从一种格式转换为另一种格式，支持多种音频格式的无缝转换。",
-        "shortDescription": "将音频文件转换为各种格式。",
-        "title": "音频转换器"
-      },
-      "videoToGif": {
-        "description": "将视频转换为 GIF 动图，可截取指定时间段，生成便于分享的动画。",
-        "shortDescription": "将视频片段转换为 GIF 动图",
-        "title": "视频转 GIF"
+      "workspace": {
+        "description": "批量转换视频、音频、图片和 PDF，支持视频转 GIF、提取音频、多种输出预设和 ZIP 下载。",
+        "shortDescription": "批量转换图片、视频、音频和 PDF",
+        "title": "文件转换器"
       }
     },
     "image": {
       "workspace": {
         "description": "在同一画布裁剪、旋转、缩放、调色、替色、调整透明度和添加水印。支持去背景、批量处理和分页打印。",
-        "shortDescription": "连续编辑、去背景、批量处理和分页打印",
-        "title": "图片工作台"
-      }
-    },
-    "number": {
-      "byteConverter": {
-        "description": "在不同字节单位之间换算，支持 SI 十进制和 IEC 二进制单位，也支持逐行批量转换。",
-        "shortDescription": "在字节及其常用单位之间快速换算",
-        "title": "字节单位换算"
+        "shortDescription": "裁剪、去背景、批量缩放和分页打印",
+        "title": "图片编辑器"
       }
     },
     "pdf": {
       "workspace": {
         "description": "预览、合并、拆分、批注、表单、压缩、加密与转换 PDF。",
-        "shortDescription": "预览、整理、编辑与转换 PDF。",
-        "title": "PDF 工作台"
+        "shortDescription": "合并拆分、整理页面、批注和表单",
+        "title": "PDF 编辑器"
       }
     },
     "time": {
-      "checkLeapYears": {
-        "description": "检查某一年份是否为闰年并获取闰年信息。",
-        "shortDescription": "检查年份是否为闰年",
-        "title": "检查闰年"
-      },
-      "convertDuration": {
-        "description": "在天与小时、秒与时分秒之间换算，或将时分秒转换为小数小时。支持单项和逐行批量输入。",
-        "shortDescription": "换算天、小时、秒、时分秒和小数小时",
-        "title": "时长换算"
-      },
-      "convertUnixToDate": {
-        "description": "将 Unix 时间戳转换为可读日期，并将格式化日期转换回 Unix 时间戳（双向转换）。",
-        "shortDescription": "双向转换 Unix 时间戳和日期。",
-        "title": "Unix 时间戳与日期互转"
-      },
-      "crontabGuru": {
-        "description": "用中文解析和解释 cron 表达式。即时了解任何 cron 计划的作用，验证语法，并一次处理多个表达式。",
-        "longDescription": "Crontab Guru 是一个 cron 表达式解析器和验证器，可将复杂的 cron 语法转换为清晰易读的描述。无论您是在安排自动备份、系统维护任务还是 CI/CD 流水线，此工具都能帮助您准确了解您的任务何时运行。支持标准的 5 字段 cron 表达式，实时验证语法，并一次处理多个表达式——每行一个。支持英语、法语、西班牙语、德语、日语、中文、葡萄牙语、荷兰语和俄语。",
-        "shortDescription": "用简单语言解析和解释 cron 表达式",
-        "title": "Cron 表达式解析"
-      },
-      "dateWeekdayCalculator": {
-        "description": "查找指定年份范围内，某月某日恰逢目标星期的所有年份。",
-        "longDescription": "选择月份、日期、目标星期及起止年份，程序会逐年检查并列出匹配的完整日期。支持 2 月 29 日，自动跳过非闰年。无效日期（例如 4 月 31 日）或年份范围会显示明确的错误提示。",
-        "shortDescription": "查找指定日期恰逢某个星期的年份",
-        "title": "日期星期计算器"
-      },
-      "discordTimestamp": {
-        "description": "将日期和时间转换为 Discord 的特殊时间戳格式，自动适应每位用户的本地时区和语言",
-        "name": "Discord 时间戳生成器",
-        "shortDescription": "从日期生成 Discord 时间戳",
-        "toolInfo": {
-          "description": "Discord 时间戳是一种动态显示日期和时间的特殊语法。它不显示固定时间，而是自动转换为每位查看者的本地时区和语言 — 让每个人都能看到适合其所在位置的正确时间。只需每行输入一个日期时间，选择格式，然后将结果直接粘贴到 Discord 中。该工具独立处理每一行 — 空行在输出中保留，无效行以 ❌ 标记，有效的日期时间即时转换。启用 UTC 模式可确保结果不受本地时区影响。"
-        }
-      },
-      "timeBetweenDates": {
-        "description": "计算两个日期之间的时差。获取精确的天、小时、分钟和秒数。",
-        "shortDescription": "计算两个日期之间的时间",
-        "title": "日期间隔计算"
-      },
-      "truncateClockTime": {
-        "description": "截断时钟时间以删除秒数或分钟数。将时间四舍五入到最接近的小时数、分钟数或自定义间隔。",
-        "shortDescription": "将时钟时间截断为指定的精度",
-        "title": "截断时钟时间"
+      "calculator": {
+        "description": "在一个页面进行四则运算、日期推算、年龄和工作日计算、时长换算与时间戳转换。",
+        "shortDescription": "四则运算、日期推算、时长和时间戳换算",
+        "title": "计算器"
       }
     },
     "video": {
-      "addAudio": {
-        "description": "为视频添加音轨，可完全替换原音频，也可将新音轨与原音频混合。支持调整音量、循环播放，以及精确设置起止时间，兼容常见音视频格式。",
-        "shortDescription": "为视频添加或替换音轨",
-        "title": "视频添加音频"
-      },
-      "changeSpeed": {
-        "description": "更改视频文件的播放速度。在保持音频同步的同时，加快或减慢视频速度。支持各种倍速器和常见视频格式。",
-        "shortDescription": "更改视频播放速度",
-        "title": "更改视频速度"
-      },
-      "compress": {
-        "description": "通过将视频缩放到不同的分辨率（例如 240p、480p、720p 等）来压缩视频。此工具有助于在保持可接受质量的同时减小文件大小。支持 MP4、WebM 和 OGG 等常见视频格式。",
-        "shortDescription": "通过缩放到不同的分辨率来压缩视频",
-        "title": "压缩视频"
-      },
-      "cropVideo": {
-        "description": "裁剪视频以删除不需要的区域。",
-        "shortDescription": "裁剪视频以删除不需要的区域",
-        "title": "裁剪视频"
-      },
-      "flip": {
-        "description": "水平或垂直翻转视频文件。镜像视频以获得特殊效果或纠正方向问题。",
-        "shortDescription": "水平或垂直翻转视频",
-        "title": "翻转视频"
-      },
-      "gif": {
-        "changeSpeed": {
-          "description": "更改 GIF 动画的播放速度。在保持动画流畅的情况下，加快或减慢 GIF 的速度。",
-          "shortDescription": "更改 GIF 动画速度",
-          "title": "更改 GIF 速度"
-        },
-        "imagesToGif": {
-          "description": "将多张图片合成为 GIF 动图，可调整帧顺序和时长，生成流畅的动画。",
-          "shortDescription": "将多张图片合成为 GIF 动图",
-          "title": "图片转 GIF"
-        }
-      },
-      "loop": {
-        "description": "通过多次重复播放原始视频来创建循环视频。",
-        "shortDescription": "创建循环视频文件",
-        "title": "循环视频"
-      },
-      "mergeVideo": {
-        "description": "将多个视频文件合并为一个连续的视频。",
-        "longDescription": "此工具允许您将多个视频文件合并或附加为一个连续的视频。只需上传您的视频文件，按所需顺序排列，然后将它们合并为一个文件，即可轻松共享或编辑。",
-        "shortDescription": "轻松附加和合并视频。",
-        "title": "合并视频"
-      },
-      "resize": {
-        "description": "将视频调整为 240p、360p、480p、720p、1080p 等分辨率，也可自定义宽度和高度。默认保持宽高比，避免画面拉伸，支持 MP4、WebM、OGG 等常见格式。",
-        "shortDescription": "调整视频尺寸与分辨率",
-        "title": "调整视频尺寸"
-      },
-      "rotate": {
-        "description": "将视频文件旋转 90 度、180 度或 270 度。通过精确的旋转控制来校正视频方向或创建特殊效果。",
-        "shortDescription": "按指定角度旋转视频",
-        "title": "旋转视频"
-      },
-      "trim": {
-        "description": "通过指定开始和结束时间来修剪视频文件。从视频的开头或结尾删除不需要的部分。",
-        "shortDescription": "通过删除不需要的部分来修剪视频",
-        "title": "修剪视频"
-      },
       "workspace": {
         "description": "在时间线上剪辑视频和 GIF，用静态图片制作动图，调整倍速和画面，添加配乐并导出视频、GIF 或音频。",
-        "shortDescription": "在同一时间线上剪辑视频和 GIF，或用图片制作动图",
-        "title": "视频工作台"
+        "shortDescription": "在时间线上剪辑、配乐和制作 GIF",
+        "title": "视频编辑器"
       }
     }
   }

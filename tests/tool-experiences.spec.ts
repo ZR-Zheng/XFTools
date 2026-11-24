@@ -219,34 +219,32 @@ test('Audio trim shows waveform, full duration and linked second controls', asyn
   for (let i = 0; i < samples; i++)
     wav.writeInt16LE(Math.round(Math.sin(i / 8) * 20000), 44 + i * 2);
   await page.goto('/audio/trim');
-  await expect(
-    page.getByRole('radio', { name: 'MP3', exact: true })
-  ).toBeChecked();
-  await page.getByRole('radio', { name: 'WAV', exact: true }).check();
-  await expect(
-    page.getByRole('radio', { name: 'MP3', exact: true })
-  ).not.toBeChecked();
-  await expect(
-    page.getByRole('radio', { name: 'WAV', exact: true })
-  ).toBeChecked();
+  await expect(page).toHaveURL(/\/audio\/workspace\?panel=clip$/);
   await page
-    .locator('input[type=file]')
+    .getByLabel('导入音频素材')
     .setInputFiles({ name: 'tone.wav', mimeType: 'audio/wav', buffer: wav });
   await expect(page.locator('.audio-waveform.ready')).toBeVisible();
-  await expect(page.getByLabel('结束时间（秒）')).toHaveValue('2');
-  await page.getByLabel('开始时间（秒）').fill('0.5');
-  await expect(page.locator('.trim-preview-actions')).toContainText(
-    '1.50s / 2.00s'
-  );
-  await expect(page.locator('audio')).toHaveAttribute('controls', '');
+  const inspector = page.getByRole('complementary', { name: '片段参数' });
+  await expect(inspector.getByLabel('结束时间（秒）')).toHaveValue('2');
+  const start = inspector.getByLabel('开始时间（秒）');
+  await start.fill('0.5');
+  await start.press('Enter');
+  await expect(page.getByLabel('播放头时间')).toContainText('/ 00:01.500');
+  const selection = page.getByLabel('选区起点（秒）');
+  await selection.fill('0.4');
+  await selection.press('Enter');
   await page.getByRole('button', { name: '播放选区' }).click();
+  await expect(
+    page.getByRole('button', { name: '暂停', exact: true })
+  ).toBeVisible();
   await expect
-    .poll(() =>
-      page
-        .locator('audio')
-        .evaluate((audio: HTMLAudioElement) => audio.currentTime)
+    .poll(async () =>
+      Number(await page.getByLabel('播放位置（秒）').inputValue())
     )
-    .toBeGreaterThanOrEqual(0.5);
+    .toBeGreaterThan(0.45);
+  await expect(
+    page.getByRole('button', { name: '播放', exact: true })
+  ).toBeVisible();
   await page.screenshot({
     path: '.tmp/screenshots/audio-trim.png',
     fullPage: true

@@ -26,6 +26,10 @@
       "description": "用于在不同格式之间转换数据的工具 — 转换图片、音频、视频、文本等。",
       "title": "转换工具"
     },
+    "charts": {
+      "description": "绘制、编辑和导出统计图。",
+      "title": "图表工具"
+    },
     "gif": {
       "description": "处理 GIF 动画的工具 - 创建透明 GIF、提取 GIF 帧、向 GIF 添加文本、裁剪、旋转、反转 GIF 等等。",
       "title": "GIF 工具"
@@ -48,6 +52,11 @@
       "description": "处理视频的工具——从视频中提取帧、从视频创建 GIF、将视频转换为不同的格式等等。",
       "title": "视频工具"
     }
+  },
+  "chartBoard": {
+    "title": "统计图画板",
+    "description": "在画布上绘制统计图并添加标注，支持导入表格和导出 PNG 或 SVG。",
+    "shortDescription": "绘制统计图、编辑数据和导出图片"
   },
   "hero": {
     "brand": "XFTools",
@@ -72,7 +81,7 @@
   },
   "pdf": {
     "compressPdf": {
-      "description": "使用 Ghostscript 减小 PDF 文件大小同时保持质量",
+      "description": "重打包 PDF 文档结构或重新编码内嵌图片以减小体积",
       "name": "压缩PDF",
       "shortDescription": "安全地压缩 PDF 文件"
     },

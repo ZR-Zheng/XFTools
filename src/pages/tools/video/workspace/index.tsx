@@ -10,8 +10,6 @@ import {
 import { Link, useSearchParams } from 'react-router-dom';
 import Glyph from '@components/workbench/Glyph';
 import useFileDrop from 'hooks/useFileDrop';
-import { useToolHistory } from 'hooks/useToolHistory';
-import { toggleBookmarked } from '@utils/bookmark';
 import type { ToolComponentProps } from '@tools/defineTool';
 import VideoInspector, { panels, type Panel } from './VideoInspector';
 import VideoMonitor, { EmptyMonitor } from './VideoMonitor';
@@ -50,7 +48,6 @@ import './video-workspace.css';
 
 const accepted = [...videoTypes, ...audioTypes, ...imageTypes];
 const zeroProject = { clips: [], soundtrack: null };
-const workspacePath = 'video/workspace';
 
 function SettingsDrawer({
   children,
@@ -87,7 +84,6 @@ export default function VideoWorkspace({ title }: ToolComponentProps) {
   const initialFormat =
     formats.find((format) => format === params.get('format')) ?? 'mp4';
   const legacyImageSequence = params.get('preset') === 'images';
-  const { favorites } = useToolHistory();
   const [history, dispatch] = useReducer(historyReducer, EMPTY_HISTORY);
   const [assets, setAssets] = useState(new Map<string, Asset>());
   const [selection, setSelection] = useState<string>();
@@ -163,7 +159,6 @@ export default function VideoWorkspace({ title }: ToolComponentProps) {
   const audio = project.soundtrack
     ? assets.get(project.soundtrack.assetId)
     : undefined;
-  const favorite = favorites.includes(workspacePath);
 
   useEffect(
     () => () => {
@@ -587,8 +582,9 @@ export default function VideoWorkspace({ title }: ToolComponentProps) {
       <header className="vw-toolbar">
         <Link
           className="vw-icon"
-          aria-label="返回视频处理"
-          to="/categories/video"
+          aria-label="返回工具箱"
+          title="返回工具箱"
+          to="/"
         >
           <Glyph name="arrow" size={19} style={{ rotate: '180deg' }} />
         </Link>
@@ -622,15 +618,6 @@ export default function VideoWorkspace({ title }: ToolComponentProps) {
               模板
               {importedCanvas ? ' · 剪映' : template && ` ${template.label}`}
             </span>
-          </button>
-          <button
-            className="vw-icon vw-favorite"
-            type="button"
-            aria-label={favorite ? '取消收藏' : '添加收藏'}
-            aria-pressed={favorite}
-            onClick={() => toggleBookmarked(workspacePath)}
-          >
-            <Glyph name="star" size={18} filled={favorite} />
           </button>
           <button
             className="primary-button vw-export-button"

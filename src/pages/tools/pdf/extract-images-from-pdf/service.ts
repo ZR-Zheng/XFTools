@@ -1,16 +1,8 @@
-import {
-  getDocument,
-  GlobalWorkerOptions,
-  ImageKind,
-  OPS,
-  type PDFPageProxy
-} from 'pdfjs-dist';
-import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import { ImageKind, OPS, type PDFPageProxy } from 'pdfjs-dist';
 import JSZip from 'jszip';
 import { canvasToBlob } from '@utils/image';
 import type { PdfJob } from '../shared/task';
-
-GlobalWorkerOptions.workerSrc = workerUrl;
+import { openPdfDocument } from '../shared/document';
 
 type ImageObject = {
   width: number;
@@ -92,7 +84,7 @@ async function imageBlob(image: ImageObject) {
 export async function processPDF(input: File, job: PdfJob = {}) {
   const data = await input.arrayBuffer();
   job.signal?.throwIfAborted();
-  const loading = getDocument({ data, isOffscreenCanvasSupported: false });
+  const loading = openPdfDocument({ data, isOffscreenCanvasSupported: false });
   const seen = new Set<string>();
   const extractedImages: File[] = [];
   try {

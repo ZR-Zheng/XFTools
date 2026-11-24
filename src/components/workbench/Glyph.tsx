@@ -8,8 +8,10 @@ const paths: Record<string, string> = {
   palette:
     'M12 3a9 9 0 1 0 0 18c3 0 1-4 4-4h2c5 0 5-14-6-14Z M7 10h.01 M10 6h.01 M16 7h.01 M6 15h.01',
   grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
-  star: 'm12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z',
+  chart: 'M3 3v17h18 M6 15l4-5 4 3 6-7',
+  frame: 'M3 8V3h5 M16 3h5v5 M21 16v5h-5 M8 21H3v-5 M8 8h8v8H8z',
   clock: 'M12 8v4l3 2 M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z',
+  date: 'M4 6h16v15H4z M4 10h16 M8 4v4 M16 4v4 M8 14h2 M14 14h2 M8 17h2',
   image: 'M4 3h16v18H4z M4 16l5-5 4 4 3-3 4 4 M9 7h.01',
   'image-export':
     'M3 17V4h15v9 M3 14l5-5 4 4 3-3 M8 7h.01 M10 18h11m-4-4 4 4-4 4',
@@ -20,13 +22,13 @@ const paths: Record<string, string> = {
   video: 'M3 5h13v14H3z M16 10l5-3v10l-5-3',
   play: 'm8 4 13 8-13 8z',
   pause: 'M9 5v14m6-14v14',
-  scissors: 'M4 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M4 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M9 8l12 12M9 16 21 4',
+  scissors:
+    'M4 6a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M4 18a3 3 0 1 0 6 0 3 3 0 1 0-6 0 M9 8l12 12M9 16 21 4',
   audio:
     'M9 18V5l11-2v13 M9 8l11-2 M9 18a3 3 0 1 1-3-3h3 M20 16a3 3 0 1 1-3-3h3',
   code: 'm8 6-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18',
   list: 'M8 5h13 M8 12h13 M8 19h13 M3 5h.01 M3 12h.01 M3 19h.01',
   table: 'M3 3h18v18H3z M3 9h18 M9 3v18 M3 15h18',
-  number: 'M8 3 6 21 M18 3l-2 18 M3 8h18 M2 16h18',
   convert: 'M3 7h17l-4-4 M21 17H4l4 4 M20 7l-4 4 M4 17l4-4',
   search: 'M21 21l-5-5 M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
   arrow: 'M5 12h14 M13 6l6 6-6 6',
@@ -59,6 +61,7 @@ export const categoryGlyph: Record<string, string> = {
   video: 'video',
   audio: 'audio',
   time: 'clock',
+  charts: 'chart',
   converters: 'convert'
 };
 export default function Glyph({

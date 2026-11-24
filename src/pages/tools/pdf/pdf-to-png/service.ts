@@ -1,27 +1,26 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import JSZip from 'jszip';
 import { canvasToBlob } from '@utils/image';
 import { parsePageRanges } from '../split-pdf/service';
 import type { PdfJob } from '../shared/task';
+import { withPdfDocument } from '../shared/document';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-
-export async function convertPdfToPngImages(
+export async function renderPdfPages(
   file: File,
   ranges: string,
   scale: number,
-  job: PdfJob = {}
-): Promise<{ files: File[]; zip: File }> {
-  const data = await file.arrayBuffer();
-  job.signal?.throwIfAborted();
-  const task = pdfjsLib.getDocument({ data });
-  try {
-    const document = await task.promise;
+  job: PdfJob = {},
+  {
+    format = 'png',
+    quality,
+    maxBytes = Infinity
+  }: { format?: 'png' | 'jpg'; quality?: number; maxBytes?: number } = {}
+): Promise<File[]> {
+  return withPdfDocument(file, job.signal, async (document) => {
     const pages = parsePageRanges(ranges, document.numPages);
     if (!pages.length) throw new Error('请选择有效的 PDF 页码。');
     const files: File[] = [];
-    const zip = new JSZip();
+    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+    let size = 0;
 
     for (const [index, number] of pages.entries()) {
       job.signal?.throwIfAborted();
@@ -45,10 +44,12 @@ export async function convertPdfToPngImages(
         render = page.render({ canvas, canvasContext: context, viewport });
         job.signal?.addEventListener('abort', cancel, { once: true });
         await render.promise;
-        const blob = await canvasToBlob(canvas);
-        const name = 'page-' + number + '.png';
-        files.push(new File([blob], name, { type: 'image/png' }));
-        zip.file(name, new Uint8Array(await blob.arrayBuffer()));
+        const blob = await canvasToBlob(canvas, mimeType, quality);
+        size += blob.size;
+        if (size > maxBytes)
+          throw new Error('页面图片过大，请选择小体积预设或缩小页码范围。');
+        const name = `page-${number}.${format}`;
+        files.push(new File([blob], name, { type: mimeType }));
         job.onProgress?.(index + 1, pages.length);
       } finally {
         job.signal?.removeEventListener('abort', cancel);
@@ -57,18 +58,28 @@ export async function convertPdfToPngImages(
       }
     }
 
+    return files;
+  });
+}
+
+export async function convertPdfToPngImages(
+  file: File,
+  ranges: string,
+  scale: number,
+  job: PdfJob = {}
+): Promise<{ files: File[]; zip: File }> {
+  const files = await renderPdfPages(file, ranges, scale, job);
+  const zip = new JSZip();
+  for (const page of files) {
     job.signal?.throwIfAborted();
-    const bundled = await zip.generateAsync({ type: 'arraybuffer' });
-    job.signal?.throwIfAborted();
-    return {
-      files,
-      zip: new File(
-        [bundled],
-        file.name.replace(/\.pdf$/i, '') + '-pages.zip',
-        { type: 'application/zip' }
-      )
-    };
-  } finally {
-    await task.destroy();
+    zip.file(page.name, await page.arrayBuffer());
   }
+  const bundled = await zip.generateAsync({ type: 'arraybuffer' });
+  job.signal?.throwIfAborted();
+  return {
+    files,
+    zip: new File([bundled], file.name.replace(/\.pdf$/i, '') + '-pages.zip', {
+      type: 'application/zip'
+    })
+  };
 }

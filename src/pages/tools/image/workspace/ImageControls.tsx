@@ -13,6 +13,7 @@ const tools: { id: ImageTool; label: string; icon: string }[] = [
   { id: 'crop', label: '裁剪', icon: 'grid' },
   { id: 'rotate', label: '旋转', icon: 'redo' },
   { id: 'resize', label: '尺寸', icon: 'external' },
+  { id: 'extend', label: '画布扩展', icon: 'frame' },
   { id: 'color', label: '调色', icon: 'palette' },
   { id: 'mask', label: '替色与透明', icon: 'palette' },
   { id: 'opacity', label: '不透明度', icon: 'sun' },
@@ -259,6 +260,101 @@ function Settings({
     }
     case 'resize':
       return <ResizeFields draft={draft} size={size} onDraft={onDraft} />;
+    case 'extend': {
+      const positions = [
+        '左上',
+        '上中',
+        '右上',
+        '左中',
+        '居中',
+        '右中',
+        '左下',
+        '下中',
+        '右下'
+      ];
+      return (
+        <>
+          <div className="iw-field-grid">
+            <NumberField
+              label="画布宽度（px）"
+              value={draft.width}
+              min={1}
+              max={maxCanvasSide}
+              change={(width) => onDraft({ ...draft, width })}
+            />
+            <NumberField
+              label="画布高度（px）"
+              value={draft.height}
+              min={1}
+              max={maxCanvasSide}
+              change={(height) => onDraft({ ...draft, height })}
+            />
+          </div>
+          <Slide
+            label="前景缩放"
+            value={draft.scale}
+            min={10}
+            change={(scale) => onDraft({ ...draft, scale })}
+          />
+          <p className="iw-task-hint">
+            要单独缩小主体，可先去背景，再扩展画布。
+          </p>
+          <div className="iw-field-grid iw-expand-options">
+            <div className="iw-field">
+              图片位置
+              <div
+                className="iw-anchor-grid"
+                role="group"
+                aria-label="图片位置"
+              >
+                {positions.map((position, anchor) => (
+                  <button
+                    key={position}
+                    type="button"
+                    title={position}
+                    aria-label={position}
+                    aria-pressed={draft.anchor === anchor}
+                    onClick={() => onDraft({ ...draft, anchor })}
+                  >
+                    <span aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="iw-field">
+                背景填充
+                <select
+                  value={draft.fill}
+                  onChange={(event) =>
+                    onDraft({
+                      ...draft,
+                      fill: event.target.value as typeof draft.fill
+                    })
+                  }
+                >
+                  <option value="transparent">透明</option>
+                  <option value="solid">纯色</option>
+                  <option value="blur">原图模糊</option>
+                </select>
+              </label>
+              {draft.fill === 'solid' && (
+                <label className="iw-field">
+                  画布背景色
+                  <input
+                    type="color"
+                    value={draft.color}
+                    onChange={(event) =>
+                      onDraft({ ...draft, color: event.target.value })
+                    }
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+        </>
+      );
+    }
     case 'color':
       return (
         <>

@@ -10,10 +10,9 @@ import './index.css';
 import './workbench/refinements.css';
 import './workbench/task-pages.css';
 import './workbench/specialized-pages.css';
+import './workbench/launcher.css';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
-import { useWorkbenchText } from '../i18n/workbench';
-import { UserTypeFilterProvider } from 'providers/UserTypeFilterProvider';
 import { ThemeContext } from '../contexts/ThemeContext';
 function AppRoutes() {
   return useRoutes([
@@ -25,7 +24,6 @@ function AppRoutes() {
   ]);
 }
 function Workspace() {
-  const { w } = useWorkbenchText();
   const { pathname } = useLocation();
   const toolPath = canonicalToolPath(pathname.replace(/^\/+|\/+$/g, ''));
   const standalone = tools.some(
@@ -48,17 +46,9 @@ function Workspace() {
   return (
     <div className="app-shell">
       <Navbar />
-      <div className="main-shell">
-        <main id="main-content" tabIndex={-1}>
-          {routes}
-        </main>
-        <footer className="app-footer">
-          <span>
-            XFTools<span className="footer-dot">·</span>
-            {w('footer')}
-          </span>
-        </footer>
-      </div>
+      <main id="main-content" tabIndex={-1}>
+        {routes}
+      </main>
     </div>
   );
 }
@@ -75,11 +65,9 @@ export default function App() {
     <I18nextProvider i18n={i18n}>
       <ThemeContext.Provider value="light">
         <CustomSnackBarProvider>
-          <UserTypeFilterProvider>
-            <BrowserRouter>
-              <Workspace />
-            </BrowserRouter>
-          </UserTypeFilterProvider>
+          <BrowserRouter>
+            <Workspace />
+          </BrowserRouter>
         </CustomSnackBarProvider>
       </ThemeContext.Provider>
     </I18nextProvider>

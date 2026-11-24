@@ -782,7 +782,6 @@
   "Time contains more than 3 parts on line {{0}}": "第 {{0}} 行的时间包含超过三个部分",
   "Time doesn't contain valid {{0}} on line {{1}}": "第 {{1}} 行的时间没有有效的{{0}}",
   "Timezone abbreviation {{0}} not supported": "不支持时区缩写 {{0}}",
-  "useUserTypeFilter must be used within a UserTypeFilterProvider. {{0}}": "useUserTypeFilter 必须在 UserTypeFilterProvider 内使用。{{0}}",
   "Invalid JSON: {{0}}": "JSON 无效：{{0}}",
   "Invalid JSON at line {{0}}: {{1}}": "第 {{0}} 行的 JSON 无效：{{1}}",
   "Small tools. Clear focus.": "Small tools. Clear focus.",

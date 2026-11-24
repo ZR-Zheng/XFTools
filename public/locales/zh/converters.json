@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "文件转换器",
+    "shortDescription": "批量转换图片、视频、音频和 PDF",
+    "description": "批量转换视频、音频、图片和 PDF，支持视频转 GIF、提取音频、多种输出预设和 ZIP 下载。"
+  },
   "audioConverter": {
     "description": "在不同格式之间转换音频文件。",
     "inputTitle": "音频输入",

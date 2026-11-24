@@ -1,4 +1,4 @@
-import type { CompressionLevel } from '../compress-pdf/types';
+import type { CompressionOptions } from '../compress-pdf/types';
 import type { PdfJob } from '../shared/task';
 
 export const outputKinds = [
@@ -10,11 +10,10 @@ export const outputKinds = [
   'protect'
 ] as const;
 export type OutputKind = (typeof outputKinds)[number];
-export type OutputSettings = {
+export type OutputSettings = CompressionOptions & {
   kind: OutputKind;
   ranges: string;
   scale: number;
-  compressionLevel: CompressionLevel;
   password: string;
   confirmPassword: string;
 };
@@ -56,7 +55,17 @@ export async function convertOutput(
     case 'compress': {
       const { compressPdf } = await import('../compress-pdf/service');
       return {
-        file: await compressPdf(file, settings, job),
+        file: await compressPdf(
+          file,
+          {
+            compressionLevel: settings.compressionLevel,
+            imageEncoding: settings.imageEncoding,
+            imageQuality: settings.imageQuality,
+            maxSide: settings.maxSide,
+            grayscale: settings.grayscale
+          },
+          job
+        ),
         originalSize: file.size
       };
     }

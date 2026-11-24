@@ -1,15 +1,14 @@
 # XFTools
 
-简体中文实用工具集合。提供图像、PDF、音视频、日期和格式转换工具，可自行部署和维护。
+简体中文实用工具集合。提供图像、PDF、音视频、计算器、统计图和格式转换工具，可自行部署和维护。
 
 ![工具工作台](docs/images/workspace.png)
 
 ## 使用体验
 
 - 分类导航与关键词搜索，支持 Ctrl / Cmd + K 聚焦搜索。
-- 收藏常用工具、查看最近使用记录；偏好保存在当前浏览器。
 - 图片、PDF、音视频和日期工具各有适合其操作的布局。
-- 图片格式转换共用 JPG、WebP 和 PNG 模式，图片压缩提供通用和 PNG 专用模式。PDF 格式导出支持 PNG 和 EPUB，时长换算支持单项与批量输入。
+- 文件转换器提供视频、音频、图片和 PDF 批量转换。图片压缩提供通用和 PNG 专用模式，时长换算支持单项与批量输入。
 - 文件预览、批量文件排序、参数设置与显式处理；支持复制、下载及可直接应用的示例。
 - 图片缩放支持联动尺寸与结果预览，PDF 可点选页面，音频显示波形与裁剪区间，时间戳使用专门表单。详见 [工具页面交互](docs/tool-interactions.md)。
 - 简体中文界面；品牌 XFTools 和英文宣传语保持原文。
@@ -19,13 +18,21 @@
 
 界面使用 React + 原生 HTML/CSS/SVG，图片编辑使用 Canvas；已移除 Material UI、Emotion、Monaco、Tailwind 和 Filerobot。工具选项、示例及详细说明按分类延迟加载，首页仅加载检索所需的元数据。具体说明见 [依赖与构建](docs/dependencies.md) 和 [界面设计规范](docs/design-system.md)。
 
-PDF 工作台从站内入口在新标签页打开，也可直达 `/pdf/workspace`。它支持连续预览、合并拆分、页面编排、批注、表单、压缩、密码保护、PNG／EPUB 导出、提取内嵌图片和图片转 PDF。各旧地址会打开对应模式。 [PDF 操作与保存说明](docs/tool-interactions.md)
+PDF 编辑器从站内入口在新标签页打开，也可直达 `/pdf/workspace`。它支持连续预览、合并拆分、页面编排、批注、表单、压缩、密码保护、PNG／EPUB 导出、提取内嵌图片和图片转 PDF。压缩可选无损结构优化，或按画质和尺寸重新编码内嵌图片，支持 JPEG 和 JPEG 2000。 [PDF 操作与保存说明](docs/tool-interactions.md)
 
-图片工作台可直达 `/image/workspace`。打开一张图片后，可在同一画布上依次编辑，或将当前结果送入去背景、批量处理和分页打印。旧图片、PNG 压缩与图片格式转换链接会打开对应功能。批量缩放使用按需加载的 pica。
+图片编辑器可直达 `/image/workspace`。「画布扩展」可独立设置画布宽高、前景缩放和位置，并填充透明、纯色或原图模糊背景。当前编辑结果可继续用于去背景、批量处理和分页打印。批量缩放使用按需加载的 pica。
 
-视频工作台可直达 `/video/workspace`。将视频、GIF、静态图片或配乐拖入工作台，用双轨时间线剪辑、混音和预览，然后在浏览器内导出 MP4、GIF 或音频。原视频与 GIF 工具地址会打开对应设置。
+视频编辑器可直达 `/video/workspace`。将视频、GIF、静态图片或配乐拖入工作台，用双轨时间线剪辑、混音和预览，然后在浏览器内导出 MP4、GIF 或音频。原视频与 GIF 工具地址会打开对应设置。
 
-工作台已移除顶部栏、语言切换和主题切换；侧栏底部同行展示处理状态与版本号，页内不重复展示处理状态及许可标识。详见[界面简化与问题修复](docs/interface-simplification.md)。
+音频编辑器可直达 `/audio/workspace`。使用波形选区试听、裁剪和分割，在剪辑轨拼接片段，在混音轨安排配乐或旁白。
+
+文件转换器可直达 `/converters/workspace`。选择分类、输出格式和预设，再把文件加入同一个本地队列。支持视频转码或提取音轨、GIF 动图、音频格式转换、图片转码、单页 PDF，以及从 PDF 导出页面图片、文本和 EPUB。可以单个下载或批量打包成 ZIP。
+
+统计图画板可直达 `/charts/board`。可导入 CSV 或 TSV，绘制折线图、柱状图、饼图和象形图，并导出 PNG 或 SVG。
+
+更新画板时，将 `LineChartAssistant/dist` 的全部内容替换到 `public/line-chart-assistant/`，让新 `index.html` 与新 `assets/` 一起发布。XFTools 会自动适配当前默认构建的 `/assets/` 入口路径。若直接更新已部署站点的静态文件，将构建内容替换到站点的 `line-chart-assistant/` 目录即可。
+
+工具箱在首页集中展示所有工具。工作台卡片提供常用操作的直达链接。文件工作台在独立标签页打开，便于并行处理文件。 [界面与键盘操作](docs/interface-simplification.md)
 
 ## 本地开发
 
@@ -46,7 +53,7 @@ npm run build
 npm run serve
 ```
 
-工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。包含全部工具的桌面和手机布局巡检，以及文件排序、PDF 合并与表单导出、图片编辑导出、代码编辑与侧栏导航。可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已有 Chrome。
+工作台浏览器回归：`npm run test:workbench`（首次需要 `npx playwright install chromium`）。包含桌面及手机布局、工具箱快捷入口、文件排序、PDF 合并与表单导出和图片编辑导出。可设置 `PLAYWRIGHT_CHANNEL=chrome` 使用已有 Chrome。
 
 `npm test` 进入测试监听模式；`npm run test:e2e` 运行 Playwright 测试，首次使用需先执行 `npx playwright install` 安装对应浏览器。所有端到端功能测试使用简体中文界面。
 

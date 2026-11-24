@@ -8,6 +8,15 @@ export type WatermarkPosition =
 
 export type DraftEdit =
   | { type: 'crop'; rect: Rect; circle: boolean }
+  | {
+      type: 'extend';
+      width: number;
+      height: number;
+      scale: number;
+      anchor: number;
+      fill: 'transparent' | 'solid' | 'blur';
+      color: string;
+    }
   | { type: 'rotate'; angle: number; flipX: boolean; flipY: boolean }
   | { type: 'resize'; width: number; height: number }
   | { type: 'color'; brightness: number; contrast: number; saturation: number }
@@ -54,7 +63,7 @@ export function isCanvasSize({ width, height }: Size) {
 
 export function editSize(size: Size, edit: Edit): Size {
   if (edit.type === 'crop') return edit.rect;
-  if (edit.type === 'resize') return edit;
+  if (edit.type === 'resize' || edit.type === 'extend') return edit;
   if (edit.type === 'background') return edit.result;
   if (edit.type !== 'rotate') return size;
   const radians = (edit.angle * Math.PI) / 180;
@@ -86,6 +95,16 @@ function initialDraft(
       return { type: tool, angle: 0, flipX: false, flipY: false };
     case 'resize':
       return { type: tool, width: size.width, height: size.height };
+    case 'extend':
+      return {
+        type: tool,
+        width: size.width,
+        height: size.height,
+        scale: 100,
+        anchor: 4,
+        fill: 'transparent',
+        color: '#ffffff'
+      };
     case 'color':
       return { type: tool, brightness: 100, contrast: 100, saturation: 100 };
     case 'mask':
@@ -132,6 +151,13 @@ export function hasEdit(edit: DraftEdit | null, size: Size | null): boolean {
       return edit.angle % 360 !== 0 || edit.flipX || edit.flipY;
     case 'resize':
       return edit.width !== size.width || edit.height !== size.height;
+    case 'extend':
+      return (
+        edit.width !== size.width ||
+        edit.height !== size.height ||
+        edit.scale !== 100 ||
+        edit.fill !== 'transparent'
+      );
     case 'color':
       return (
         edit.brightness !== 100 ||
@@ -152,6 +178,13 @@ export function hasEdit(edit: DraftEdit | null, size: Size | null): boolean {
 }
 
 export function validEdit(edit: Edit, size: Size): boolean {
+  if (edit.type === 'extend')
+    return (
+      isCanvasSize(edit) &&
+      Number.isInteger(edit.scale) &&
+      edit.scale >= 10 &&
+      edit.scale <= 100
+    );
   if (edit.type === 'resize') return isCanvasSize(edit);
   const area =
     edit.type === 'crop'

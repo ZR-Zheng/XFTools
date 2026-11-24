@@ -191,7 +191,7 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   context
 }) => {
   await page.goto('/categories/pdf');
-  const link = page.getByRole('link', { name: 'PDF 工作台 · 在新标签页打开' });
+  const link = page.getByRole('link', { name: 'PDF 编辑器 · 在新标签页打开' });
   await expect(link).toHaveAttribute('target', '_blank');
   const opened = context.waitForEvent('page');
   await link.click();
@@ -199,10 +199,10 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   await expect(readerTab).toHaveURL(/\/pdf\/workspace$/);
   await expect(page).toHaveURL(/\/categories\/pdf$/);
   await expect(
-    readerTab.getByRole('heading', { level: 1, name: 'PDF 工作台' })
+    readerTab.getByRole('heading', { level: 1, name: 'PDF 编辑器' })
   ).toBeVisible();
   await expect(
-    readerTab.locator('.tool-page-header, .sidebar, .app-footer')
+    readerTab.locator('.tool-page-header, .launcher-bar, .app-footer')
   ).toHaveCount(0);
   const documents = readerTab.getByRole('group', {
     name: '文档工具栏',
@@ -213,8 +213,8 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
     exact: true
   });
   await expect(
-    documents.getByRole('link', { name: '返回 XFTools' })
-  ).toHaveAttribute('href', '/categories/pdf');
+    documents.getByRole('link', { name: '返回工具箱' })
+  ).toHaveAttribute('href', '/');
   await expect(
     documents.getByRole('button', { name: '打开 PDF' })
   ).toBeVisible();
@@ -225,13 +225,11 @@ test('PDF workbench opens in a new tab with a standalone reader and compact pane
   }
   const more = tools.getByRole('button', { name: '更多工具' });
   await more.click();
-  await tools.getByRole('button', { name: '添加收藏' }).click();
+  await expect(
+    tools.getByRole('button', { name: '清空', exact: true })
+  ).toBeVisible();
+  await expect(tools.getByRole('button', { name: /收藏/ })).toHaveCount(0);
   await more.click();
-  await expect(tools.getByRole('button', { name: '取消收藏' })).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  );
-  await tools.getByRole('button', { name: '取消收藏' }).click();
   await expect(
     readerTab.getByRole('button', { name: '选择文件' })
   ).toBeVisible();

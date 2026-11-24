@@ -151,9 +151,11 @@ export default function DurationConverter() {
           <select
             className="ui-input"
             value={mode.id}
-            onChange={(event) =>
-              setParams({ mode: event.target.value }, { replace: true })
-            }
+            onChange={(event) => {
+              const next = new URLSearchParams(params);
+              next.set('mode', event.target.value);
+              setParams(next, { replace: true });
+            }}
           >
             {modes.map((item) => (
               <option key={item.id} value={item.id}>

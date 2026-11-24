@@ -47,6 +47,7 @@ const editTools: readonly ImageTool[] = [
   'crop',
   'rotate',
   'resize',
+  'extend',
   'color',
   'mask',
   'opacity',
@@ -233,10 +234,10 @@ export default function ImageWorkspace({ title }: ToolComponentProps) {
       <header className="iw-toolbar">
         <div className="iw-toolbar-file">
           <Link
-            to="/categories/image-generic"
+            to="/"
             className="iw-back"
-            aria-label="返回图像处理"
-            title="返回图像处理"
+            aria-label="返回工具箱"
+            title="返回工具箱"
           >
             <Glyph name="arrow" size={18} style={{ rotate: '180deg' }} />
           </Link>

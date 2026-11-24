@@ -1,7 +1,6 @@
 import {
   lazy,
   Suspense,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -11,12 +10,10 @@ import {
 import type { PDFDocument } from 'pdf-lib';
 import { Link, useSearchParams } from 'react-router-dom';
 import type { ToolComponentProps } from '@tools/defineTool';
-import { ToolPageContext } from '@tools/page-context';
 import { useWorkbenchText } from 'i18n/workbench';
-import { useToolHistory } from 'hooks/useToolHistory';
 import { downloadFile } from '@utils/file';
-import { toggleBookmarked } from '@utils/bookmark';
 import Glyph from '@components/workbench/Glyph';
+import { defaultCompression } from '../compress-pdf/types';
 import { isFormEdit, pageCropBox, type PageEdit } from '../shared/page-edits';
 import PdfEditLayer, { type NewGeometry, type Placement } from './PdfEditLayer';
 import PdfEditPanel, { editKindName } from './PdfEditPanel';
@@ -167,11 +164,8 @@ function PreviewDialog({
 }
 
 export default function PdfWorkspacePage({ title }: ToolComponentProps) {
-  const { english, w } = useWorkbenchText();
+  const { english } = useWorkbenchText();
   const t = (zh: string, en: string) => (english ? en : zh);
-  const { path } = useContext(ToolPageContext);
-  const { favorites } = useToolHistory();
-  const favorite = favorites.includes(path);
   const [params] = useSearchParams();
   const preset = params.get('mode');
   const requestedFormat = params.get('format') as OutputKind | null;
@@ -243,7 +237,7 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
           : 'pdf',
     ranges: '',
     scale: 1.5,
-    compressionLevel: 'medium',
+    ...defaultCompression,
     password: '',
     confirmPassword: ''
   });
@@ -929,10 +923,10 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
       >
         <div className="pdf-document-actions">
           <Link
-            to="/categories/pdf"
+            to="/"
             className="pdf-back-link"
-            aria-label={t('返回 XFTools', 'Back to XFTools')}
-            title={t('返回 XFTools', 'Back to XFTools')}
+            aria-label="返回工具箱"
+            title="返回工具箱"
           >
             <Glyph name="arrow" size={18} style={{ rotate: '180deg' }} />
           </Link>
@@ -1132,8 +1126,8 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
               {
                 label: outputLabel('compress', t),
                 description: t(
-                  '选择压缩等级，减小文件体积',
-                  'Choose a compression level to reduce file size'
+                  '调整内嵌图片的编码、尺寸和画质',
+                  'Adjust embedded image encoding, dimensions and quality'
                 ),
                 icon: 'compress',
                 active: showExport && output.kind === 'compress',
@@ -1155,12 +1149,6 @@ export default function PdfWorkspacePage({ title }: ToolComponentProps) {
           }
         ]}
         more={[
-          {
-            label: w(favorite ? 'removeFavorite' : 'addFavorite'),
-            active: favorite,
-            icon: 'star',
-            run: () => toggleBookmarked(path)
-          },
           {
             label: t('清空', 'Clear'),
             icon: 'trash',

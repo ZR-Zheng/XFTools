@@ -139,7 +139,6 @@ export default function ${capitalizeFirstLetter(toolNameCamelCase)}({
 `
 );
 const validNamespaces = [
-  'number',
   'video',
   'time',
   'pdf',

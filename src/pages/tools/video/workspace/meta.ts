@@ -5,10 +5,12 @@ export const videoWorkspace = defineTool('video', {
   path: 'workspace',
   standalone: true,
   loadFullLocale: false,
-  alternativeCategories: ['audio', 'gif', 'converters'],
+  alternativeCategories: ['audio', 'gif'],
   icon: 'mdi:movie-edit-outline',
   component: lazy(() => import('./index')),
   keywords: [
+    '视频工作台',
+    '视频剪辑器',
     '视频剪辑',
     '剪切视频',
     '修剪视频',

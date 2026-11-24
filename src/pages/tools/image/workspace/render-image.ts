@@ -200,6 +200,41 @@ function drawOpacity(
   ctx.fillRect(x, y, w, h);
 }
 
+function drawExtendedCanvas(
+  ctx: CanvasRenderingContext2D,
+  frame: Frame,
+  edit: Extract<Edit, { type: 'extend' }>
+) {
+  const { width, height, fill, color, anchor, scale } = edit;
+  if (fill !== 'transparent') {
+    ctx.fillStyle = fill === 'solid' ? color : '#fff';
+    ctx.fillRect(0, 0, width, height);
+  }
+  if (fill === 'blur') {
+    const blur = Math.max(3, Math.min(width, height) / 30);
+    const cover = Math.max(
+      (width + 6 * blur) / frame.width,
+      (height + 6 * blur) / frame.height
+    );
+    const w = frame.width * cover;
+    const h = frame.height * cover;
+    ctx.filter = `blur(${(blur * ctx.canvas.width) / width}px)`;
+    ctx.drawImage(frame.pixels, (width - w) / 2, (height - h) / 2, w, h);
+    ctx.filter = 'none';
+  }
+  const fit =
+    (Math.min(1, width / frame.width, height / frame.height) * scale) / 100;
+  const w = frame.width * fit;
+  const h = frame.height * fit;
+  ctx.drawImage(
+    frame.pixels,
+    ((width - w) * (anchor % 3)) / 2,
+    ((height - h) * Math.floor(anchor / 3)) / 2,
+    w,
+    h
+  );
+}
+
 function renderEdit(frame: Frame, edit: Edit, preview: boolean): Frame {
   if (edit.type === 'background') return sourceFrame(edit.result);
   const size = editSize(frame, edit);
@@ -213,6 +248,9 @@ function renderEdit(frame: Frame, edit: Edit, preview: boolean): Frame {
     );
     ctx.save();
     switch (edit.type) {
+      case 'extend':
+        drawExtendedCanvas(ctx, frame, edit);
+        break;
       case 'crop': {
         const { x, y, width, height } = edit.rect;
         if (edit.circle) {

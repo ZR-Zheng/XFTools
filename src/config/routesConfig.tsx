@@ -18,8 +18,6 @@ function ToolAlias({ path, query }: { path: string; query: string }) {
 
 const routes: RouteObject[] = [
   { path: '/', element: <Home /> },
-  { path: '/favorites', element: <Home /> },
-  { path: '/recent', element: <Home /> },
   {
     path: '/categories/png',
     element: <ToolAlias path="categories/image-generic" query="" />

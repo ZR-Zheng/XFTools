@@ -41,9 +41,10 @@ export type ToolCategory =
   | 'video'
   | 'pdf'
   | 'audio'
+  | 'charts'
   | 'converters';
 
-export type ToolRoutePrefix = ToolCategory | 'number' | 'image';
+export type ToolRoutePrefix = ToolCategory | 'image';
 
 export interface DefinedTool {
   interaction: ToolInteraction;

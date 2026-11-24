@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "音频编辑器",
+    "description": "在波形时间线上试听、裁剪、拼接、变速和混音，调整增益与淡入淡出，再导出所需格式。",
+    "shortDescription": "在波形上裁剪、变速、混音和导出"
+  },
   "changeSpeed": {
     "description": "更改音频文件的播放速度。在保持音调不变的情况下加快或减慢音频速度。",
     "inputTitle": "输入音频",

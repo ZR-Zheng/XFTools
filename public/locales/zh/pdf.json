@@ -1,22 +1,22 @@
 {
   "workspace": {
-    "title": "PDF 工作台",
+    "title": "PDF 编辑器",
     "description": "预览、合并、拆分、批注、表单、压缩、加密与转换 PDF。",
-    "shortDescription": "预览、整理、编辑与转换 PDF。"
+    "shortDescription": "合并拆分、整理页面、批注和表单"
   },
   "compressPdf": {
     "compressedFileSize": "压缩文件大小",
     "compressingPdf": "正在压缩 PDF...",
     "compressionLevel": "压缩级别",
     "compressionSettings": "压缩设置",
-    "description": "使用 Ghostscript 减小 PDF 文件大小同时保持质量",
+    "description": "重打包 PDF 文档结构或重新编码内嵌图片以减小体积",
     "errorCompressingPdf": "压缩 PDF 失败： {{error}}",
     "errorReadingPdf": "无法读取 PDF 文件。请确保它是有效的 PDF。",
     "fileSize": "原始文件大小",
     "highCompression": "高压缩",
     "highCompressionDescription": "最大程度地减少文件大小，但会损失一些质量",
     "inputTitle": "输入 PDF",
-    "longDescription": "使用 Ghostscript 安全地压缩 PDF 文件。可缩减文件大小，便于共享文件或节省存储空间。由 WebAssembly 技术提供支持。",
+    "longDescription": "在浏览器中无损优化 PDF 文档结构，或调整内嵌图片的尺寸、画质和编码，保留可选文字与矢量内容。",
     "lowCompression": "低压缩",
     "lowCompressionDescription": "在尽量减少质量损失的情况下稍微减小文件大小",
     "mediumCompression": "中等压缩",

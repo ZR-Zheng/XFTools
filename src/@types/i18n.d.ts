@@ -2,7 +2,6 @@ import 'i18next';
 
 import translation from '../../public/locales/zh/translation.json';
 import string from '../../public/locales/zh/string.json';
-import number from '../../public/locales/zh/number.json';
 import video from '../../public/locales/zh/video.json';
 import time from '../../public/locales/zh/time.json';
 import pdf from '../../public/locales/zh/pdf.json';
@@ -15,7 +14,6 @@ declare module 'i18next' {
     resources: {
       translation: typeof translation;
       string: typeof string;
-      number: typeof number;
       video: typeof video;
       time: typeof time;
       pdf: typeof pdf;

@@ -12,6 +12,8 @@ export interface ToolExperience {
     | 'pdf24'
     | 'squoosh'
     | 'audiomass'
+    | 'format-factory'
+    | 'line-chart-assistant'
     | 'epoch'
     | 'iloveimg';
 }
@@ -46,37 +48,38 @@ function assign(profile: keyof typeof profiles, routes: string[]) {
     pages[route] = { ...profiles[profile] };
   }
 }
-assign('scalar', [
-  'number/byte-converter',
-  'time/check-leap-years',
-  'time/truncate-clock-time'
-]);
-assign('date', ['time/convert-unix-to-date', 'time/discord-timestamp']);
-assign('form', ['time/date-weekday-calculator', 'time/time-between-dates']);
-assign('media', [
-  'audio/change-speed',
-  'audio/loop',
-  'audio/merge-audio',
-  'audio/trim',
-  'converters/audio-converter'
-]);
 assign('custom', [
-  'time/convert-duration',
+  'audio/workspace',
+  'time/calculator',
   'image/workspace',
   'pdf/workspace',
   'video/workspace'
 ]);
-pages['time/crontab-guru'] = {
-  layout: 'form',
-  entry: 'cron',
-  rows: 1,
-  placeholder: ['例如：0 9 * * 1-5', 'For example: 0 9 * * 1-5'],
-  reference: 'it-tools'
+pages['converters/workspace'] = {
+  ...profiles.custom,
+  reference: 'format-factory'
 };
-
-pages['time/truncate-clock-time'].placeholder = [
-  '例如：12:34:56',
-  'For example: 12:34:56'
-];
+pages['charts/board'] = {
+  ...profiles.custom,
+  reference: 'line-chart-assistant'
+};
+export const calculatorModeExperiences: Readonly<
+  Record<string, ToolExperience>
+> = {
+  'time/check-leap-years': profiles.scalar,
+  'time/truncate-clock-time': {
+    ...profiles.scalar,
+    placeholder: ['例如：12:34:56', 'For example: 12:34:56']
+  },
+  'time/discord-timestamp': profiles.date,
+  'time/date-weekday-calculator': profiles.form,
+  'time/crontab-guru': {
+    layout: 'form',
+    entry: 'cron',
+    rows: 1,
+    placeholder: ['例如：0 9 * * 1-5', 'For example: 0 9 * * 1-5'],
+    reference: 'it-tools'
+  }
+};
 export const toolExperiences: Readonly<Record<string, ToolExperience>> = pages;
 export const defaultExperience: ToolExperience = profiles.text;

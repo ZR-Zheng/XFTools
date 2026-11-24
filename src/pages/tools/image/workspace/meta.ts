@@ -9,6 +9,7 @@ export const imageWorkspace = defineTool('image', {
   component: lazy(() => import('./index')),
   keywords: [
     '图片工作台',
+    '图像编辑器',
     '图片编辑',
     '裁剪',
     '旋转',
@@ -16,6 +17,10 @@ export const imageWorkspace = defineTool('image', {
     '缩放',
     '图片缩放',
     '调整尺寸',
+    '画布扩展',
+    '扩展背景',
+    '扩图',
+    '背景留白',
     '调色',
     '透明度',
     '水印',

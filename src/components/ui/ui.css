@@ -251,9 +251,6 @@ textarea.ui-input {
   font-size: 25px;
   z-index: 1;
 }
-.ui-drawer .brand {
-  padding-right: 42px;
-}
 .ui-menu {
   position: fixed;
   z-index: 1600;

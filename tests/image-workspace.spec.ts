@@ -139,19 +139,56 @@ async function downloadImage(
   return readFile((await download.path())!);
 }
 
+test('canvas expansion scales and positions the foreground independently with undo and redo', async ({
+  page
+}) => {
+  await page.goto('/image/workspace?tool=extend');
+  await page
+    .getByLabel('选择图片文件')
+    .setInputFiles(await fixture(page, 80, 60));
+  await expect(page.getByRole('button', { name: '画布扩展' })).toHaveAttribute(
+    'aria-pressed',
+    'true'
+  );
+  await page.getByLabel('画布宽度（px）').fill('8193');
+  await expect(
+    page.getByRole('button', { name: '应用', exact: true })
+  ).toBeDisabled();
+  await page.getByLabel('画布宽度（px）').fill('150');
+  await page.getByLabel('画布高度（px）').fill('100');
+  await page.getByRole('slider', { name: '前景缩放' }).press('Home');
+  await page.getByRole('button', { name: '右下', exact: true }).click();
+  await page.getByLabel('背景填充').selectOption('solid');
+  await page.getByLabel('画布背景色').fill('#e9edf7');
+  await expect(page.locator('.iw-view-size')).toHaveText('150 × 100 px');
+  await page.getByRole('button', { name: '应用', exact: true }).click();
+  const expanded = await Jimp.read(await downloadImage(page, 'png'));
+  expect([expanded.width, expanded.height]).toEqual([150, 100]);
+  expect(expanded.getPixelColor(141, 94)).toBe(0xe9edf7ff);
+  expect(expanded.getPixelColor(142, 94)).toBe(0x183044ff);
+  expect(expanded.getPixelColor(149, 99)).toBe(0x52652cff);
+  await page.getByRole('button', { name: '撤销', exact: true }).click();
+  await expect(page.locator('.iw-view-size')).toHaveText('80 × 60 px');
+  await page.getByRole('button', { name: '重做', exact: true }).click();
+  await expect(page.locator('.iw-view-size')).toHaveText('150 × 100 px');
+  await page.getByRole('slider', { name: '前景缩放' }).press('Home');
+  const transparent = await Jimp.read(await downloadImage(page, 'png'));
+  expect(transparent.getPixelColor(0, 0) & 255).toBe(0);
+});
+
 test('image workspace opens independently and exports the accumulated canvas edits', async ({
   page,
   context
 }) => {
   await page.goto('/categories/image-generic');
-  const link = page.getByRole('link', { name: '图片工作台 · 在新标签页打开' });
+  const link = page.getByRole('link', { name: '图片编辑器 · 在新标签页打开' });
   await expect(link).toHaveAttribute('href', '/image/workspace');
   const popup = context.waitForEvent('page');
   await link.click();
   const workspace = await popup;
   await expect(workspace).toHaveURL(/\/image\/workspace$/);
   await expect(
-    workspace.locator('.sidebar, .app-footer, .tool-page-header')
+    workspace.locator('.launcher-bar, .app-footer, .tool-page-header')
   ).toHaveCount(0);
   await workspace
     .getByLabel('选择图片文件')
@@ -383,12 +420,82 @@ test('cancelling compression preserves the batch queue for a retry', async ({
   }
 });
 
-test('background removal falls back offline and exports an undoable transparent image', async ({
+test('automatic background removal loads its bundled model on demand and exports the subject', async ({
+  page,
+  context
+}) => {
+  const requests: string[] = [];
+  context.on('request', (request) => requests.push(request.url()));
+  await page.goto('/image-generic/remove-background');
+  const subject = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 200;
+    canvas.height = 160;
+    const ctx = canvas.getContext('2d')!;
+    const backdrop = ctx.createLinearGradient(0, 0, 200, 160);
+    backdrop.addColorStop(0, '#a7cde0');
+    backdrop.addColorStop(0.55, '#e7f0ec');
+    backdrop.addColorStop(1, '#a9c0ac');
+    ctx.fillStyle = backdrop;
+    ctx.fillRect(0, 0, 200, 160);
+    const apple = ctx.createRadialGradient(82, 66, 5, 110, 95, 65);
+    apple.addColorStop(0, '#ffad78');
+    apple.addColorStop(0.5, '#ea452f');
+    apple.addColorStop(1, '#a71622');
+    ctx.fillStyle = apple;
+    ctx.beginPath();
+    ctx.ellipse(85, 87, 33, 44, -0.24, 0, 2 * Math.PI);
+    ctx.ellipse(115, 86, 33, 44, 0.25, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = '#6b3b20';
+    ctx.fillRect(97, 36, 6, 16);
+    ctx.fillStyle = '#438442';
+    ctx.beginPath();
+    ctx.ellipse(110, 37, 16, 5, -0.42, 0, 2 * Math.PI);
+    ctx.fill();
+    return canvas.toDataURL('image/png').split(',')[1];
+  });
+  await page.getByLabel('选择图片文件').setInputFiles({
+    name: 'apple.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(subject, 'base64')
+  });
+  await expect(page.locator('.iw-view-size')).toHaveText('200 × 160 px');
+  const modelPath = '/models/u2netp/u2netp.onnx';
+  const inferenceAssets = () =>
+    requests.filter(
+      (url) => url.endsWith(modelPath) || /ort-wasm.*\.wasm$/.test(url)
+    );
+  expect(inferenceAssets()).toEqual([]);
+  await page.getByRole('button', { name: '开始去背景' }).click();
+  await expect(
+    page.getByRole('status').filter({ hasText: 'AI 已识别主体' })
+  ).toBeVisible({ timeout: 35_000 });
+  const origin = new URL(page.url()).origin;
+  expect(inferenceAssets()).toContain(origin + modelPath);
+  expect(inferenceAssets().some((url) => url.endsWith('.wasm'))).toBe(true);
+  expect(
+    requests.filter(
+      (url) => url.startsWith('http') && new URL(url).origin !== origin
+    )
+  ).toEqual([]);
+
+  const download = page.waitForEvent('download');
+  await page.getByRole('button', { name: '下载透明 PNG' }).click();
+  const result = await Jimp.read(
+    await readFile((await (await download).path())!)
+  );
+  expect([result.width, result.height]).toEqual([200, 160]);
+  expect(result.getPixelColor(10, 10) & 255).toBeLessThan(60);
+  expect(result.getPixelColor(100, 85) & 255).toBeGreaterThan(180);
+});
+
+test('background removal falls back when the model is unavailable and exports an undoable transparent image', async ({
   page,
   context
 }) => {
   let modelRequests = 0;
-  await context.route('**/resources.json', async (route) => {
+  await context.route('**/models/u2netp/u2netp.onnx', async (route) => {
     modelRequests++;
     await route.abort();
   });

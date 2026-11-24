@@ -1,68 +1,56 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { DefinedTool } from '@tools/defineTool';
+import { launchActions } from '@tools/launch-actions';
 import { validNamespaces } from '../../i18n';
-import { useWorkbenchText, WorkbenchKey } from '../../i18n/workbench';
-import { toggleBookmarked } from '@utils/bookmark';
 import Glyph, { categoryGlyph } from './Glyph';
+import ToolTileArt from './ToolTileArt';
 
-export default function ToolTile({
-  tool,
-  favorite,
-  compact = false
-}: {
-  tool: DefinedTool;
-  favorite: boolean;
-  compact?: boolean;
-}) {
+export default function ToolTile({ tool }: { tool: DefinedTool }) {
   const { t } = useTranslation(validNamespaces);
-  const { english, w } = useWorkbenchText();
-  const opensInNewTab = english ? 'opens in a new tab' : '在新标签页打开';
+  const actions = launchActions[tool.path];
+  const title = t(tool.name);
+  const target = tool.standalone ? '_blank' : undefined;
+  const rel = tool.standalone ? 'noopener' : undefined;
   return (
-    <article
-      className={`tool-tile ${compact ? 'tool-tile-compact' : ''}`}
-      data-category={tool.type}
-    >
+    <article className="tool-tile launcher-card" data-category={tool.type}>
       <Link
-        className="tile-link"
+        className="tile-link launcher-card-main"
         to={`/${tool.path}`}
-        target={tool.standalone ? '_blank' : undefined}
-        rel={tool.standalone ? 'noopener' : undefined}
-        aria-label={
-          tool.standalone ? `${t(tool.name)} · ${opensInNewTab}` : undefined
-        }
+        target={target}
+        rel={rel}
+        aria-label={tool.standalone ? `${title} · 在新标签页打开` : title}
       >
-        <span className="tile-icon">
-          <Glyph name={categoryGlyph[tool.type]} size={compact ? 22 : 25} />
+        <span className="tile-icon launcher-card-icon">
+          <Glyph name={categoryGlyph[tool.type]} size={23} />
         </span>
         <div className="tile-content">
-          <h3>{t(tool.name)}</h3>
-          {!compact && <p>{t(tool.shortDescription)}</p>}
+          <h2>{title}</h2>
+          <p>{t(tool.shortDescription)}</p>
         </div>
-        {compact ? (
-          <Glyph name={tool.standalone ? 'external' : 'chevron'} size={17} />
-        ) : (
-          <span className="tile-bottom">
-            <span>
-              {w(
-                (tool.type === 'image-generic'
-                  ? 'image'
-                  : tool.type) as WorkbenchKey
-              )}
-            </span>
-            <Glyph name={tool.standalone ? 'external' : 'arrow'} size={17} />
-          </span>
-        )}
+        <ToolTileArt category={tool.type} />
+        <span className="launcher-card-arrow">
+          <Glyph name={tool.standalone ? 'external' : 'arrow'} size={17} />
+        </span>
       </Link>
-      {!compact && (
-        <button
-          className={`favorite-button ${favorite ? 'is-favorite' : ''}`}
-          aria-label={`${w(favorite ? 'removeFavorite' : 'addFavorite')} · ${t(tool.name)}`}
-          aria-pressed={favorite}
-          onClick={() => toggleBookmarked(tool.path)}
+      {actions && (
+        <div
+          className="launcher-actions"
+          role="group"
+          aria-label={`${title} · 常用操作`}
         >
-          <Glyph name="star" size={18} filled={favorite} />
-        </button>
+          {actions.map(({ label, to }) => (
+            <Link
+              key={to}
+              to={to}
+              target={target}
+              rel={rel}
+              title={tool.standalone ? `${label} · 在新标签页打开` : undefined}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       )}
     </article>
   );

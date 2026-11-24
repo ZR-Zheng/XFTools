@@ -26,6 +26,10 @@
       "description": "Tools for converting data between different formats – convert images, audio, video, text, and more.",
       "title": "Converter Tools"
     },
+    "charts": {
+      "description": "Create, edit and export charts.",
+      "title": "Chart Tools"
+    },
     "gif": {
       "description": "Tools for working with GIF animations – create transparent GIFs, extract GIF frames, add text to GIF, crop, rotate, reverse GIFs, and much more.",
       "title": "GIF Tools"
@@ -57,6 +61,11 @@
       "title": "Audio Converter"
     }
   },
+  "chartBoard": {
+    "title": "Chart Board",
+    "description": "Create and annotate charts, import tabular data and export PNG or SVG.",
+    "shortDescription": "Draw charts, edit data and export images"
+  },
   "hero": {
     "brand": "XFTools",
     "description": "Work with images, PDFs, media and dates in your browser.",
@@ -80,7 +89,7 @@
   },
   "pdf": {
     "compressPdf": {
-      "description": "Reduce PDF file size while maintaining quality using Ghostscript",
+      "description": "Reduce PDF size by optimizing its structure or re-encoding images",
       "name": "Compress PDF",
       "shortDescription": "Compress PDF files securely in your browser"
     },

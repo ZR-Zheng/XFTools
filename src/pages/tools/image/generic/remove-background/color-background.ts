@@ -1,5 +1,9 @@
-import { canvasToBlob } from '@utils/image';
 import type { ImageJob } from '../../image-job';
+import {
+  backgroundCanvas,
+  readBackgroundImage,
+  transparentImage
+} from './canvas';
 
 // Maximum root-mean-square channel difference for a background pixel.
 const colorTolerance = 24;
@@ -79,49 +83,26 @@ export function eraseSolidBackground({ data, width, height }: Raster) {
   throw new Error('图片与底色过于接近，纯色去底未能保留主体。');
 }
 
-async function readImage(file: File) {
-  if (typeof createImageBitmap === 'function') return createImageBitmap(file);
-  const url = URL.createObjectURL(file);
-  try {
-    const image = new Image();
-    image.src = url;
-    await image.decode();
-    return image;
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
-
 export async function removeSolidBackground(
   file: File,
   { signal, report }: ImageJob = {}
 ) {
   signal?.throwIfAborted();
   report?.('正在识别并去除纯色背景…');
-  const image = await readImage(file);
+  const image = await readBackgroundImage(file);
   const { width, height } = image;
-  const canvas =
-    typeof document === 'undefined'
-      ? new OffscreenCanvas(width, height)
-      : document.createElement('canvas');
+  const canvas = backgroundCanvas(width, height);
   try {
     signal?.throwIfAborted();
-    canvas.width = width;
-    canvas.height = height;
     const context = canvas.getContext('2d', { willReadFrequently: true });
     if (!context) throw new Error('无法创建去底所需的画布。');
     context.drawImage(image, 0, 0);
     const pixels = context.getImageData(0, 0, width, height);
     eraseSolidBackground(pixels);
     context.putImageData(pixels, 0, 0);
-    const blob =
-      'convertToBlob' in canvas
-        ? await canvas.convertToBlob({ type: 'image/png' })
-        : await canvasToBlob(canvas, 'image/png');
+    const output = await transparentImage(canvas, file);
     signal?.throwIfAborted();
-    return new File([blob], file.name.replace(/\.[^.]+$/, '') + '-no-bg.png', {
-      type: 'image/png'
-    });
+    return output;
   } finally {
     if ('close' in image) image.close();
     canvas.width = canvas.height = 0;

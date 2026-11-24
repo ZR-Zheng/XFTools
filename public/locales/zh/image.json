@@ -1,8 +1,8 @@
 {
   "workspace": {
-    "title": "图片工作台",
+    "title": "图片编辑器",
     "description": "在同一画布裁剪、旋转、缩放、调色、替色、调整透明度和添加水印。支持去背景、批量处理和分页打印。",
-    "shortDescription": "连续编辑、去背景、批量处理和分页打印"
+    "shortDescription": "裁剪、去背景、批量缩放和分页打印"
   },
   "changeColors": {
     "description": "快速准确地将图像中的选定颜色替换为新颜色。",

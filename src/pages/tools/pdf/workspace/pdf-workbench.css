@@ -1499,3 +1499,21 @@
     transition: none;
   }
 }
+.pdf-compression-settings {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--glass-line);
+  border-radius: 9px;
+}
+.pdf-compression-settings summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+.pdf-compression-settings .pdf-output-name,
+.pdf-compression-settings .pdf-bookmarks {
+  margin-top: 10px;
+}
+.pdf-compression-settings input[type='range'] {
+  padding: 0;
+  accent-color: var(--action);
+}

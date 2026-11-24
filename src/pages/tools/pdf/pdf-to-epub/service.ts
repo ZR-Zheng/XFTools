@@ -1,10 +1,6 @@
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import JSZip from 'jszip';
+import { extractPdfText } from '../shared/document';
 import type { PdfJob } from '../shared/task';
-
-// Set worker source for PDF.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function escapeXml(value: string): string {
   const entities: Record<string, string> = {
@@ -28,33 +24,11 @@ function formatTextToParagraphs(raw: string): string {
 
 export async function convertPdfToEpub(
   pdfFile: File,
-  job: PdfJob = {}
+  job: PdfJob = {},
+  ranges = ''
 ): Promise<File> {
-  const arrayBuffer = await pdfFile.arrayBuffer();
+  const pages = await extractPdfText(pdfFile, ranges, job);
   job.signal?.throwIfAborted();
-
-  const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-  const pages: string[] = [];
-  try {
-    const pdfDoc = await loadingTask.promise;
-    for (let i = 1; i <= pdfDoc.numPages; i++) {
-      job.signal?.throwIfAborted();
-      const page = await pdfDoc.getPage(i);
-      const textContent = await page.getTextContent();
-      pages.push(
-        textContent.items
-          .map((item) => ('str' in item ? item.str : ''))
-          .join('\n')
-      );
-      page.cleanup();
-      job.onProgress?.(i, pdfDoc.numPages);
-    }
-  } finally {
-    await loadingTask.destroy();
-  }
-  job.signal?.throwIfAborted();
-  if (!pages.some((text) => text.trim()))
-    throw new Error('文档中没有可提取的文字。扫描件需要先进行 OCR。');
 
   const zip = new JSZip();
 

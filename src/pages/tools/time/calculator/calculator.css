@@ -1,0 +1,359 @@
+.datecalc {
+  min-width: 0;
+  padding: clamp(10px, 2vw, 22px);
+  border: 1px solid var(--workspace-line);
+  border-radius: 16px;
+  color: var(--workspace-ink);
+  background: var(--workspace-background);
+}
+
+.datecalc-nav,
+.datecalc-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.datecalc-nav {
+  padding: 5px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 12px;
+  background: var(--workspace-glass);
+  backdrop-filter: blur(10px);
+}
+
+.datecalc-nav button,
+.datecalc-modes button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  padding-inline: 13px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--workspace-muted);
+}
+
+.datecalc-nav button[aria-pressed='true'] {
+  border-color: var(--workspace-line);
+  background: var(--workspace-surface);
+  color: var(--workspace-accent-hover);
+  box-shadow: 0 2px 6px rgb(42 70 113 / 10%);
+}
+
+.datecalc-modes button:hover,
+.datecalc-nav button:hover,
+.datecalc-modes button[aria-pressed='true'] {
+  border-color: var(--workspace-line);
+  background: var(--workspace-selected);
+  color: var(--workspace-accent-hover);
+}
+
+.datecalc-view,
+.datecalc-card,
+.datecalc-panes > * {
+  min-width: 0;
+}
+
+.datecalc-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.datecalc-card {
+  padding: clamp(12px, 2vw, 20px);
+  border: 1px solid var(--workspace-line);
+  border-radius: 13px;
+  background: var(--workspace-glass-panel);
+  box-shadow: var(--workspace-shadow);
+}
+
+.datecalc-card h2 {
+  margin: 0;
+  color: var(--workspace-ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.datecalc-fields,
+.datecalc-field,
+.datecalc-endpoint {
+  display: grid;
+  gap: 12px;
+}
+
+.datecalc-field {
+  gap: 5px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.datecalc-field .ui-input {
+  min-width: 0;
+  max-width: 100%;
+  background-color: var(--workspace-surface);
+  border-color: var(--workspace-line);
+  font-variant-numeric: tabular-nums;
+}
+
+.datecalc-endpoint {
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 9px;
+}
+
+.datecalc-endpoint legend {
+  padding-inline: 4px;
+  color: var(--workspace-muted);
+  font-size: 13px;
+}
+
+.datecalc-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.datecalc-inline-actions,
+.datecalc-result-heading,
+.datecalc-check {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.datecalc-result-heading {
+  justify-content: space-between;
+}
+
+.datecalc-check,
+.datecalc-note,
+.datecalc-result-rows {
+  color: var(--workspace-muted);
+  font-size: 13px;
+}
+
+.datecalc-check input {
+  accent-color: var(--workspace-accent);
+}
+
+.datecalc-result-body {
+  display: grid;
+  gap: 12px;
+  margin-top: 13px;
+}
+
+.datecalc-result-number {
+  padding: 15px 12px;
+  border-radius: 9px;
+  background: var(--workspace-soft);
+  overflow-wrap: anywhere;
+}
+
+.datecalc-result-number output {
+  color: var(--workspace-accent-hover);
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 740;
+  font-variant-numeric: tabular-nums;
+}
+
+.datecalc-result-number > span {
+  margin-inline-start: 9px;
+  font-size: 14px;
+}
+
+.datecalc-result-rows {
+  margin: 0;
+}
+
+.datecalc-result-rows > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--workspace-line);
+}
+
+.datecalc-result-rows dd {
+  margin: 0;
+  color: var(--workspace-ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-note {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.datecalc-keypad-layout {
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.75fr);
+}
+
+.datecalc-keypad {
+  display: grid;
+  gap: 12px;
+}
+
+.datecalc-display {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 11px;
+  background: var(--workspace-soft);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.datecalc-display input {
+  width: 100%;
+  min-height: 40px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--workspace-muted);
+  font: inherit;
+  text-align: right;
+}
+
+.datecalc-display input:focus-visible {
+  border-color: var(--workspace-accent);
+  background: var(--workspace-surface);
+  outline-offset: 2px;
+}
+
+.datecalc-display output {
+  color: var(--workspace-ink);
+  font-size: clamp(26px, 5vw, 48px);
+  font-weight: 700;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-memory,
+.datecalc-keys {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.datecalc-memory button,
+.datecalc-keys button:not(.primary-button) {
+  min-height: 42px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 8px;
+  background: var(--workspace-surface);
+  color: var(--workspace-ink);
+}
+
+.datecalc-memory button {
+  min-height: 36px;
+  color: var(--workspace-accent-hover);
+  font-size: 13px;
+}
+
+.datecalc-keys button:not(.primary-button) {
+  min-height: 44px;
+  font-size: 18px;
+  font-weight: 640;
+}
+
+.datecalc-keys .datecalc-operation:not(.primary-button) {
+  background: var(--workspace-soft);
+  color: var(--workspace-accent-hover);
+}
+
+.datecalc-keys button:not(.primary-button):hover,
+.datecalc-memory button:not(:disabled):hover {
+  background: var(--workspace-selected);
+  border-color: var(--workspace-accent);
+}
+
+.datecalc-equal {
+  grid-column: 1 / -1;
+  font-size: 21px;
+  line-height: 1.15;
+}
+
+.datecalc-history {
+  display: grid;
+  gap: 12px;
+}
+
+.datecalc-history ul {
+  display: grid;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.datecalc-history li button {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-bottom: 1px solid var(--workspace-line);
+  color: var(--workspace-muted);
+  font-size: 13px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-history li button:hover {
+  background: var(--workspace-soft);
+}
+
+.datecalc-history li strong {
+  color: var(--workspace-ink);
+  font-size: 17px;
+}
+
+.datecalc-clear-history {
+  min-height: 36px;
+  padding-inline: 6px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 7px;
+  background: var(--workspace-soft);
+  color: var(--workspace-accent-hover);
+  font-size: 13px;
+}
+
+.datecalc-copy {
+  justify-self: end;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .datecalc-panes {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .datecalc-nav button {
+    flex: 1 0 auto;
+    padding-inline: 8px;
+  }
+
+  .datecalc-modes button {
+    padding-inline: 9px;
+    font-size: 13px;
+  }
+}

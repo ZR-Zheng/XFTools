@@ -328,11 +328,6 @@
   display: grid;
   place-items: center;
 }
-.pdf-thumbnail-grid .react-pdf__Page {
-  min-height: 90px;
-  background: white;
-  pointer-events: none;
-}
 .pdf-thumbnail-grid canvas {
   max-width: 100%;
   height: auto !important;

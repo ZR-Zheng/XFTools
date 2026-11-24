@@ -8,71 +8,12 @@
   --space-8: 32px;
 }
 
-.nav-item {
-  font-size: 14px;
-  min-height: 44px;
-}
-.category-nav {
-  font-size: 13px;
-  min-height: 40px;
-}
-.category-count,
-.nav-count {
-  font-size: 11px;
-}
-.nav-caption {
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-.sidebar-inner {
-  padding-top: 24px;
-}
-.side-nav {
-  overflow: auto;
-  scrollbar-width: thin;
-}
-.section-heading h2 {
-  font-size: 21px;
-}
-.section-heading p {
-  font-size: 13px;
-}
-.result-count {
-  font-size: 13px;
-}
-.category-tab {
-  font-size: 13px;
-  min-height: 40px;
-  padding: 8px 12px;
-}
-.category-tab.active span {
-  font-size: 11px;
-}
-.tool-grid .tool-tile {
-  min-height: 200px;
-}
-.tile-content h3 {
-  font-size: 16px;
-  line-height: 1.55;
-}
-.tile-content p {
-  font-size: 14px;
-  line-height: 1.7;
-}
-.tile-bottom {
-  font-size: 12px;
-  margin-top: 18px;
-}
-.tool-tile-compact .tile-content h3 {
-  font-size: 14px;
-}
 .secondary-button,
 .primary-button {
   font-size: 14px;
   font-weight: 600;
 }
-.icon-button,
-.favorite-button {
+.icon-button {
   min-width: 44px;
   min-height: 44px;
 }
@@ -86,9 +27,6 @@
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-.tool-breadcrumb {
-  font-size: 13px;
 }
 .tool-heading h1 {
   font-size: 29px;
@@ -109,9 +47,6 @@ button:disabled {
 }
 .example-card p {
   font-size: 14px;
-}
-.tile-link:focus-visible {
-  outline-offset: -4px;
 }
 .tool-flow {
   display: grid;
@@ -710,12 +645,6 @@ button[aria-pressed='true'].secondary-button {
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
-}
-.app-footer {
-  font-size: 12px;
-}
-.app-footer > span {
-  flex-wrap: wrap;
 }
 .pdf-form-builder .ui-button {
   margin-left: 0;

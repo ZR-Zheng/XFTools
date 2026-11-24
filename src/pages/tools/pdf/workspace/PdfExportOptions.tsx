@@ -5,6 +5,7 @@ import {
 } from './advanced-exports';
 import { useEffect, useState } from 'react';
 import { downloadFile } from '@utils/file';
+import { compressionPresets } from '../compress-pdf/types';
 
 export function outputLabel(
   kind: OutputKind,
@@ -77,29 +78,131 @@ export default function PdfExportOptions({
         </p>
       )}
       {settings.kind === 'compress' && (
-        <label className="pdf-output-name">
-          {t('压缩级别', 'Compression level')}
-          <select
-            value={settings.compressionLevel}
-            disabled={busy}
-            onChange={(event) =>
-              onChange({
-                compressionLevel: event.target
-                  .value as OutputSettings['compressionLevel']
-              })
-            }
-          >
-            <option value="low">
-              {t('低 · 保留画质', 'Low · higher quality')}
-            </option>
-            <option value="medium">
-              {t('中 · 平衡', 'Medium · balanced')}
-            </option>
-            <option value="high">
-              {t('高 · 文件更小', 'High · smaller file')}
-            </option>
-          </select>
-        </label>
+        <>
+          <label className="pdf-output-name">
+            {t('压缩级别', 'Compression level')}
+            <select
+              value={settings.compressionLevel}
+              disabled={busy}
+              onChange={(event) => {
+                const compressionLevel = event.target
+                  .value as OutputSettings['compressionLevel'];
+                const preset =
+                  compressionLevel === 'lossless' ||
+                  compressionLevel === 'custom'
+                    ? {}
+                    : compressionPresets[compressionLevel];
+                onChange({ compressionLevel, ...preset });
+              }}
+            >
+              <option value="lossless">
+                {t('无损 · 仅优化文档结构', 'Lossless · optimize structure')}
+              </option>
+              <option value="low">
+                {t('低 · 保留画质', 'Low · higher quality')}
+              </option>
+              <option value="medium">
+                {t('中 · 平衡', 'Medium · balanced')}
+              </option>
+              <option value="high">
+                {t('高 · 文件更小', 'High · smaller file')}
+              </option>
+              {settings.compressionLevel === 'custom' && (
+                <option value="custom">{t('自定义', 'Custom')}</option>
+              )}
+            </select>
+          </label>
+          {settings.compressionLevel !== 'lossless' && (
+            <details className="pdf-compression-settings">
+              <summary>
+                {t('图片压缩设置', 'Image compression settings')}
+              </summary>
+              <label className="pdf-output-name">
+                {t('图片编码', 'Image encoding')}
+                <select
+                  value={settings.imageEncoding}
+                  disabled={busy}
+                  onChange={(event) =>
+                    onChange({
+                      imageEncoding: event.target
+                        .value as OutputSettings['imageEncoding']
+                    })
+                  }
+                >
+                  <option value="auto">
+                    {t('自动（JPEG 或无损）', 'Auto (JPEG or lossless)')}
+                  </option>
+                  <option value="jpeg">
+                    {t('JPEG · 兼容优先', 'JPEG · compatibility')}
+                  </option>
+                  <option value="jp2">
+                    {t('JPEG 2000 · 高效编码', 'JPEG 2000 · efficient')}
+                  </option>
+                </select>
+              </label>
+              <label className="pdf-output-name">
+                {t('图片最长边', 'Maximum image dimension')}
+                <select
+                  value={settings.maxSide}
+                  disabled={busy}
+                  onChange={(event) =>
+                    onChange({
+                      maxSide: Number(event.target.value),
+                      compressionLevel: 'custom'
+                    })
+                  }
+                >
+                  <option value={0}>
+                    {t('保持原尺寸', 'Keep original dimensions')}
+                  </option>
+                  {[600, 900, 1200, 1600, 1900, 2400, 2800, 3600].map(
+                    (value) => (
+                      <option key={value} value={value}>
+                        {value} px
+                      </option>
+                    )
+                  )}
+                </select>
+              </label>
+              <label className="pdf-output-name">
+                <span>
+                  {t('图片质量', 'Image quality')}{' '}
+                  <output>{settings.imageQuality}%</output>
+                </span>
+                <input
+                  type="range"
+                  aria-label={t('图片质量', 'Image quality')}
+                  min={35}
+                  max={100}
+                  value={settings.imageQuality}
+                  disabled={busy}
+                  onChange={(event) =>
+                    onChange({
+                      imageQuality: Number(event.target.value),
+                      compressionLevel: 'custom'
+                    })
+                  }
+                />
+              </label>
+              <label className="pdf-bookmarks">
+                <input
+                  type="checkbox"
+                  checked={settings.grayscale}
+                  disabled={busy}
+                  onChange={(event) =>
+                    onChange({ grayscale: event.target.checked })
+                  }
+                />
+                <span>
+                  {t(
+                    '将压缩的图片转为灰度',
+                    'Convert recompressed images to grayscale'
+                  )}
+                </span>
+              </label>
+            </details>
+          )}
+        </>
       )}
       {settings.kind === 'protect' && (
         <>

@@ -1,26 +1,12 @@
 import i18n from './index';
-import { interfaceCopy as copy } from './interface-copy';
-const feedbackPatterns = Object.entries(copy)
-  .filter(([key]) => key.includes('{{0}}'))
-  .map(([key, translated]) => ({
-    pattern: new RegExp(
-      '^' +
-        key
-          .split(/\{\{\d+\}\}/)
-          .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-          .join('(.*?)') +
-        '$',
-      's'
-    ),
-    translated
-  }));
+import { interfaceCopy as copy, interfaceFeedback } from './interface-copy';
 /** Localize interface labels and examples; never apply to user input or tool output. */
 export function uiText<T>(value: T): T {
   if (typeof value !== 'string') return value;
   const translation = copy[value] || copy[value.replace(/\s+/g, ' ').trim()];
   if (translation) return translation as T;
   {
-    for (const { pattern, translated } of feedbackPatterns) {
+    for (const { pattern, translated } of interfaceFeedback.values()) {
       const match = value.match(pattern);
       if (match)
         return translated.replace(
@@ -42,7 +28,6 @@ export function uiText<T>(value: T): T {
       ? [explicitNamespace]
       : [
           'translation',
-          'number',
           'image',
           'video',
           'audio',

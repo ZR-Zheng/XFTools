@@ -26,11 +26,6 @@
   padding-bottom: 12px;
   margin-bottom: 14px;
 }
-.tool-page-header .tool-breadcrumb {
-  margin-bottom: 6px;
-  line-height: 18px;
-  font-size: 11px;
-}
 .tool-page-header .tool-heading {
   margin: 0;
   gap: 10px;
@@ -95,11 +90,6 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-}
-.tool-page-header .favorite-button {
-  width: 44px;
-  height: 44px;
-  min-height: 44px;
 }
 .tool-header-actions .ui-button {
   min-height: 40px;
@@ -383,9 +373,6 @@
   .tool-page {
     padding-top: 12px;
   }
-  .tool-page-header .tool-breadcrumb {
-    display: none;
-  }
   .tool-page-header .tool-heading {
     grid-template-columns: minmax(0, 1fr) 44px;
     gap: 8px;
@@ -409,10 +396,6 @@
     grid-row: 2;
     grid-column: 1/-1;
     justify-content: flex-start;
-  }
-  .tool-page-header .favorite-button {
-    grid-row: 1;
-    grid-column: 2;
   }
   .tool-header-actions .ui-button {
     min-height: 44px;

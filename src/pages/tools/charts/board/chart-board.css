@@ -1,0 +1,27 @@
+.tool-page.tool-page-standalone:has(
+    > .tool-workspace > :is(.chart-board-frame, .chart-board-status)
+  ),
+.tool-page-standalone
+  > .tool-workspace:has(> :is(.chart-board-frame, .chart-board-status)) {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-board-frame {
+  display: block;
+  width: 100%;
+  height: 100dvh;
+  border: 0;
+  background: var(--surface);
+}
+
+.chart-board-status {
+  display: grid;
+  min-height: 100dvh;
+  padding: 20px;
+  place-items: center;
+  color: var(--muted);
+}

@@ -10,13 +10,15 @@ afterEach(() => {
 test('Chinese labels remain fixed and English is not an enabled interface', async () => {
   expect(i18n.options.supportedLngs).not.toContain('en');
   await i18n.changeLanguage('en');
+  await ensureToolLocale('pdf');
   expect(uiText('First JSON')).toBe('第一份 JSON');
   expect(useWorkbenchText().english).toBe(false);
   expect(document.documentElement.lang).toBe('zh-CN');
   expect(localStorage.getItem('lang')).toBeNull();
 });
 
-test('feedback preserves reported values', () => {
+test('feedback preserves reported values after the legacy labels are loaded', async () => {
+  await ensureToolLocale('pdf');
   expect(uiText('Invalid JSON at line 7: Unexpected token')).toBe(
     '第 7 行的 JSON 无效：Unexpected token'
   );

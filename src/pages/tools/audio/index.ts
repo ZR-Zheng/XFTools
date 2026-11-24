@@ -1,11 +1,3 @@
-import { tool as audioMergeAudio } from './merge-audio/meta';
-import { tool as audioTrim } from './trim/meta';
-import { tool as audioChangeSpeed } from './change-speed/meta';
-import { tool as audioLoopAudio } from './loop-audio/meta';
+import { audioWorkspace } from './workspace/meta';
 
-export const audioTools = [
-  audioChangeSpeed,
-  audioTrim,
-  audioMergeAudio,
-  audioLoopAudio
-];
+export const audioTools = [audioWorkspace];

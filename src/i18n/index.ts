@@ -3,10 +3,12 @@ import { initReactI18next } from 'react-i18next';
 import catalog from './catalog.generated.json';
 import zhCommon from '../../public/locales/zh/translation.json';
 import enCommon from '../../public/locales/en/translation.json';
-import { registerInterfaceCopy } from './interface-copy';
+import {
+  ensureLegacyInterfaceCopy,
+  registerInterfaceCopy
+} from './interface-copy';
 
 export const validNamespaces = [
-  'number',
   'video',
   'time',
   'pdf',
@@ -37,7 +39,11 @@ export function ensureToolLocale(namespace: string): Promise<void> {
     const source = files[`../../public/locales/en/${namespace}.json`];
     if (!translated || !source)
       throw new Error(`Missing tool labels: ${namespace}`);
-    const [data, reference] = await Promise.all([translated(), source()]);
+    const [data, reference] = await Promise.all([
+      translated(),
+      source(),
+      ensureLegacyInterfaceCopy()
+    ]);
     registerInterfaceCopy(
       reference as Record<string, unknown>,
       data as Record<string, unknown>

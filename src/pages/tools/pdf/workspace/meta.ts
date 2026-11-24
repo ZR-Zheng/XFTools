@@ -5,10 +5,10 @@ export const pdfWorkspace = defineTool('pdf', {
   path: 'workspace',
   standalone: true,
   loadFullLocale: false,
-  alternativeCategories: ['converters'],
   icon: 'mdi:file-document-edit',
   component: lazy(() => import('./index')),
   keywords: [
+    'PDF 工作台',
     'PDF 预览',
     'PDF 阅读器',
     '合并 PDF',

@@ -24,13 +24,15 @@
 
 ## 保留的功能模块
 
-PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 EmbedPDF 高级编辑器与同源 PDFium WASM。FFmpeg 用于音视频处理，背景移除运行时用于图片抠图。大型 WASM 和去背景模型仍可能需要下载资源。
+PDF 工作台以 PDF.js 预览、pdf-lib 编排和写入 PDF，并按需加载 EmbedPDF 高级编辑器与同源 PDFium WASM。FFmpeg 用于音视频处理，处理时按需加载。旧工具的界面翻译随对应工具按需加载。
 
-图片编辑器提供旋转、翻转、百分比裁剪、亮度、对比度、饱和度、文字标注、撤销与 PNG/JPEG/WebP 导出；不再加载旧编辑 SDK。React-PDF 继续从自身对应的 PDF.js 版本加载 worker，避免版本不一致。
+图片编辑器以 Canvas 提供裁剪、旋转、画布扩展、调色、文字标注、撤销和 PNG/JPEG/WebP 导出。
 
-onnxruntime-web 仍固定为 1.21.0，以满足背景移除库的兼容要求。Node.js 要求 24 或更新版本。
+PDF 压缩逐张重采样兼容的内嵌图片，并比较编码体积。选择 JPEG 2000 时，浏览器 Worker 才加载 Cornerstone OpenJPEG WASM。分发许可见 `public/licenses/`。 [OpenJPEG 编码器](https://github.com/cornerstonejs/codecs/tree/main/packages/openjpeg)
 
-图片工作台的「纯色去底」可离线运行。自动抠图默认从 IMG.LY 下载模型，部署时也可在构建前设置 `VITE_BACKGROUND_REMOVAL_PUBLIC_PATH=/models/background-removal/`，并在该地址托管与依赖版本匹配的 `@imgly/background-removal-data` 包中 `dist/` 的内容。浏览器会从该地址读取 `resources.json` 及清单里的文件，用于本地推理。 [IMG.LY 模型资源说明](https://github.com/imgly/background-removal-js#custom-asset-serving)
+自动抠图使用固定为 1.21.0 的 ONNX Runtime Web CPU 运行时。Node.js 要求 24 或更新版本。
+
+图片编辑器的「纯色去底」可离线运行。「自动抠图」在点击处理后才从站点自身加载 U²-NetP 模型（约 4.6 MB）和 WASM 运行时，使用浏览器 Worker 识别主体。部署时随构建发布 `models/u2netp/` 和 `assets/` 即可。模型来源、校验值和许可见模型目录。 [U²-Net 官方项目](https://github.com/xuebinqin/U-2-Net)
 
 ## 开发与验证
 
@@ -44,4 +46,4 @@ onnxruntime-web 仍固定为 1.21.0，以满足背景移除库的兼容要求。
 - npm run build
 - npm run test:workbench
 
-浏览器回归覆盖全部工具的桌面与手机入口，以及关键输入、排序、处理、导出和偏好持久化。大型音视频转码及在线模型下载未纳入逐项完整处理验收。
+浏览器回归覆盖全部工具的桌面与手机入口，以及关键输入、排序、处理、导出和偏好持久化。自动抠图测试验证同源模型按需加载、透明 PNG 像素和纯色回退。大型音视频转码仍需使用相应素材验证。

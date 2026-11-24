@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "File Converter",
+    "shortDescription": "Batch convert images, video, audio and PDFs",
+    "description": "Batch convert videos, audio, images and PDFs with video-to-GIF, audio extraction, output presets and ZIP downloads."
+  },
   "audioConverter": {
     "description": "Convert audio files between different formats.",
     "inputTitle": "Audio Input",

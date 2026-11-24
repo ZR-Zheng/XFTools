@@ -1,6 +1,14 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
-import { degrees, PDFDict, PDFDocument, PDFHexString, PDFName } from 'pdf-lib';
+import { Jimp } from 'jimp';
+import {
+  degrees,
+  PDFDict,
+  PDFDocument,
+  PDFHexString,
+  PDFName,
+  PDFRawStream
+} from 'pdf-lib';
 import JSZip from 'jszip';
 
 async function upload(
@@ -223,12 +231,127 @@ test('PDF compression reduces an unpacked document and preserves its pages', asy
     page.getByRole('complementary', { name: 'PDF 压缩', exact: true })
   ).toBeVisible();
   await expect(page.getByLabel('渲染倍率')).toHaveCount(0);
-  await page.getByLabel('压缩级别').selectOption('high');
+  await page.getByLabel('压缩级别').selectOption('lossless');
+  await expect(page.getByText('图片压缩设置', { exact: true })).toHaveCount(0);
   await page.getByTestId('process-tool').click();
   const result = await download(page, '下载 PDF');
   expect(result.name).toBe('unpacked-compressed.pdf');
   expect(result.bytes.byteLength).toBeLessThan(original.byteLength);
   expect((await PDFDocument.load(result.bytes)).getPageCount()).toBe(15);
+});
+
+test('advanced PDF compression converts JPEG and Flate images to visible JPEG 2000 while keeping text and transparency', async ({
+  page,
+  context
+}) => {
+  const requests: string[] = [];
+  context.on('request', (request) => requests.push(request.url()));
+  await page.goto('/pdf/compress-pdf');
+  const [png, transparent] = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 900;
+    canvas.height = 540;
+    const ctx = canvas.getContext('2d')!;
+    for (let y = 0; y < 540; y += 3) {
+      for (let x = 0; x < 900; x += 3) {
+        const n =
+          (Math.imul(x + 3, y + 5) ^ Math.imul(x + y + 7, 2654435761)) >>> 0;
+        ctx.fillStyle = `rgb(${n & 255},${80 + ((n >>> 8) & 127)},${(n >>> 16) & 255})`;
+        ctx.fillRect(x, y, 3, 3);
+      }
+    }
+    const png = canvas.toDataURL('image/png');
+    ctx.clearRect(0, 0, 450, 540);
+    return [png, canvas.toDataURL('image/png')].map((url) => url.split(',')[1]);
+  });
+  const pdf = await PDFDocument.create();
+  const sheet = pdf.addPage([300, 390]);
+  const pngBytes = Buffer.from(png, 'base64');
+  const jpeg = await (
+    await Jimp.read(pngBytes)
+  ).getBuffer('image/jpeg', { quality: 98 });
+  const assets = [
+    await pdf.embedJpg(jpeg),
+    await pdf.embedPng(pngBytes),
+    await pdf.embedPng(Buffer.from(transparent, 'base64'))
+  ];
+  for (const [index, image] of assets.entries())
+    sheet.drawImage(image, {
+      x: 50,
+      y: 265 - index * 110,
+      width: 200,
+      height: 105
+    });
+  sheet.drawText('Searchable PDF text', { x: 50, y: 15, size: 10 });
+  const original = await upload(page, pdf, 'photos.pdf');
+  const options = page.getByRole('complementary', {
+    name: 'PDF 压缩',
+    exact: true
+  });
+  await options.getByText('图片压缩设置', { exact: true }).click();
+  await options.getByLabel('图片编码').selectOption('jp2');
+  await options.getByLabel('图片最长边').selectOption('600');
+  await options.getByRole('slider', { name: '图片质量' }).press('Home');
+  await options.getByLabel('将压缩的图片转为灰度').check();
+  expect(requests.some((url) => /openjpegwasm.*\.wasm/.test(url))).toBe(false);
+  await page.getByTestId('process-tool').click();
+  const result = await download(page, '下载 PDF');
+  expect(requests.some((url) => /openjpegwasm.*\.wasm/.test(url))).toBe(true);
+  expect(result.bytes.length).toBeLessThan(original.length * 0.65);
+  const compressed = await PDFDocument.load(result.bytes);
+  const outputImages = compressed.context
+    .enumerateIndirectObjects()
+    .flatMap(([, object]) =>
+      object instanceof PDFRawStream &&
+      object.dict.get(PDFName.of('Subtype'))?.toString() === '/Image'
+        ? [object]
+        : []
+    );
+  const encoded = outputImages.filter(
+    (image) => image.dict.get(PDFName.of('Filter'))?.toString() === '/JPXDecode'
+  );
+  expect(encoded.length).toBe(2);
+  for (const image of encoded) {
+    expect(image.dict.get(PDFName.of('Width'))?.toString()).toBe('600');
+    expect(image.dict.get(PDFName.of('Height'))?.toString()).toBe('360');
+    expect(image.dict.get(PDFName.of('ColorSpace'))?.toString()).toBe(
+      '/DeviceGray'
+    );
+  }
+  const withMask = outputImages.find((image) =>
+    image.dict.has(PDFName.of('SMask'))
+  );
+  expect(withMask?.dict.get(PDFName.of('Width'))?.toString()).toBe('900');
+  const inputContents = (await PDFDocument.load(original))
+    .getPage(0)
+    .node.Contents();
+  const outputContents = compressed.getPage(0).node.Contents();
+  expect(outputContents?.toString()).toBe(inputContents?.toString());
+
+  await page.goto('/pdf/workspace');
+  await page.getByLabel('选择 PDF 文件').setInputFiles({
+    name: result.name,
+    mimeType: 'application/pdf',
+    buffer: result.bytes
+  });
+  const rendered = page.locator('.pdf-reader-sheet canvas').first();
+  await expect(rendered).toBeVisible();
+  await expect
+    .poll(() =>
+      rendered.evaluate((canvas: HTMLCanvasElement) => {
+        const ctx = canvas.getContext('2d')!;
+        const [r, g, b, a] = ctx.getImageData(
+          Math.floor(canvas.width * 0.33),
+          Math.floor(canvas.height * 0.15),
+          1,
+          1
+        ).data;
+        return (
+          a === 255 && r < 205 && Math.abs(r - g) <= 2 && Math.abs(r - b) <= 2
+        );
+      })
+    )
+    .toBe(true);
 });
 
 test('images are added in the configured order and extracted from the current PDF', async ({

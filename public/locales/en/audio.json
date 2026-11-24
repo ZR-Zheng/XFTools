@@ -1,4 +1,9 @@
 {
+  "workspace": {
+    "title": "Audio Editor",
+    "description": "Trim, arrange, mix, change speed and apply fades in a waveform timeline before exporting your audio.",
+    "shortDescription": "Trim waveforms, adjust speed, mix and export audio"
+  },
   "changeSpeed": {
     "description": "Change the playback speed of audio files. Speed up or slow down audio while maintaining pitch.",
     "inputTitle": "Input Audio",
