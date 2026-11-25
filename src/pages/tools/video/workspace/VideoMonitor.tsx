@@ -1,10 +1,17 @@
 import { useEffect, useRef } from 'react';
 import Glyph from '@components/workbench/Glyph';
+import {
+  animationPose,
+  paintMask,
+  previewFilter,
+  type VideoMask
+} from './effects';
 import type { Framing } from './templates';
 import { openGifPreview } from './gif-preview';
 import { loadStill } from './media';
 import {
   cropRect,
+  clipDuration,
   editedSize,
   sourceTime,
   type Asset,
@@ -32,6 +39,9 @@ export default function VideoMonitor(props: Props) {
   const video = useRef<HTMLVideoElement>(null);
   const audio = useRef<HTMLAudioElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const maskRaster = useRef<{ mask: VideoMask; canvas: HTMLCanvasElement }>(
+    null
+  );
   const still = useRef<{
     assetId: string;
     source: HTMLImageElement | ImageBitmap;
@@ -67,7 +77,8 @@ export default function VideoMonitor(props: Props) {
     if (!surface) return;
     const context = surface.getContext('2d');
     if (!context) return;
-    const { asset, entry, framing, transparent } = latest.current;
+    const { asset, entry, framing, transparent, time, playing } =
+      latest.current;
     const scene =
       asset.kind === 'video'
         ? media && media.readyState >= 2
@@ -87,12 +98,25 @@ export default function VideoMonitor(props: Props) {
       surface.width / size.width,
       surface.height / size.height
     );
+    const elapsed =
+      media && playing
+        ? (media.currentTime - clip.inPoint) / clip.speed
+        : time - entry.start;
+    const pose = animationPose(clip.animation, elapsed, clipDuration(clip));
+    const dx = pose.x * surface.width;
+    const dy = pose.y * surface.height;
     context.clearRect(0, 0, surface.width, surface.height);
-    if (!transparent) {
-      context.fillStyle = '#000';
-      context.fillRect(0, 0, surface.width, surface.height);
-    }
     context.save();
+    if (dx || dy) {
+      context.translate(dx, dy);
+      context.beginPath();
+      context.rect(0, 0, surface.width, surface.height);
+      context.clip();
+    }
+    context.globalAlpha = pose.opacity;
+    const filter = previewFilter(clip.filter);
+    if ('filter' in CanvasRenderingContext2D.prototype) context.filter = filter;
+    else surface.style.filter = filter;
     context.translate(surface.width / 2, surface.height / 2);
     context.scale(clip.flipX ? -1 : 1, clip.flipY ? -1 : 1);
     context.rotate((clip.rotation * Math.PI) / 180);
@@ -108,6 +132,30 @@ export default function VideoMonitor(props: Props) {
       rect.height * scale
     );
     context.restore();
+
+    if (clip.mask) {
+      const layer =
+        maskRaster.current?.canvas ?? document.createElement('canvas');
+      if (
+        maskRaster.current?.mask !== clip.mask ||
+        layer.width !== surface.width ||
+        layer.height !== surface.height
+      ) {
+        paintMask(layer, clip.mask, surface.width, surface.height);
+        maskRaster.current = { mask: clip.mask, canvas: layer };
+      }
+      context.globalCompositeOperation = 'destination-in';
+      context.drawImage(layer, dx, dy);
+    } else if (maskRaster.current) {
+      maskRaster.current.canvas.width = maskRaster.current.canvas.height = 0;
+      maskRaster.current = null;
+    }
+    if (!transparent) {
+      context.globalCompositeOperation = 'destination-over';
+      context.fillStyle = '#000';
+      context.fillRect(0, 0, surface.width, surface.height);
+    }
+    context.globalCompositeOperation = 'source-over';
   }
 
   function releaseStill() {
@@ -199,6 +247,7 @@ export default function VideoMonitor(props: Props) {
 
   useEffect(() => {
     if (asset.kind === 'gif') gif.current?.seek(sourceTime(entry, time));
+    if (asset.kind !== 'video' && entry.clip.animation) draw();
     if (asset.kind === 'video' && !playing) {
       syncVideo();
       draw();

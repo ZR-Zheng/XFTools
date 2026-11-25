@@ -8,13 +8,16 @@ import {
   isAudioFormat,
   audioFormats,
   presets,
+  settingsError,
   supportsFormat,
   type Group,
+  type AdvancedOptions,
   type Format,
   type Preset,
   type Settings
 } from './formats';
 import { useConversionQueue, type Job } from './use-conversion-queue';
+import AdvancedSettings from './AdvancedSettings';
 import '@components/workbench/workspace-theme.css';
 import './conversion-workspace.css';
 
@@ -94,6 +97,12 @@ function formatHint({ group, format, preset }: Settings) {
   return `保留透明通道。${resolution}`;
 }
 
+function hasOverrides(settings: Settings) {
+  return Object.values(settings.advanced ?? {}).some(
+    (value) => value !== undefined
+  );
+}
+
 const stateNames = {
   pending: '待转换',
   running: '转换中',
@@ -133,7 +142,11 @@ function QueueRow({
       <div className="cw-output">
         <strong>{formatName(settings.format)}</strong>
         <small>
-          {usesPreset(settings) ? presetNames[settings.preset] : '默认设置'}
+          {hasOverrides(settings)
+            ? '自定义'
+            : usesPreset(settings)
+              ? presetNames[settings.preset]
+              : '默认设置'}
         </small>
       </div>
       <div className="cw-status">
@@ -194,7 +207,7 @@ function QueueRow({
 export default function ConversionWorkspace({ title }: { title: string }) {
   const input = useRef<HTMLInputElement>(null);
   const [params] = useSearchParams();
-  const [settings, setSettings] = useState<Settings>(() => {
+  const [output, setSettings] = useState<Settings>(() => {
     const group =
       groupKeys.find((key) => key === params.get('group')) ?? 'video';
     const queryFormat = params.get('format') ?? '';
@@ -207,14 +220,22 @@ export default function ConversionWorkspace({ title }: { title: string }) {
       pages: ''
     };
   });
-  const { group, format, preset, pages } = settings;
+  const { group, format, preset, pages } = output;
+  const [advancedByFormat, setAdvancedByFormat] = useState<
+    Record<string, AdvancedOptions | undefined>
+  >({});
+  const formatKey = group + ':' + format;
+  const settings = { ...output, advanced: advancedByFormat[formatKey] };
+  const invalidSettings = settingsError(settings);
   const queue = useConversionQueue();
   const accept = [
     group === 'document' ? 'application/pdf' : `${group}/*`,
     ...groups[group].extensions.map((extension) => `.${extension}`)
   ];
   const { isDragging, dropHandlers, addFiles } = useFileDrop({
-    onFiles: (files) => queue.add(files, settings)
+    onFiles: (files) => {
+      if (!invalidSettings) queue.add(files, settings);
+    }
   });
   const completedCount = queue.jobs.filter(
     (job) => job.status === 'done'
@@ -348,13 +369,36 @@ export default function ConversionWorkspace({ title }: { title: string }) {
                   maxLength={240}
                   placeholder="全部页面，例如 1,3-5"
                   onChange={(event) =>
-                    setSettings({ ...settings, pages: event.target.value })
+                    setSettings({ ...output, pages: event.target.value })
                   }
                 />
               </label>
             )}
+            <AdvancedSettings
+              key={formatKey}
+              settings={settings}
+              onChange={(patch) =>
+                setAdvancedByFormat((current) => ({
+                  ...current,
+                  [formatKey]: { ...current[formatKey], ...patch }
+                }))
+              }
+              onReset={() =>
+                setAdvancedByFormat((current) => ({
+                  ...current,
+                  [formatKey]: undefined
+                }))
+              }
+            />
+            {invalidSettings && (
+              <p className="tool-inline-error" role="alert">
+                {invalidSettings}
+              </p>
+            )}
             <p className="cw-format-hint" aria-live="polite">
-              {formatHint(settings)}
+              {hasOverrides(settings)
+                ? '已启用自定义参数。留空的项目沿用预设。'
+                : formatHint(settings)}
             </p>
             {group === 'image' && (
               <p className="cw-settings-note">
@@ -379,6 +423,7 @@ export default function ConversionWorkspace({ title }: { title: string }) {
                 className="cw-button cw-secondary"
                 type="button"
                 onClick={add}
+                disabled={!!invalidSettings}
               >
                 <Glyph name="add" size={17} />
                 添加文件
@@ -402,6 +447,7 @@ export default function ConversionWorkspace({ title }: { title: string }) {
               <button
                 type="button"
                 onClick={add}
+                disabled={!!invalidSettings}
                 aria-label={`选择${categories[group].label}文件`}
               >
                 <span className="cw-drop-icon">

@@ -55,11 +55,14 @@ test('Every registered tool opens at desktop and mobile widths', async ({
         const standalone = await toolPage
           .locator('.tool-page-standalone')
           .count();
-        if (standalone) await expect(header).toHaveCount(0);
+        const compactCalculator = current === '/time/calculator';
+        if (standalone || compactCalculator)
+          await expect(header).toHaveCount(0);
         else await expect(header).toBeVisible();
-        const headerHeight = standalone
-          ? 0
-          : (await header.boundingBox())!.height;
+        const headerHeight =
+          standalone || compactCalculator
+            ? 0
+            : (await header.boundingBox())!.height;
         const workspace = await toolPage
           .locator('.tool-workspace')
           .boundingBox();

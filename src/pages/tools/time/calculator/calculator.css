@@ -1,3 +1,14 @@
+/* Reserve the scrollbar lane when calculator modes have different heights. */
+html:has(.datecalc) {
+  scrollbar-gutter: stable;
+}
+
+.app-shell .tool-page-calculator {
+  width: min(100%, var(--launcher-width));
+  max-width: none;
+  padding-inline: var(--launcher-gutter);
+}
+
 .datecalc {
   min-width: 0;
   padding: clamp(10px, 2vw, 22px);
@@ -117,11 +128,44 @@
   font-size: 13px;
 }
 
-.datecalc-pair {
+.datecalc-endpoint-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));
+  align-items: start;
   gap: 10px;
+}
+
+.datecalc-period-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.datecalc-shortcut-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px;
+  align-items: end;
   min-width: 0;
+}
+
+.datecalc-shortcut {
+  min-width: 42px;
+  min-height: 40px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 8px;
+  background: var(--workspace-soft);
+  color: var(--workspace-accent-hover);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.datecalc-shortcut:hover {
+  background: var(--workspace-selected);
+}
+
+.datecalc-mode-picker {
+  margin-bottom: 0;
 }
 
 .datecalc-inline-actions,
@@ -202,6 +246,81 @@
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.75fr);
 }
 
+.datecalc-scientific-layout {
+  grid-template-columns: minmax(0, 2.25fr) minmax(0, 1fr);
+}
+
+.datecalc-calculation-keys {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+
+.datecalc-scientific-layout .datecalc-display {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  border-color: #254e88;
+  background: linear-gradient(140deg, #122b51, #244d87);
+  gap: 2px 8px;
+}
+
+.datecalc-scientific-layout
+  .datecalc-display
+  :is(output, .datecalc-calculation-error) {
+  grid-column: 1 / -1;
+}
+
+.datecalc-scientific-layout .datecalc-display :is(input, output) {
+  color: #fff;
+}
+
+.datecalc-scientific-layout .datecalc-display input::placeholder {
+  color: #c9d9ef;
+}
+
+.datecalc-scientific-layout .datecalc-display input:focus-visible {
+  border-color: #a7c8fa;
+  background: rgb(255 255 255 / 10%);
+}
+
+.datecalc-calculation-error {
+  min-width: 0;
+  margin: 2px 0 0;
+  padding: 8px 10px;
+  border: 1px solid #d9776c;
+  border-radius: 7px;
+  background: #fff1ee;
+  color: #7a1812;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.45;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-angle {
+  display: flex;
+  justify-self: start;
+  gap: 4px;
+}
+
+.datecalc-angle button {
+  min-width: 46px;
+  min-height: 29px;
+  border: 1px solid #6286b7;
+  border-radius: 7px;
+  color: #dbe9fa;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.datecalc-angle button[aria-pressed='true'] {
+  border-color: #d1e5ff;
+  background: #d1e5ff;
+  color: #143b70;
+}
+
 .datecalc-keypad {
   display: grid;
   gap: 12px;
@@ -243,6 +362,9 @@
   font-weight: 700;
   line-height: 1.16;
   overflow-wrap: anywhere;
+  max-height: 2.34em;
+  overflow: auto;
+  scrollbar-width: none;
 }
 
 .datecalc-memory,
@@ -276,6 +398,42 @@
 .datecalc-keys .datecalc-operation:not(.primary-button) {
   background: var(--workspace-soft);
   color: var(--workspace-accent-hover);
+}
+
+.datecalc-science-keys button:not(.primary-button) {
+  min-height: 42px;
+  font-size: 15px;
+}
+
+.datecalc-science-keys button:nth-last-child(-n + 2) {
+  grid-column: span 2;
+}
+
+.datecalc-scientific-board {
+  display: grid;
+  gap: 8px;
+}
+
+.datecalc-scientific-tools {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.datecalc-scientific-tools button:not(.primary-button) {
+  min-height: 38px;
+  font-size: 15px;
+}
+
+.datecalc-digit-keys {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-self: stretch;
+}
+
+.datecalc-operator-keys {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr);
+}
+
+.datecalc-operator-keys .datecalc-operation:not(.primary-button) {
+  background: var(--workspace-selected);
 }
 
 .datecalc-keys button:not(.primary-button):hover,
@@ -341,6 +499,55 @@
   white-space: nowrap;
 }
 
+.datecalc-basic-actions {
+  justify-content: flex-end;
+}
+
+.datecalc-number-words {
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+}
+
+.datecalc-word-results {
+  display: grid;
+  gap: 12px;
+}
+
+.datecalc-cheque-figures {
+  color: var(--workspace-ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-cheque-copy {
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid var(--workspace-line);
+  font-size: 13px;
+}
+
+.datecalc-cheque-copy h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.datecalc-word-output {
+  display: block;
+  min-height: 3.3rem;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 9px;
+  background: var(--workspace-soft);
+  color: var(--workspace-accent-hover);
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 650;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.datecalc-word-output:lang(en) {
+  font-size: clamp(15px, 1.6vw, 18px);
+}
+
 @media (max-width: 720px) {
   .datecalc-panes {
     grid-template-columns: minmax(0, 1fr);
@@ -355,5 +562,44 @@
   .datecalc-modes button {
     padding-inline: 9px;
     font-size: 13px;
+  }
+
+  .datecalc-scientific-layout .datecalc-keypad {
+    gap: 8px;
+  }
+
+  .datecalc-scientific-layout .datecalc-display output {
+    max-height: 1.17em;
+  }
+
+  .datecalc-scientific-board,
+  .datecalc-calculation-keys,
+  .datecalc-scientific-board .datecalc-keys {
+    gap: 4px;
+  }
+
+  .datecalc-scientific-board .datecalc-keys button {
+    min-width: 0;
+    min-height: 38px;
+    padding: 0;
+  }
+
+  .datecalc-scientific-board
+    .datecalc-science-keys
+    button:not(.primary-button) {
+    min-height: 38px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 430px) {
+  .datecalc-nav button {
+    flex: 1 1 auto;
+    padding-inline: 5px;
+    font-size: 13px;
+  }
+
+  .datecalc-nav button > svg {
+    display: none;
   }
 }

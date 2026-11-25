@@ -269,6 +269,49 @@ html:has(.conversion-workspace) {
   font-size: 0.78rem;
   line-height: 1.55;
 }
+.cw-advanced {
+  min-width: 0;
+  margin-top: 15px;
+  padding: 0 10px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 9px;
+  background: var(--workspace-soft);
+}
+.cw-advanced summary {
+  padding-block: 10px;
+  font-size: 0.86rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.cw-advanced summary span {
+  margin-left: 8px;
+  color: var(--workspace-muted);
+  font-size: 0.75rem;
+}
+.cw-advanced-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px;
+  padding: 0 0 12px;
+}
+.cw-advanced-fields :is(.cw-field, select, input) {
+  min-width: 0;
+  margin: 0;
+}
+.cw-advanced-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  font-size: 0.8rem;
+}
+.cw-advanced-check input {
+  accent-color: var(--workspace-accent);
+}
+.cw-advanced > button {
+  margin-bottom: 8px;
+}
 .cw-queue {
   padding-bottom: 0;
 }

@@ -12,8 +12,14 @@ export async function renderPdfPages(
   {
     format = 'png',
     quality,
-    maxBytes = Infinity
-  }: { format?: 'png' | 'jpg'; quality?: number; maxBytes?: number } = {}
+    maxBytes = Infinity,
+    rotation = 0
+  }: {
+    format?: 'png' | 'jpg';
+    quality?: number;
+    maxBytes?: number;
+    rotation?: number;
+  } = {}
 ): Promise<File[]> {
   return withPdfDocument(file, job.signal, async (document) => {
     const pages = parsePageRanges(ranges, document.numPages);
@@ -25,7 +31,10 @@ export async function renderPdfPages(
     for (const [index, number] of pages.entries()) {
       job.signal?.throwIfAborted();
       const page = await document.getPage(number);
-      const viewport = page.getViewport({ scale });
+      const viewport = page.getViewport({
+        scale,
+        rotation: (page.rotate + rotation) % 360
+      });
       const canvas = window.document.createElement('canvas');
       const context = canvas.getContext('2d');
       if (!context) throw new Error('无法创建图片画布。');

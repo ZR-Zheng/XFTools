@@ -37,7 +37,7 @@ function encodeBmp(
 
 export async function convertImage(
   file: File,
-  { format, preset }: Settings,
+  { format, preset, advanced = {} }: Settings,
   signal: AbortSignal
 ) {
   signal.throwIfAborted();
@@ -52,8 +52,9 @@ export async function convertImage(
   const source = await decodeImage(file);
   signal.throwIfAborted();
   const options = presets[preset];
-  const ratio = options.imageSide
-    ? Math.min(1, options.imageSide / Math.max(source.width, source.height))
+  const maxSide = advanced.imageSide ?? options.imageSide;
+  const ratio = maxSide
+    ? Math.min(1, maxSide / Math.max(source.width, source.height))
     : 1;
   const width = Math.max(1, Math.round(source.width * ratio));
   const height = Math.max(1, Math.round(source.height * ratio));
@@ -69,8 +70,13 @@ export async function convertImage(
       willReadFrequently: format === 'bmp'
     });
     if (!ctx) throw new Error('无法创建图片画布。');
-    if (format === 'jpg' || format === 'bmp' || format === 'pdf') {
-      ctx.fillStyle = '#fff';
+    if (
+      format === 'jpg' ||
+      format === 'bmp' ||
+      format === 'pdf' ||
+      advanced.flatten
+    ) {
+      ctx.fillStyle = advanced.background ?? '#ffffff';
       ctx.fillRect(0, 0, width, height);
     }
     ctx.imageSmoothingQuality = 'high';
@@ -82,7 +88,11 @@ export async function convertImage(
     const blob =
       format === 'bmp'
         ? encodeBmp(ctx, width, height)
-        : await canvasToBlob(canvas, type, options.quality);
+        : await canvasToBlob(
+            canvas,
+            type,
+            (advanced.quality ?? options.quality * 100) / 100
+          );
     if (blob.type !== type) throw new Error('浏览器不支持这个图片输出格式。');
     signal.throwIfAborted();
     if (format !== 'pdf')
@@ -91,12 +101,31 @@ export async function convertImage(
     const { PDFDocument } = await import('pdf-lib');
     const pdf = await PDFDocument.create();
     const image = await pdf.embedJpg(await blob.arrayBuffer());
-    const page = pdf.addPage([width * 0.75, height * 0.75]);
+    const margin = ((advanced.margin ?? 0) * 72) / 25.4;
+    const sourcePoints = [width * 0.75, height * 0.75] as const;
+    const paper =
+      advanced.paper === 'a4'
+        ? [595.28, 841.89]
+        : advanced.paper === 'letter'
+          ? [612, 792]
+          : null;
+    if (paper && width > height) paper.reverse();
+    const page = pdf.addPage(
+      paper
+        ? [paper[0], paper[1]]
+        : [sourcePoints[0] + margin * 2, sourcePoints[1] + margin * 2]
+    );
+    const scale = Math.min(
+      (page.getWidth() - margin * 2) / sourcePoints[0],
+      (page.getHeight() - margin * 2) / sourcePoints[1]
+    );
+    const drawingWidth = sourcePoints[0] * scale;
+    const drawingHeight = sourcePoints[1] * scale;
     page.drawImage(image, {
-      x: 0,
-      y: 0,
-      width: page.getWidth(),
-      height: page.getHeight()
+      x: (page.getWidth() - drawingWidth) / 2,
+      y: (page.getHeight() - drawingHeight) / 2,
+      width: drawingWidth,
+      height: drawingHeight
     });
     const bytes = await pdf.save();
     return new File([new Uint8Array(bytes)], outputName(file, 'pdf'), {

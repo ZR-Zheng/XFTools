@@ -6,7 +6,7 @@ export interface Fraction {
 export const zero: Fraction = { numerator: 0n, denominator: 1n };
 const magnitudeLimit = 10n ** 512n;
 
-function fraction(numerator: bigint, denominator = 1n): Fraction {
+export function fraction(numerator: bigint, denominator = 1n): Fraction {
   if (denominator === 0n) throw new Error('除数不能为零。');
   let a = numerator < 0n ? -numerator : numerator;
   let b = denominator < 0n ? -denominator : denominator;

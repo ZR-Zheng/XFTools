@@ -15,6 +15,7 @@ import {
   WorkdayCalculator
 } from './DateCalculations';
 import BasicCalculator from './BasicCalculator';
+import NumberWords from './NumberWords';
 import TimeArithmetic from './TimeArithmetic';
 import '@components/workbench/workspace-theme.css';
 import './calculator.css';
@@ -59,10 +60,17 @@ function LegacyMode({
   );
 }
 
+type ModeProps = {
+  initiallyExact: boolean;
+  numberInput: string;
+  onNumberInput: (value: string) => void;
+  onConvertResult: (value: string) => void;
+};
+
 type Mode = {
   id: string;
   title: string;
-  render: ComponentType<{ initiallyExact?: boolean }>;
+  render: ComponentType<ModeProps>;
 };
 
 const groups: readonly {
@@ -74,6 +82,19 @@ const groups: readonly {
     name: '普通计算',
     glyph: 'grid',
     modes: [{ id: 'basic', title: '普通计算', render: BasicCalculator }]
+  },
+  {
+    name: '科学计算',
+    glyph: 'code',
+    modes: [
+      {
+        id: 'scientific',
+        title: '科学计算',
+        render: ({ onConvertResult }) => (
+          <BasicCalculator scientific onConvertResult={onConvertResult} />
+        )
+      }
+    ]
   },
   {
     name: '日期',
@@ -157,23 +178,22 @@ const groups: readonly {
         )
       }
     ]
+  },
+  {
+    name: '数字大写',
+    glyph: 'text',
+    modes: [{ id: 'number-words', title: '数字大写', render: NumberWords }]
   }
 ];
 
 // Components stay mounted after their first visit so that switching modes keeps the inputs.
 const modes = groups.flatMap((group) => group.modes);
 
-function ModeView({
-  id,
-  initiallyExact
-}: {
-  id: string;
-  initiallyExact: boolean;
-}) {
+function ModeView({ id, ...props }: ModeProps & { id: string }) {
   const mode = modes.find((item) => item.id === id);
   if (!mode) return null;
   const Panel = mode.render;
-  return <Panel initiallyExact={initiallyExact} />;
+  return <Panel {...props} />;
 }
 
 export default function DateTimeCalculator({ title }: { title: string }) {
@@ -185,6 +205,7 @@ export default function DateTimeCalculator({ title }: { title: string }) {
     groups[0];
   const [visited, setVisited] = useState<string[]>([active]);
   const [lastMode, setLastMode] = useState<Record<string, string>>({});
+  const [numberInput, setNumberInput] = useState('');
   if (!visited.includes(active)) setVisited([...visited, active]);
 
   function navigate(id: string) {
@@ -193,6 +214,11 @@ export default function DateTimeCalculator({ title }: { title: string }) {
     const next = new URLSearchParams(params);
     next.set('view', id);
     setParams(next);
+  }
+
+  function convertResult(value: string) {
+    setNumberInput(value);
+    navigate('number-words');
   }
 
   return (
@@ -239,6 +265,9 @@ export default function DateTimeCalculator({ title }: { title: string }) {
               <ModeView
                 id={id}
                 initiallyExact={params.get('precision') === 'time'}
+                numberInput={numberInput}
+                onNumberInput={setNumberInput}
+                onConvertResult={convertResult}
               />
             </Suspense>
           </Activity>

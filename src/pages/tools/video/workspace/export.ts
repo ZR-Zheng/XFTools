@@ -2,6 +2,8 @@ import { FFmpeg, FFFSType } from '@ffmpeg/ffmpeg';
 import { loadFFmpeg } from 'lib/ffmpeg';
 import { getFileExtension } from '@utils/file';
 import { loadStill } from './media';
+import type { VideoMask } from './effects';
+import { appendClipEffects, colorFilter, maskPng } from './export-effects';
 import {
   cropRect,
   placeClips,
@@ -16,6 +18,11 @@ interface Input {
   index: number;
   filename: string;
   hasAudio: boolean;
+}
+
+interface MaskInput {
+  index: number;
+  filename: string;
 }
 
 export interface ExportProgress {
@@ -56,7 +63,8 @@ function tempo(speed: number) {
 function filters(
   project: Project,
   assets: Map<string, Input>,
-  options: ExportOptions
+  options: ExportOptions,
+  masks: Map<VideoMask, MaskInput>
 ) {
   const video = options.format === 'mp4' || options.format === 'gif';
   const gif = options.format === 'gif';
@@ -87,6 +95,8 @@ function filters(
     const length = sec(clipDuration(clip));
     if (video) {
       const rect = cropRect(input.asset, clip);
+      const alphaEffects = !!(clip.mask || clip.animation);
+      const alpha = gif || alphaEffects;
       const timing = [
         'trim=start=' + start + ':end=' + end,
         'setpts=(PTS-STARTPTS)/' + sec(clip.speed)
@@ -97,7 +107,7 @@ function filters(
       const rounding = length < 1 / fps ? ':round=up' : '';
       // Drop frames before resizing and rotating, especially for looping still images.
       transform.push('fps=' + fps + rounding);
-      if (gif) transform.push('format=rgba');
+      if (alpha) transform.push('format=rgba');
       transform.push(
         'crop=' +
           rect.width +
@@ -124,14 +134,27 @@ function filters(
           (gif ? '' : ':force_divisible_by=2'),
         fill
           ? `crop=${width}:${height}:(iw-ow)/2:(ih-oh)/2:exact=1`
-          : `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2${gif ? ':color=black@0' : ''}`,
+          : `pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2${alpha ? ':color=black@0' : ''}`,
         'setsar=1'
       );
-      transform.push(gif ? 'format=rgba' : 'format=yuv420p');
-      graph.push(
-        '[' + input.index + ':v:0]' + transform.join(',') + '[v' + index + ']'
-      );
-      tracks.push('[v' + index + ']');
+      const color = colorFilter(clip);
+      if (color) transform.push(color);
+      transform.push(alpha ? 'format=rgba' : 'format=yuv420p');
+      const track = `[v${index}]`;
+      const layer = alphaEffects ? `[layer${index}]` : track;
+      graph.push(`[${input.index}:v:0]${transform.join(',')}${layer}`);
+      if (alphaEffects) {
+        const result = appendClipEffects(
+          graph,
+          layer,
+          clip,
+          index,
+          { width, height, fps, transparent: gif },
+          clip.mask && masks.get(clip.mask)?.index
+        );
+        graph.push(`${result}format=${gif ? 'rgba' : 'yuv420p'}${track}`);
+      }
+      tracks.push(track);
     }
     if (audio) {
       const sound =
@@ -236,13 +259,13 @@ async function renderVideo(
   if (!first) throw new Error('请先导入视频或图片。');
   const firstAsset = assets.get(first.assetId);
   if (!firstAsset) throw new Error('素材已失效，请重新导入。');
+  const { width, height } = outputSize(
+    firstAsset,
+    first,
+    options,
+    project.canvas
+  );
   if (options.format === 'mp4') {
-    const { width, height } = outputSize(
-      firstAsset,
-      first,
-      options,
-      project.canvas
-    );
     if (width > 8192 || height > 8192 || width * height > 7680 * 4320)
       throw new Error(
         '成片尺寸超出浏览器可处理的范围。请先选择较低的输出分辨率。'
@@ -289,6 +312,17 @@ async function renderVideo(
         hasAudio: asset.kind === 'audio'
       });
     }
+    const masks = new Map<VideoMask, MaskInput>();
+    if (options.format === 'mp4' || options.format === 'gif') {
+      for (const { mask } of project.clips) {
+        if (!mask || masks.has(mask)) continue;
+        signal.throwIfAborted();
+        const index = inputs.size + masks.size;
+        const name = `mask-${index}.png`;
+        blobs.push({ name, data: await maskPng(mask, width, height) });
+        masks.set(mask, { index, filename: '/sources/' + name });
+      }
+    }
     signal.throwIfAborted();
     await ffmpeg.createDir('/sources');
     if (!(await ffmpeg.mount(FFFSType.WORKERFS, { blobs }, '/sources')))
@@ -323,7 +357,7 @@ async function renderVideo(
         await ffmpeg.deleteFile(probe);
       }
     }
-    const { graph, duration } = filters(project, inputs, options);
+    const { graph, duration } = filters(project, inputs, options, masks);
     const output = 'result.' + options.format;
     const inputArgs = [...inputs.values()].flatMap(({ asset, filename }) => {
       if (asset.kind === 'image') {
@@ -347,12 +381,13 @@ async function renderVideo(
       }
       return ['-i', filename];
     });
+    for (const { filename } of masks.values()) inputArgs.push('-i', filename);
     const gif = options.format === 'gif';
     const args = [...inputArgs];
     const palette = 'palette.png';
     if (gif) args.push('-i', palette);
     const finalGraph = gif
-      ? `${graph};[video][${inputs.size}:v]paletteuse[gif]`
+      ? `${graph};[video][${inputs.size + masks.size}:v]paletteuse[gif]`
       : graph;
     args.push(
       '-filter_complex_threads',

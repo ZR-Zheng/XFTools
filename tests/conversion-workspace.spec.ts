@@ -241,6 +241,127 @@ test('Video converts to animated GIF, playable MP4 and audio, and reports missin
   expect(flac.bytes.toString('ascii', 0, 4)).toBe('fLaC');
 });
 
+test('Detailed image and PDF parameters affect downloaded files', async ({
+  page
+}) => {
+  await page.goto('/converters/workspace?group=image&format=pdf');
+  const advanced = () => page.locator('.cw-advanced summary').click();
+  await advanced();
+  await page.getByLabel('PDF 纸张').selectOption('letter');
+  await page.getByLabel('PDF 页边距（毫米）').fill('10');
+  await picker(page).setInputFiles(image);
+  await page
+    .getByRole('button', { name: 'PDF 页面图片、文本与电子书' })
+    .click();
+  const pdf = await pdfFixture();
+  await advanced();
+  await page.getByLabel('PDF 渲染倍率').selectOption('2');
+  await page.getByLabel('页面旋转').selectOption('90');
+  await page.getByLabel('页码范围').fill('1');
+  await picker(page).setInputFiles(pdf);
+  await page.getByLabel('页码范围').fill('');
+  await preset(page).selectOption('txt');
+  await advanced();
+  await page.getByLabel('分页分隔').selectOption('line');
+  await page.getByLabel('使用 Windows 换行').check();
+  await page.getByLabel('写入 UTF-8 BOM').check();
+  await picker(page).setInputFiles({ ...pdf, name: 'text.pdf' });
+  await preset(page).selectOption('epub');
+  await advanced();
+  await page.getByLabel('电子书书名').fill('样本 & 书名');
+  await page.getByLabel('电子书作者').fill('作者');
+  await page.getByLabel('电子书语言').selectOption('zh-CN');
+  await picker(page).setInputFiles({ ...pdf, name: 'book.pdf' });
+  await page.getByRole('button', { name: '开始转换' }).click();
+  await expect(page.locator('.cw-row[data-status="done"]')).toHaveCount(4);
+  const bundle = await JSZip.loadAsync(
+    (await download(page, '下载 ZIP')).bytes
+  );
+  const paper = await PDFDocument.load(
+    await bundle.file('test.pdf')!.async('uint8array')
+  );
+  expect(
+    [paper.getPage(0).getWidth(), paper.getPage(0).getHeight()].sort()
+  ).toEqual([612, 792]);
+  const pageImage = await bundle.file('pages.png')!.async('nodebuffer');
+  expect([pageImage.readUInt32BE(16), pageImage.readUInt32BE(20)]).toEqual([
+    160, 200
+  ]);
+  expect((await bundle.file('text.txt')!.async('nodebuffer')).toString()).toBe(
+    '\uFEFFFirst page\r\nSecond page'
+  );
+  const book = await JSZip.loadAsync(
+    await bundle.file('book.epub')!.async('uint8array')
+  );
+  const metadata = await book.file('OEBPS/content.opf')!.async('string');
+  expect(metadata).toContain('<dc:title>样本 &amp; 书名</dc:title>');
+  expect(metadata).toContain('<dc:creator>作者</dc:creator>');
+  expect(metadata).toContain('<dc:language>zh-CN</dc:language>');
+});
+
+test('Detailed media options change dimensions, play length, and WAV settings', async ({
+  page
+}) => {
+  await page.goto('/converters/workspace?group=video&format=gif');
+  const advanced = () => page.locator('.cw-advanced summary').click();
+  const source = {
+    name: 'motion.webm',
+    mimeType: 'video/webm',
+    buffer: await readFile(video)
+  };
+  await advanced();
+  await page.getByLabel('GIF 长边上限').selectOption('160');
+  await page.getByLabel('GIF 帧率').selectOption('10');
+  await page.getByLabel('GIF 色数').selectOption('32');
+  await page.getByLabel('GIF 循环').selectOption('-1');
+  await page.getByLabel('GIF 抖动').selectOption('none');
+  await page.getByLabel('截取起点（秒）').fill('0.1');
+  await page.getByLabel('截取时长（秒）').fill('0.5');
+  await picker(page).setInputFiles(source);
+  await preset(page).selectOption('mp4');
+  await advanced();
+  await page.getByLabel('视频长边上限').selectOption('160');
+  await page.getByLabel('视频帧率').selectOption('24');
+  await page.getByLabel('截取时长（秒）').fill('0.5');
+  await page.getByLabel('移除音轨').check();
+  await page.getByLabel('网页快速播放').check();
+  await picker(page).setInputFiles({ ...source, name: 'movie.webm' });
+  await preset(page).selectOption('wav');
+  await advanced();
+  await page.getByLabel('采样率').selectOption('32000');
+  await page.getByLabel('声道').selectOption('1');
+  await page.getByLabel('WAV 位深').selectOption('24');
+  await page.getByLabel('截取时长（秒）').fill('0.25');
+  await picker(page).setInputFiles({ ...source, name: 'sound.webm' });
+  await page.getByRole('button', { name: '开始转换' }).click();
+  await expect(page.locator('.cw-row[data-status="done"]')).toHaveCount(3, {
+    timeout: 30000
+  });
+  const gif = new GifReader(
+    (await download(page, '下载 motion.webm 的结果')).bytes
+  );
+  expect(Math.max(gif.width, gif.height)).toBe(160);
+  expect(gif.loopCount()).toBeNull();
+  expect(
+    Array.from(
+      { length: gif.numFrames() },
+      (_, i) => gif.frameInfo(i).delay
+    ).reduce((a, b) => a + b, 0)
+  ).toBe(50);
+  const mp4 = (await download(page, '下载 movie.webm 的结果')).bytes;
+  expect(mp4.indexOf('moov')).toBeLessThan(mp4.indexOf('mdat'));
+  expect(mp4.includes(Buffer.from('mp4a'))).toBe(false);
+  expect(mp4.readUInt32BE(mp4.indexOf('stsz') + 12)).toBe(12);
+  const wav = (await download(page, '下载 sound.webm 的结果')).bytes;
+  const header = wav.indexOf('fmt ') + 8;
+  expect(wav.readUInt16LE(header + 2)).toBe(1);
+  expect(wav.readUInt32LE(header + 4)).toBe(32000);
+  expect(wav.readUInt16LE(header + 14)).toBe(24);
+  expect(
+    Math.abs(wav.readUInt32LE(wav.indexOf('data') + 4) / 3 - 8000)
+  ).toBeLessThan(32);
+});
+
 test('Stopping a queued media task preserves pending tasks and allows retry', async ({
   page
 }) => {

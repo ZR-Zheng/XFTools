@@ -1,8 +1,8 @@
 {
   "calculator": {
     "title": "Calculator",
-    "description": "Calculate expressions, dates, ages, workdays, durations and timestamps in one workspace.",
-    "shortDescription": "Arithmetic, date calculations, duration and timestamp conversion"
+    "description": "Calculate expressions, spell out numbers in Chinese and English, and work with dates, ages, workdays, durations and timestamps.",
+    "shortDescription": "Arithmetic, numbers to words, and date and time conversion"
   },
   "checkLeapYears": {
     "description": "Check if a year is a leap year and get leap year information.",

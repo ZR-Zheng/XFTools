@@ -327,6 +327,10 @@ export default function VideoWorkspace({ title }: ToolComponentProps) {
       clips: current.clips.map((item) => (item.id === clip.id ? clip : item))
     }));
     setSelection(clip.id);
+    if (panel === 'effects' && selected?.clip.id === clip.id) {
+      if (playingEntry?.clip.id !== clip.id) seek(selected.start);
+      else setPreview('timeline');
+    }
   }
 
   function move(id: string, target: string) {

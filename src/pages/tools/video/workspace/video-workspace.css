@@ -385,6 +385,22 @@ button.vw-media-empty:hover {
   gap: 8px;
 }
 
+.vw-effect-group {
+  display: grid;
+  gap: 9px;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px 11px;
+  border: 1px solid var(--workspace-line);
+  border-radius: 9px;
+}
+
+.vw-effect-group legend {
+  padding-inline: 4px;
+  font-size: 14px;
+  font-weight: 650;
+}
+
 .vw-field {
   display: grid;
   min-width: 0;

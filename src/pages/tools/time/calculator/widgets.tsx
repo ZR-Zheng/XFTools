@@ -17,7 +17,13 @@ export function Field({
   );
 }
 
-export function CopyResult({ value }: { value: string }) {
+export function CopyResult({
+  value,
+  label = '复制结果'
+}: {
+  value: string;
+  label?: string;
+}) {
   const { showSnackBar } = useContext(CustomSnackBarContext);
   async function copy() {
     try {
@@ -34,7 +40,7 @@ export function CopyResult({ value }: { value: string }) {
       disabled={!value}
       onClick={() => void copy()}
     >
-      <Glyph name="copy" size={15} /> 复制结果
+      <Glyph name="copy" size={15} /> {label}
     </button>
   );
 }

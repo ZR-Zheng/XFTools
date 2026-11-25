@@ -1,4 +1,5 @@
 import { sourceCanvas, type CanvasSettings } from './templates';
+import type { VideoAnimation, VideoFilter, VideoMask } from './effects';
 
 export type Rotation = 0 | 90 | 180 | 270;
 export type CropEdge = 'left' | 'top' | 'right' | 'bottom';
@@ -25,6 +26,9 @@ export interface Clip {
   flipY: boolean;
   crop: Record<CropEdge, number>;
   volume: number;
+  mask?: VideoMask;
+  animation?: VideoAnimation;
+  filter?: VideoFilter;
 }
 
 export interface Soundtrack {

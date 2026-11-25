@@ -34,14 +34,19 @@ export default function ToolLayout({
   const tool = tools.find((tool) => tool.path === fullPath);
   const title = i18n ? t(i18n.name) : tool ? t(tool.name) : '';
   const description = i18n ? t(i18n.shortDescription) : '';
+  const calculator = fullPath === 'time/calculator';
   usePageTitle(title);
   return (
     <div
       className={
-        tool?.standalone ? 'tool-page tool-page-standalone' : 'tool-page'
+        tool?.standalone
+          ? 'tool-page tool-page-standalone'
+          : calculator
+            ? 'tool-page tool-page-calculator'
+            : 'tool-page'
       }
     >
-      {tool?.standalone ? (
+      {tool?.standalone || calculator ? (
         <h1 className="sr-only">{uiText(title)}</h1>
       ) : (
         <header className="tool-page-header">

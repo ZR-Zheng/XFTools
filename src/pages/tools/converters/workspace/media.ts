@@ -76,7 +76,7 @@ export async function convertMedia(
       const info = await probe(ffmpeg, source);
       if (!info?.streams?.length)
         throw new Error('无法读取媒体文件。请确认文件完好且编码受支持。');
-      const { format, preset } = settings;
+      const { format, preset, advanced = {} } = settings;
       const options = presets[preset];
       const audio = isAudioFormat(format);
       const stream = info.streams.find((stream) =>
@@ -95,17 +95,50 @@ export async function convertMedia(
       )
         throw new Error('视频画面超过浏览器转换上限，请先缩小至 4K 或以下。');
 
-      const duration = Number(info.format?.duration);
+      const sourceDuration = Number(info.format?.duration);
+      const start = advanced.start ?? 0;
+      if (start > 0 && sourceDuration > 0 && start >= sourceDuration)
+        throw new Error('截取起点须早于媒体结尾。');
+      const remaining = sourceDuration - start;
+      const duration =
+        advanced.duration === undefined
+          ? remaining
+          : Number.isFinite(remaining)
+            ? Math.min(remaining, advanced.duration)
+            : advanced.duration;
       if (format === 'gif' && (!Number.isFinite(duration) || duration > 90))
         throw new Error(
-          'GIF 转换支持时长可读取且不超过 90 秒的素材。可以先在视频编辑器裁剪。'
+          'GIF 转换需有可读取的时长，且输出不得超过 90 秒。请设置截取时长。'
         );
 
       const target = `converted.${format}`;
-      const input = ['-hide_banner', '-loglevel', 'error', '-i', source];
+      const input = [
+        '-hide_banner',
+        '-loglevel',
+        'error',
+        ...(start ? ['-ss', String(start)] : []),
+        '-i',
+        source
+      ];
+      const trim =
+        advanced.duration === undefined
+          ? []
+          : ['-t', String(advanced.duration)];
       const mapping = audio
         ? ['-map', '0:a:0', '-vn']
-        : ['-map', '0:V:0', '-map', '0:a:0?'];
+        : advanced.mute
+          ? ['-map', '0:V:0', '-an']
+          : ['-map', '0:V:0', '-map', '0:a:0?'];
+      const bitrate =
+        advanced.audioBitrate === undefined
+          ? options.bitrate
+          : advanced.audioBitrate + 'k';
+      const rate =
+        format === 'opus' || format === 'webm' ? 48000 : advanced.sampleRate;
+      const audioOptions = [
+        ...(rate ? ['-ar', String(rate)] : []),
+        ...(advanced.channels ? ['-ac', String(advanced.channels)] : [])
+      ];
       const common = [
         '-map_metadata',
         '-1',
@@ -127,26 +160,42 @@ export async function convertMedia(
       let code: number;
       if (audio) {
         const spec = audioFormats[format];
+        const codec =
+          format === 'wav' && advanced.wavDepth
+            ? 'pcm_s' + advanced.wavDepth + 'le'
+            : spec.codec;
         mimeType = spec.mimeType;
         code = await ffmpeg.exec([
           ...input,
+          ...trim,
           ...mapping,
           '-c:a',
-          spec.codec,
-          ...(spec.bitrate ? ['-b:a', options.bitrate] : []),
-          ...(format === 'opus' ? ['-ar', '48000'] : []),
+          codec,
+          ...(spec.bitrate ? ['-b:a', bitrate] : []),
+          ...(format === 'flac' && advanced.flacLevel !== undefined
+            ? ['-compression_level', String(advanced.flacLevel)]
+            : []),
+          ...audioOptions,
           ...common
         ]);
       } else if (format === 'gif') {
         mimeType = videoTypes.gif;
-        const filter = `fps=${options.gifFps},${fitVideo(options.gifSide)}`;
+        const filter = [
+          ...(advanced.duration === undefined
+            ? []
+            : ['trim=duration=' + advanced.duration, 'setpts=PTS-STARTPTS']),
+          'fps=' + (advanced.gifFps ?? options.gifFps),
+          fitVideo(advanced.gifSide ?? options.gifSide)
+        ].join(',');
         progressSpan = 33;
         const palette = await ffmpeg.exec([
           ...input,
           '-map',
           '0:V:0',
           '-vf',
-          `${filter},palettegen=stats_mode=diff`,
+          filter +
+            ',palettegen=stats_mode=diff:max_colors=' +
+            (advanced.gifColors ?? 256),
           '-frames:v',
           '1',
           '-update',
@@ -162,10 +211,13 @@ export async function convertMedia(
           '-i',
           'palette.png',
           '-filter_complex',
-          `[0:V:0]${filter}[frames];[frames][1:v]paletteuse=dither=bayer`,
+          '[0:V:0]' +
+            filter +
+            '[frames];[frames][1:v]paletteuse=dither=' +
+            (advanced.gifDither ?? 'bayer'),
           '-an',
           '-loop',
-          '0',
+          String(advanced.gifLoop ?? 0),
           ...common
         ]);
       } else {
@@ -189,9 +241,11 @@ export async function convertMedia(
                 '-threads:v',
                 '1',
                 '-b:v',
-                options.webmBitrate,
+                advanced.videoBitrate === undefined
+                  ? options.webmBitrate
+                  : advanced.videoBitrate + 'k',
                 '-crf',
-                String(options.crf + 5),
+                String(advanced.crf ?? options.crf + 5),
                 '-c:a',
                 'libopus'
               ]
@@ -199,22 +253,28 @@ export async function convertMedia(
                 '-c:v',
                 'libx264',
                 '-preset',
-                'ultrafast',
+                advanced.encodeSpeed ?? 'ultrafast',
                 '-crf',
-                String(options.crf),
+                String(advanced.crf ?? options.crf),
                 '-c:a',
                 'aac'
               ];
         code = await ffmpeg.exec([
           ...input,
+          ...trim,
           ...mapping,
           '-vf',
-          fitVideo(options.videoSide),
+          [
+            ...(advanced.frameRate ? ['fps=' + advanced.frameRate] : []),
+            fitVideo((advanced.videoSide ?? options.videoSide) || 4096)
+          ].join(','),
           '-pix_fmt',
           'yuv420p',
           ...codecs,
-          '-b:a',
-          options.bitrate,
+          ...(advanced.mute ? [] : ['-b:a', bitrate, ...audioOptions]),
+          ...(advanced.fastStart && (format === 'mp4' || format === 'mov')
+            ? ['-movflags', '+faststart']
+            : []),
           ...common
         ]);
       }

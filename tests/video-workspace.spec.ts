@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { GifReader, GifWriter } from 'omggif';
 
 const silentVideo = 'tests/fixtures/video/blue-silent.webm';
@@ -28,6 +28,27 @@ function music() {
       44 + index * 2
     );
   return { name: '配乐.wav', mimeType: 'audio/wav', buffer };
+}
+
+async function importEffectPicture(page: Page) {
+  const png = await page.evaluate(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 96;
+    canvas.height = 64;
+    const context = canvas.getContext('2d')!;
+    context.fillStyle = '#dd5436';
+    context.fillRect(12, 0, 84, 64);
+    return canvas.toDataURL().split(',')[1];
+  });
+  await page.getByLabel('导入视频或图片素材').setInputFiles({
+    name: 'effects.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(png, 'base64')
+  });
+  const duration = page.getByLabel('图片停留（秒）');
+  await duration.fill('1.5');
+  await duration.press('Enter');
+  await page.getByRole('button', { name: '效果', exact: true }).click();
 }
 
 test('Video timeline combines editing operations without loading FFmpeg before export', async ({
@@ -119,6 +140,12 @@ test('Video timeline combines editing operations without loading FFmpeg before e
     path: '.tmp/screenshots/video-workspace-mobile.png',
     animations: 'disabled'
   });
+  const mobileInspector = page.getByRole('dialog', { name: '片段设置' });
+  await mobileInspector
+    .getByRole('button', { name: '效果', exact: true })
+    .click();
+  await mobileInspector.getByLabel('蒙版形状').selectOption('rectangle');
+  await expect(mobileInspector.getByLabel('蒙版宽度（%）')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog', { name: '片段设置' })).toHaveCount(0);
   expect(
@@ -189,6 +216,120 @@ test('Exports mixed-size clips, silent source video and soundtrack into a playab
   const bytes = await readFile((await file.path())!);
   expect(bytes.subarray(4, 8).toString('ascii')).toBe('ftyp');
   expect(bytes.includes(Buffer.from('mp4a'))).toBe(true);
+});
+
+test('Clip effects preview and export matching feathered, grayscale frames with a fade-in', async ({
+  page
+}) => {
+  await page.goto('/video/workspace?format=mp4');
+  await importEffectPicture(page);
+  await page.getByLabel('蒙版形状').selectOption('ellipse');
+  const feather = page.getByLabel('边缘羽化（%）');
+  await feather.fill('50');
+  await feather.press('Enter');
+  await page.getByLabel('滤镜预设').selectOption('grayscale');
+  await page.getByLabel('动画效果').selectOption('fadeIn');
+
+  const screen = page.getByLabel('时间线画面');
+  const pixels = () =>
+    screen.evaluate((canvas: HTMLCanvasElement) => {
+      const context = canvas.getContext('2d')!;
+      return [48, 74, 92].map((x) =>
+        Array.from(context.getImageData(x, 32, 1, 1).data.slice(0, 3))
+      );
+    });
+  await expect.poll(pixels).toEqual(Array(3).fill([0, 0, 0]));
+  await page.getByRole('slider', { name: '时间线播放位置' }).press('End');
+  await expect.poll(async () => (await pixels())[0][0]).toBeGreaterThan(70);
+  const preview = await pixels();
+  expect(preview[0][0]).toBe(preview[0][1]);
+  expect(preview[2]).toEqual([0, 0, 0]);
+  expect(preview[1][0]).toBeGreaterThan(10);
+  expect(preview[1][0]).toBeLessThan(preview[0][0] - 15);
+  await page.getByRole('button', { name: '撤销', exact: true }).click();
+  await expect(page.getByLabel('动画效果')).toHaveValue('');
+  await page.getByRole('button', { name: '重做', exact: true }).click();
+  await expect(page.getByLabel('动画效果')).toHaveValue('fadeIn');
+
+  await page.getByRole('button', { name: '导出', exact: true }).click();
+  await page.getByRole('button', { name: '开始导出', exact: true }).click();
+  const result = page.getByLabel('导出成片预览');
+  await expect(result.or(page.getByRole('alert'))).toBeVisible({
+    timeout: 30000
+  });
+  await expect(result).toBeVisible({ timeout: 1000 });
+  await expect
+    .poll(() => result.evaluate((video: HTMLVideoElement) => video.readyState))
+    .toBeGreaterThan(1);
+  const frames = await result.evaluate(async (video: HTMLVideoElement) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d')!;
+    const frames = [];
+    for (const time of [0.02, 0.85]) {
+      const seeked = new Promise<void>((resolve) => {
+        video.addEventListener('seeked', () => resolve(), { once: true });
+      });
+      video.currentTime = time;
+      await seeked;
+      context.drawImage(video, 0, 0);
+      frames.push(
+        [48, 74, 92].map((x) =>
+          Array.from(context.getImageData(x, 32, 1, 1).data.slice(0, 3))
+        )
+      );
+    }
+    return frames;
+  });
+  expect(Math.max(...frames[0].flat())).toBeLessThan(10);
+  frames[1].forEach((rgb, index) => {
+    rgb.forEach((channel, component) => {
+      expect(Math.abs(channel - preview[index][component])).toBeLessThan(12);
+    });
+  });
+});
+
+test('Clip slide and inverted mask preserve transparency in exported GIF frames', async ({
+  page
+}) => {
+  await page.goto('/video/workspace?format=gif');
+  await importEffectPicture(page);
+  await page.getByLabel('蒙版形状').selectOption('ellipse');
+  await page.getByLabel('反转蒙版').check();
+  await page.getByLabel('动画效果').selectOption('slideFromLeft');
+  await page.getByRole('button', { name: '导出', exact: true }).click();
+  await page.getByRole('button', { name: '开始导出', exact: true }).click();
+  const download = page.getByRole('button', { name: '下载文件', exact: true });
+  await expect(download.or(page.getByRole('alert'))).toBeVisible({
+    timeout: 30000
+  });
+  await expect(download).toBeVisible({ timeout: 1000 });
+  const saved = page.waitForEvent('download');
+  await download.click();
+  const gif = new GifReader(await readFile((await (await saved).path())!));
+  expect([gif.width, gif.height]).toEqual([96, 64]);
+  const frame = new Uint8Array(gif.width * gif.height * 4);
+  gif.decodeAndBlitFrameRGBA(0, frame);
+  expect(frame.some((channel) => channel !== 0)).toBe(false);
+
+  const alpha = (x: number, y: number) => frame[(y * gif.width + x) * 4 + 3];
+  for (let index = 1; index < gif.numFrames(); index++) {
+    if (gif.frameInfo(index - 1).disposal === 2) {
+      const { x, y, width, height } = gif.frameInfo(index - 1);
+      for (let row = y; row < y + height; row++) {
+        frame.fill(
+          0,
+          (row * gif.width + x) * 4,
+          (row * gif.width + x + width) * 4
+        );
+      }
+    }
+    gif.decodeAndBlitFrameRGBA(index, frame);
+  }
+  expect(alpha(4, 4)).toBe(0);
+  expect(alpha(48, 32)).toBe(0);
+  expect(alpha(88, 8)).toBe(255);
 });
 
 test('Editor export routes produce GIF and extracted audio files', async ({

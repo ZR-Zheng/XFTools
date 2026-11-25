@@ -24,6 +24,11 @@ export function today() {
   return dateLabel(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
 
+export function currentEndpoint(zone = 'local') {
+  const now = zone === 'local' ? dayjs() : dayjs().tz(zone);
+  return { date: now.format('YYYY-MM-DD'), time: now.format('HH:mm:ss') };
+}
+
 export function readDate(value: string): number | null {
   if (!/^\d{4}-\d\d-\d\d$/.test(value) || value.startsWith('0000')) return null;
   const date = new Date(value + 'T00:00:00Z');
@@ -116,6 +121,13 @@ export function readZoned(
   if (readDate(date) === null || !/^\d{2}:\d{2}(?::\d{2})?$/.test(time))
     return null;
   const wall = `${date} ${time.length === 5 ? time + ':00' : time}`;
+  if (zone === 'UTC') {
+    const value = new Date(wall.replace(' ', 'T') + 'Z');
+    return Number.isFinite(+value) &&
+      value.toISOString().slice(0, 19).replace('T', ' ') === wall
+      ? +value
+      : null;
+  }
   try {
     const value =
       zone === 'local' ? dayjs(wall.replace(' ', 'T')) : dayjs.tz(wall, zone);

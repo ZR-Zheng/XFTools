@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import Glyph from '@components/workbench/Glyph';
 import {
+  animationPresets,
+  animationWindow,
+  filterPresets,
+  maskDefaults,
+  maskShapes,
+  type VideoAnimation,
+  type VideoFilter,
+  type VideoMask
+} from './effects';
+import {
   clamp,
   clipDuration,
   EMPTY_CROP,
@@ -19,6 +29,7 @@ import {
 export const panels = [
   { id: 'clip', title: '片段' },
   { id: 'picture', title: '画面' },
+  { id: 'effects', title: '效果' },
   { id: 'audio', title: '音频' }
 ] as const;
 export type Panel = (typeof panels)[number]['id'];
@@ -115,6 +126,169 @@ const cropEdges: [CropEdge, string][] = [
 ];
 const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3, 4];
 
+const maskFields = [
+  { field: 'width', label: '蒙版宽度（%）', min: 1 },
+  { field: 'height', label: '蒙版高度（%）', min: 1 },
+  { field: 'x', label: '中心横坐标（%）', min: 0 },
+  { field: 'y', label: '中心纵坐标（%）', min: 0 }
+] as const;
+
+function EffectsFields({
+  clip,
+  change
+}: {
+  clip: Clip;
+  change: (patch: Partial<Clip>) => void;
+}) {
+  const { mask, animation, filter } = clip;
+  const clipLength = clipDuration(clip);
+  const maxAnimation = animation
+    ? animationWindow({ ...animation, duration: clipLength }, clipLength)
+    : 0;
+  return (
+    <>
+      <fieldset className="vw-effect-group">
+        <legend>蒙版</legend>
+        <label className="vw-field">
+          蒙版形状
+          <select
+            className="ui-input"
+            value={mask?.shape ?? ''}
+            onChange={(event) => {
+              const shape = event.target.value as VideoMask['shape'] | '';
+              change({
+                mask: shape ? { ...maskDefaults, ...mask, shape } : undefined
+              });
+            }}
+          >
+            <option value="">无</option>
+            {Object.entries(maskShapes).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {mask && (
+          <>
+            <div className="vw-field-grid">
+              {maskFields.map(({ field, label, min }) => (
+                <NumberField
+                  key={field}
+                  label={label}
+                  value={mask[field]}
+                  min={min}
+                  max={100}
+                  step={1}
+                  onChange={(value) =>
+                    change({ mask: { ...mask, [field]: value } })
+                  }
+                />
+              ))}
+            </div>
+            <NumberField
+              label="边缘羽化（%）"
+              value={mask.feather}
+              max={100}
+              step={1}
+              onChange={(feather) => change({ mask: { ...mask, feather } })}
+            />
+            <label className="vw-check">
+              <input
+                type="checkbox"
+                className="ui-check"
+                checked={mask.inverted}
+                onChange={(event) =>
+                  change({ mask: { ...mask, inverted: event.target.checked } })
+                }
+              />
+              反转蒙版
+            </label>
+          </>
+        )}
+      </fieldset>
+
+      <fieldset className="vw-effect-group">
+        <legend>动画</legend>
+        <label className="vw-field">
+          动画效果
+          <select
+            className="ui-input"
+            value={animation?.preset ?? ''}
+            onChange={(event) => {
+              const preset = event.target.value as
+                VideoAnimation['preset'] | '';
+              change({
+                animation: preset
+                  ? { preset, duration: animation?.duration ?? 0.45 }
+                  : undefined
+              });
+            }}
+          >
+            <option value="">无</option>
+            {Object.entries(animationPresets).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {animation && (
+          <NumberField
+            label={
+              animation.preset === 'fadeInOut'
+                ? '单侧动画时长（秒）'
+                : '动画时长（秒）'
+            }
+            value={animationWindow(animation, clipLength)}
+            min={Math.min(0.05, maxAnimation)}
+            max={maxAnimation}
+            step={0.01}
+            onChange={(duration) =>
+              change({ animation: { ...animation, duration } })
+            }
+          />
+        )}
+      </fieldset>
+
+      <fieldset className="vw-effect-group">
+        <legend>滤镜</legend>
+        <label className="vw-field">
+          滤镜预设
+          <select
+            className="ui-input"
+            value={filter?.preset ?? ''}
+            onChange={(event) => {
+              const preset = event.target.value as VideoFilter['preset'] | '';
+              change({
+                filter: preset
+                  ? { preset, strength: filter?.strength ?? 100 }
+                  : undefined
+              });
+            }}
+          >
+            <option value="">原色</option>
+            {Object.entries(filterPresets).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {filter && (
+          <NumberField
+            label="滤镜强度（%）"
+            value={filter.strength}
+            max={100}
+            step={1}
+            onChange={(strength) => change({ filter: { ...filter, strength } })}
+          />
+        )}
+      </fieldset>
+    </>
+  );
+}
+
 export default function VideoInspector({
   panel,
   onPanel,
@@ -168,6 +342,9 @@ export default function VideoInspector({
       <div className="vw-inspector-body" key={clip?.id}>
         {!clip && panel !== 'audio' && (
           <p className="vw-muted">添加视频或图片后，即可调整片段。</p>
+        )}
+        {clip && panel === 'effects' && (
+          <EffectsFields clip={clip} change={change} />
         )}
         {clip && asset?.kind === 'image' && panel === 'clip' && (
           <>

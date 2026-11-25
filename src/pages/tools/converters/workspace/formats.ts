@@ -65,11 +65,47 @@ export const groups = {
 export type Group = keyof typeof groups;
 export type Format = (typeof groups)[Group]['formats'][number];
 export type Preset = 'high' | 'balanced' | 'compact';
+export type AdvancedOptions = {
+  videoSide?: number;
+  frameRate?: number;
+  crf?: number;
+  videoBitrate?: number;
+  encodeSpeed?: 'ultrafast' | 'veryfast' | 'fast';
+  fastStart?: boolean;
+  mute?: boolean;
+  gifSide?: number;
+  gifFps?: number;
+  gifLoop?: number;
+  gifColors?: number;
+  gifDither?: 'bayer' | 'sierra2_4a' | 'none';
+  start?: number;
+  duration?: number;
+  audioBitrate?: number;
+  sampleRate?: number;
+  channels?: number;
+  wavDepth?: number;
+  flacLevel?: number;
+  imageSide?: number;
+  quality?: number;
+  flatten?: boolean;
+  background?: string;
+  paper?: 'source' | 'a4' | 'letter';
+  margin?: number;
+  pdfScale?: number;
+  rotation?: number;
+  txtBreak?: 'blank' | 'line' | 'formfeed';
+  txtCrlf?: boolean;
+  txtBom?: boolean;
+  epubTitle?: string;
+  epubAuthor?: string;
+  epubLanguage?: string;
+};
 export type Settings = {
   group: Group;
   format: Format;
   preset: Preset;
   pages: string;
+  advanced?: AdvancedOptions;
 };
 
 export const presets = {
@@ -117,6 +153,30 @@ export function supportsFormat(group: Group, format: string): format is Format {
 
 export function isAudioFormat(format: Format): format is AudioFormat {
   return Object.hasOwn(audioFormats, format);
+}
+
+export function settingsError({ format, advanced }: Settings) {
+  if (!advanced) return;
+  const { start, duration, quality, crf, videoBitrate, margin } = advanced;
+  const outside = (
+    value: number | undefined,
+    min: number,
+    max = Infinity,
+    integer = false
+  ) =>
+    value !== undefined &&
+    (!Number.isFinite(value) ||
+      value < min ||
+      value > max ||
+      (integer && !Number.isInteger(value)));
+  if (outside(start, 0) || outside(duration, 0.001))
+    return '截取起点不能为负数，时长至少为 0.001 秒。';
+  if (outside(quality, 1, 100, true)) return '图片质量须为 1 到 100 的整数。';
+  if (outside(crf, 0, format === 'webm' ? 63 : 51, true))
+    return '视频质量超出 CRF 可用范围。';
+  if (outside(videoBitrate, 50, 20000, true))
+    return '视频码率须为 50 到 20000 kbps。';
+  if (outside(margin, 0, 40)) return 'PDF 页边距须在 0 到 40 毫米之间。';
 }
 
 export function outputName(file: File, extension: string, suffix = '') {

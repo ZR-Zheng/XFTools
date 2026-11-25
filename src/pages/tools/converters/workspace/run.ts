@@ -1,4 +1,4 @@
-import type { Settings } from './formats';
+import { settingsError, type Settings } from './formats';
 
 export async function runConversion(
   file: File,
@@ -7,6 +7,8 @@ export async function runConversion(
   onProgress: (progress: number, waiting?: boolean) => void
 ) {
   signal.throwIfAborted();
+  const error = settingsError(settings);
+  if (error) throw new Error(error);
   switch (settings.group) {
     case 'image': {
       const { convertImage } = await import('./images');

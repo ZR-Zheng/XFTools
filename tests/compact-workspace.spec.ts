@@ -72,12 +72,12 @@ test('PDF editor alias opens the annotation workspace at full viewport height', 
   expect(errors).toEqual([]);
 });
 
-test('Header actions load examples and reset conversion options', async ({
+test('Calculator tools keep example and reset actions in their workspace', async ({
   page
 }) => {
   await page.goto('/time/discord-timestamp');
-  const header = page.locator('.tool-page-header');
-  await header.getByRole('button', { name: '载入示例', exact: true }).click();
+  const actions = page.locator('.tool-inline-actions');
+  await actions.getByRole('button', { name: '载入示例', exact: true }).click();
   await expect(page.getByTestId('text-input')).toHaveValue(
     '2025-03-15T10:00:00'
   );
@@ -85,6 +85,6 @@ test('Header actions load examples and reset conversion options', async ({
   await expect(result).toHaveValue('<t:1742032800:F>');
   await page.getByRole('combobox').selectOption('R');
   await expect(result).toHaveValue('<t:1742032800:R>');
-  await header.getByRole('button', { name: '重置参数', exact: true }).click();
+  await actions.getByRole('button', { name: '重置参数', exact: true }).click();
   await expect(result).toHaveValue('<t:1742032800:F>');
 });

@@ -25,7 +25,8 @@ function formatTextToParagraphs(raw: string): string {
 export async function convertPdfToEpub(
   pdfFile: File,
   job: PdfJob = {},
-  ranges = ''
+  ranges = '',
+  options: { title?: string; author?: string; language?: string } = {}
 ): Promise<File> {
   const pages = await extractPdfText(pdfFile, ranges, job);
   job.signal?.throwIfAborted();
@@ -47,16 +48,18 @@ export async function convertPdfToEpub(
 
   const oebps = zip.folder('OEBPS');
   const bookName = pdfFile.name.replace(/\.pdf$/i, '');
-  const bookTitle = escapeXml(bookName);
+  const bookTitle = escapeXml(options.title?.trim() || bookName);
+  const author = escapeXml(options.author?.trim() || 'Converted by xftools');
+  const language = escapeXml(options.language || 'en');
   const bookId = `urn:uuid:${crypto.randomUUID()}`;
 
   const contentOpf = `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:title>${bookTitle}</dc:title>
-    <dc:creator>Converted by xftools</dc:creator>
+    <dc:creator>${author}</dc:creator>
     <dc:identifier id="bookid">${bookId}</dc:identifier>
-    <dc:language>en</dc:language>
+    <dc:language>${language}</dc:language>
   </metadata>
   <manifest>
     <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
@@ -111,7 +114,7 @@ export async function convertPdfToEpub(
 
     const chapterXhtml = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${language}">
 <head>
   <title>Page ${index + 1}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
